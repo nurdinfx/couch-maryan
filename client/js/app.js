@@ -1,4 +1,4 @@
-// ====================================================================
+﻿// ====================================================================
 // FACULTY LMS - MAIN APPLICATION ROUTER & CONTROLLER
 // ====================================================================
 
@@ -15,19 +15,23 @@ const App = {
 
     // Setup hash router listener
     window.addEventListener('hashchange', () => this.handleRoute());
-    window.addEventListener('auth-required', () => this.showLoginModal());
+    window.addEventListener('auth-required', () => { window.location.href = 'login.html'; });
 
-    // Auto-login or verify existing session
+    // Verify session - redirect to login if not authenticated
     try {
       if (API.token) {
         await API.getMe();
       } else {
-        // Default to logging in as Prof. Maryam for immediate full access demo
-        await API.switchUser(1);
+        // No token: redirect to login page
+        window.location.href = 'login.html';
+        return;
       }
     } catch (e) {
-      console.warn('Session refresh needed, defaulting to professor demo...');
-      await API.switchUser(1).catch(() => {});
+      // Token invalid or expired
+      API.setToken(null);
+      localStorage.removeItem('faculty_lms_user');
+      window.location.href = 'login.html';
+      return;
     }
 
     this.updateUserNavbar();
@@ -35,6 +39,13 @@ const App = {
     this.setupSearch();
   },
 
+
+  logout() {
+    API.setToken(null);
+    localStorage.removeItem('faculty_lms_user');
+    localStorage.removeItem('faculty_lms_token');
+    window.location.href = 'login.html';
+  },
   updateUserNavbar() {
     const user = API.currentUser;
     if (!user) return;

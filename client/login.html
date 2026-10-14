@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gal Akoonka | Faculty LMS Portal</title>
+  <meta name="description" content="Faculty of Computing & Information Science - Academic Portal Login">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="login-page">
+
+  <!-- Ambient Animated Lighting and Grid Background -->
+  <div class="login-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- Main Container -->
+  <main class="login-wrapper">
+
+    <!-- University Brand Header -->
+    <header class="login-logo">
+      <div class="login-logo-icon" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <h1>Faculty LMS Portal</h1>
+      <p>Faculty of Computing &amp; Information Science</p>
+    </header>
+
+    <!-- Glassmorphic Card -->
+    <section class="login-card" aria-labelledby="login-heading">
+      <h2 id="login-heading" class="login-card-title">Gal Akoonkaaga</h2>
+      <p class="login-card-sub">Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.</p>
+
+      <!-- Alert Box -->
+      <div class="login-error" id="login-error" role="alert" aria-live="polite">
+        <svg class="error-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="error-text">Email ama password-kaagu waa khalad.</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" autocomplete="on" onsubmit="handleLogin(event)">
+
+        <!-- Email Field -->
+        <div class="field-group">
+          <label class="field-label" for="login-email">Email Address</label>
+          <div class="field-wrap">
+            <span class="field-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </span>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              class="login-input"
+              autocomplete="username"
+              required
+              autofocus
+            >
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field-group">
+          <div class="field-label-row">
+            <label class="field-label" for="login-password">Password</label>
+          </div>
+          <div class="field-wrap">
+            <span class="field-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              class="login-input"
+              autocomplete="current-password"
+              required
+            >
+            <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Show or hide password" onclick="togglePw()">
+              <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eye-closed" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                <line x1="2" y1="2" x2="22" y2="22"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn" id="login-btn">
+          <span class="btn-text">Gal Nidaamka</span>
+          <div class="btn-spinner" aria-hidden="true"></div>
+        </button>
+
+      </form>
+
+      <!-- Account Note -->
+      <div class="login-card-footer-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>Akoonka ardayda waxaa sameeya Macallinka ama Maamulka Kuliyadda.</span>
+      </div>
+
+    </section>
+
+    <!-- University Portal Footer -->
+    <footer class="login-footer">
+      <p>Faculty LMS Portal &bull; Faculty of Computing &amp; Information Science</p>
+    </footer>
+
+  </main>
+
+  <!-- Login Success Celebration Overlay -->
+  <div class="login-success-overlay" id="success-overlay" aria-hidden="true">
+    <div class="success-icon">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="success-text" id="success-name">Ku soo dhawow!</div>
+    <div class="success-sub">Waxaa si toos ah laguu galinayaa boggaaga...</div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    // Check existing session
+    (function checkExistingSession() {
+      const token = localStorage.getItem('faculty_lms_token');
+      if (token) {
+        window.location.replace('index.html');
+      }
+    })();
+
+    // Password visibility toggle
+    let pwVisible = false;
+    function togglePw() {
+      pwVisible = !pwVisible;
+      const el = document.getElementById('login-password');
+      el.type = pwVisible ? 'text' : 'password';
+      document.getElementById('eye-open').style.display = pwVisible ? 'none' : 'block';
+      document.getElementById('eye-closed').style.display = pwVisible ? 'block' : 'none';
+    }
+
+    // Error helpers
+    function showError(msg) {
+      const el = document.getElementById('login-error');
+      document.getElementById('error-text').textContent = msg;
+      el.classList.remove('show');
+      void el.offsetWidth;
+      el.classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('login-error').classList.remove('show');
+    }
+
+    // Login submission handler
+    async function handleLogin(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('login-email');
+      const passInput = document.getElementById('login-password');
+      const email = emailInput.value.trim();
+      const password = passInput.value;
+      const btn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        showError('Fadlan geli email-ka iyo password-ka labadaba.');
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      hideError();
+
+      try {
+        let data;
+        if (typeof API !== 'undefined' && API.login) {
+          data = await API.login(email, password);
+        } else {
+          const resp = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || 'Email ama password waa khalad.');
+          localStorage.setItem('faculty_lms_token', data.token);
+          localStorage.setItem('faculty_lms_user', JSON.stringify(data.user));
+        }
+
+        const user = data.user || {};
+        const userName = user.full_name || 'Isticmaale';
+        document.getElementById('success-name').textContent = 'Ku soo dhawow, ' + userName + '!';
+
+        const overlay = document.getElementById('success-overlay');
+        overlay.classList.add('show');
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1100);
+
+      } catch (err) {
+        showError(err.message || 'Xiriirka nidaamku waa guuldarraystay. Fadlan dib u tijaabi.');
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    // Ambient particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      if (!container) return;
+      const colors = ['rgba(59,130,246,0.6)', 'rgba(99,102,241,0.5)', 'rgba(16,185,129,0.4)', 'rgba(236,72,153,0.3)'];
+      for (let i = 0; i < 28; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 4 + 2;
+        p.style.cssText = [
+          'width:' + size + 'px',
+          'height:' + size + 'px',
+          'left:' + (Math.random() * 100) + '%',
+          'background:' + colors[Math.floor(Math.random() * colors.length)],
+          'animation-duration:' + (Math.random() * 12 + 10) + 's',
+          'animation-delay:' + (Math.random() * 8) + 's'
+        ].join(';');
+        container.appendChild(p);
+      }
+    }
+    createParticles();
+  </script>
+</body>
+</html>
