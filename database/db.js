@@ -20,7 +20,7 @@ function initSchema() {
       role TEXT NOT NULL CHECK(role IN ('professor', 'student', 'admin')),
       avatar_url TEXT,
       student_id_number TEXT,
-      department TEXT DEFAULT 'Faculty of Computing & Information Science',
+      department TEXT DEFAULT 'Faculty of Midwifery',
       bio TEXT,
       is_active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP

@@ -1,15 +1,15 @@
 # Faculty LMS: Moodle-Style Learning Management System
 ### Designed Specifically for One Faculty and One Professor (Prof. Maryam Al-Mansoor)
 
-A production-grade, secure, and modern Learning Management System inspired by Moodle 4+ (Boost Theme), purpose-built for a single university faculty (**Faculty of Computing & Information Science**) managed by a single professor (**Prof. Maryam Al-Mansoor**).
+A production-grade, secure, and modern Learning Management System inspired by Moodle 4+ (Boost Theme), purpose-built for a single university faculty (**Faculty of Midwifery**) managed by a single professor (**Prof. Maryam Al-Mansoor**).
 
 ---
 
 ## 🌟 Key Features & Implementation Highlights
 
 ### 1. Dedicated Single Faculty Scope
-* **Strict Single Faculty & Single Professor Architecture**: No multi-institution bloat. Focused strictly on high-impact teaching, student management, academic performance, and laboratory computing courses.
-* **Faculty Courses**: Pre-seeded with *CS301: Cloud Computing & Distributed Systems*, *CS204: Advanced Data Structures & Algorithms*, and *CS410: Machine Learning & Intelligent Systems*.
+* **Strict Single Faculty & Single Professor Architecture**: No multi-institution bloat. Focused strictly on high-impact teaching, student management, academic performance, and midwifery and maternal healthcare courses.
+* **Faculty Courses**: Pre-seeded with *MID101: Fundamentals of Midwifery Care*, *MID204: Antenatal & Postnatal Care*, and *MID301: Neonatal Care & Clinical Practice*.
 
 ### 2. Moodle 4+ Inspired Experience
 * **Professional Left Navigation Drawer**: Collapsible sidebar with quick links to Dashboard, Course Catalog, Gradebook Matrix, Attendance, Badges & Certificates, Discussions, Calendar, and Messages.

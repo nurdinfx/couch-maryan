@@ -94,7 +94,7 @@ const StudentsView = {
                         <img src="${s.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                         <div>
                           <div style="font-weight: 700;">${s.full_name}</div>
-                          <div style="font-size: 0.72rem; color: var(--text-muted);">${s.department || 'Faculty of Computing'}</div>
+                          <div style="font-size: 0.72rem; color: var(--text-muted);">${s.department || 'Faculty of Midwifery'}</div>
                         </div>
                       </div>
                     </td>

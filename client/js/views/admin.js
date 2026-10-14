@@ -32,7 +32,7 @@ const AdminView = {
       <div class="page-header-container">
         <div>
           <h1 class="page-title">Technical Maintenance & System Health</h1>
-          <p class="page-description">Security administration, backups, and database diagnostics for Faculty of Computing</p>
+          <p class="page-description">Security administration, backups, and database diagnostics for Faculty of Midwifery</p>
         </div>
         <div>
           <a href="/api/admin/backup-db" class="btn btn-outline" download>

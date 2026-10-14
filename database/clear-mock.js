@@ -25,7 +25,7 @@ function clearMockData() {
       const hash = bcrypt.hashSync('password123', 10);
       db.prepare(`
         INSERT INTO users (id, email, password_hash, full_name, role, department)
-        VALUES (1, 'professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'Faculty of Computing & Information Science')
+        VALUES (1, 'professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'Faculty of Midwifery')
       `).run(hash);
     }
 
@@ -35,7 +35,7 @@ function clearMockData() {
       const hash = bcrypt.hashSync('admin123', 10);
       db.prepare(`
         INSERT INTO users (id, email, password_hash, full_name, role, department)
-        VALUES (6, 'admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'Faculty of Computing & Information Science')
+        VALUES (6, 'admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'Faculty of Midwifery')
       `).run(hash);
     }
   })();

@@ -221,7 +221,7 @@ async function runTests() {
     assert.strictEqual(res.data.valid, true);
     assert.strictEqual(res.data.certificate.student_name, 'Layla Karim');
     assert.strictEqual(res.data.certificate.code, 'CS301');
-    assert.strictEqual(res.data.issuer, 'Faculty of Computing & Information Science');
+    assert.strictEqual(res.data.issuer, 'Faculty of Midwifery');
   })();
 
   // 12. Security Enforcement: Student cannot grade submissions or access admin

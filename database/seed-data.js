@@ -40,7 +40,7 @@ async function seed() {
     'professor',
     'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     null,
-    'Faculty of Computing & Information Science',
+    'Faculty of Midwifery',
     'Associate Professor of Distributed Systems & Cloud Infrastructure.'
   );
 
@@ -58,7 +58,7 @@ async function seed() {
 
   // 3. Default System Settings
   const insertSetting = db.prepare(`INSERT INTO system_settings (key, value) VALUES (?, ?)`);
-  insertSetting.run('faculty_name', 'Faculty of Computing & Information Science');
+  insertSetting.run('faculty_name', 'Faculty of Midwifery');
   insertSetting.run('institution_name', 'Faculty Academic Portal');
   insertSetting.run('primary_professor', 'Prof. Maryam Al-Mansoor');
   insertSetting.run('moodle_theme', 'boost_light');

@@ -66,7 +66,7 @@ function generateAssets() {
   const syllabusPath = path.join(docsDir, 'CS301_Course_Syllabus.pdf');
   fs.writeFileSync(syllabusPath, createMinimalPdf(
     'CS301: Cloud Computing and Distributed Systems',
-    'Faculty of Computing & Information Science - Instructor: Prof. Maryam Al-Mansoor',
+    'Faculty of Midwifery - Instructor: Prof. Maryam Al-Mansoor',
     [
       'Welcome to CS301. This course covers cloud architectures, microservices, containerization, and scalability.',
       'Grading Breakdown: Assignments (30%), Midterm Exam (25%), Quizzes (20%), Final Project (20%), Attendance (5%).',

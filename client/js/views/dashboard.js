@@ -41,7 +41,7 @@ const DashboardView = {
             <span>Professor Dashboard</span>
           </div>
           <h1 class="page-title">Welcome back, ${user.full_name}</h1>
-          <p class="page-description">Academic Overview for Faculty of Computing & Information Science</p>
+          <p class="page-description">Academic Overview for Faculty of Midwifery</p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
           <button class="btn btn-outline" onclick="App.showModal('createCourseModal')">
@@ -174,7 +174,7 @@ const DashboardView = {
             <span>Student Dashboard</span>
           </div>
           <h1 class="page-title">Welcome, ${user.full_name}</h1>
-          <p class="page-description">Student ID: ${user.student_id_number || 'STU-2026-081'} | Department: ${user.department || 'Faculty of Computing & Information Science'}</p>
+          <p class="page-description">Student ID: ${user.student_id_number || 'STU-2026-081'} | Department: ${user.department || 'Faculty of Midwifery'}</p>
         </div>
         <div>
           <a href="#/badges" class="btn btn-outline">

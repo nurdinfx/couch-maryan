@@ -99,7 +99,7 @@ router.post('/register', (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10);
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, department, bio)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Computing & Information Science', ?)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Midwifery', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
@@ -189,7 +189,7 @@ router.post('/students', requireAuth, (req, res) => {
 
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, department, is_active)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Computing & Information Science', ?)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Midwifery', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,

@@ -130,7 +130,7 @@ if (require.main === module) {
     console.log(`=======================================================`);
     console.log(`  FACULTY LMS SERVER READY`);
     console.log(`  Access URL: http://localhost:${PORT}`);
-    console.log(`  Single Faculty: Faculty of Computing & Information Science`);
+    console.log(`  Single Faculty: Faculty of Midwifery`);
     console.log(`  Primary Professor: Prof. Maryam Al-Mansoor`);
     console.log(`=======================================================`);
   });

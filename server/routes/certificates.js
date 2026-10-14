@@ -50,7 +50,7 @@ router.get('/verify/:uuid', (req, res) => {
   res.json({
     valid: true,
     certificate: cert,
-    issuer: 'Faculty of Computing & Information Science',
+    issuer: 'Faculty of Midwifery',
     signatureAuthority: cert.professor_name || 'Prof. Maryam Al-Mansoor, Faculty Academic Director',
     verificationTimestamp: new Date().toISOString()
   });

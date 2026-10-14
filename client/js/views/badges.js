@@ -160,7 +160,7 @@ const BadgesView = {
             <!-- Authentic Certificate Frame -->
             <div class="certificate-frame" id="printable-certificate-area">
               <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em; color: #b8860b; text-transform: uppercase; margin-bottom: 0.5rem;">
-                Faculty of Computing & Information Science
+                Faculty of Midwifery
               </div>
               <h1 style="font-family: var(--font-display); font-size: 2.2rem; color: #1e293b; margin-bottom: 0.5rem;">
                 Certificate of Academic Completion
@@ -252,7 +252,7 @@ const BadgesView = {
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">Course Context</label>
               <select name="course_id" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-                <option value="1">CS301: Cloud Computing & Distributed Systems</option>
+                <option value="1">MID101: Fundamentals of Midwifery Care</option>
               </select>
             </div>
           </div>
