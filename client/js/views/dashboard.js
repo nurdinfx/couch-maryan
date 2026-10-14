@@ -27,7 +27,7 @@ const DashboardView = {
   },
 
   renderProfessorDashboard(user, courses) {
-    const totalStudents = courses.reduce((acc, c) => Math.max(acc, c.enrolled_students_count || 0), 4);
+    const totalStudents = courses.reduce((acc, c) => Math.max(acc, c.enrolled_students_count || 0), 0);
     const totalLessons = courses.reduce((acc, c) => acc + (c.lessons_count || 0), 0);
     const totalAssignments = courses.reduce((acc, c) => acc + (c.assignments_count || 0), 0);
     const totalQuizzes = courses.reduce((acc, c) => acc + (c.quizzes_count || 0), 0);
@@ -85,6 +85,7 @@ const DashboardView = {
         </div>
       </div>
 
+      ${courses.length > 0 ? `
       <!-- Priority Action: Submissions Awaiting Review & At-Risk Warning -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
         
@@ -126,6 +127,7 @@ const DashboardView = {
 
       </div>
 
+      ` : ''}
       <!-- Faculty Courses -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
         <h2 style="font-size: 1.3rem;">Courses You Teach</h2>
@@ -133,7 +135,7 @@ const DashboardView = {
       </div>
 
       <div class="course-grid">
-        ${courses.map(c => `
+        ${courses.length > 0 ? courses.map(c => `
           <div class="course-card">
             <img src="${c.cover_image}" class="course-cover-img" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
             <div class="course-card-body">
@@ -154,7 +156,7 @@ const DashboardView = {
               </div>
             </div>
           </div>
-        `).join('')}
+        `).join('') : `<div style="grid-column:1/-1;text-align:center;padding:3.5rem 1.5rem;background:var(--bg-card);border:2px dashed var(--border-color);border-radius:var(--radius-lg)"><div style="font-size:3rem;margin-bottom:0.75rem">📚</div><h3 style="margin-bottom:0.5rem">Weli Koorso Laguma darin</h3><p class="text-muted" style="margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto">System-ka waa la nadiifiyay. Hadda waxaad bilaabi kartaa inaad ku darto koorsadaadii koowaad.</p><button class="btn btn-primary" onclick="App.showModal('createCourseModal')"><span>+</span> Abuur Koorso Cusub</button></div>`}
       </div>
     `;
   },
