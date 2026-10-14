@@ -96,39 +96,41 @@ router.get('/:id/questions', requireAuth, (req, res) => {
     ORDER BY sort_order ASC, id ASC
   `).all(quizId);
 
-  // If student is viewing outside of attempt, don't expose correct answers
-  if (!isProfessor) {
-    questions = questions.map(q => {
-      let parsedOptions = [];
-      try {
-        parsedOptions = JSON.parse(q.options_json || '[]').map(opt => ({
-          id: opt.id,
-          text: opt.text
-        }));
-      } catch (e) {}
+  questions = questions.map(q => {
+    let parsedOptions = [];
+    try {
+      const raw = JSON.parse(q.options_json || '[]');
+      if (Array.isArray(raw)) {
+        parsedOptions = raw.map((opt, idx) => {
+          if (typeof opt === 'string') return { id: opt, text: opt };
+          return { id: opt.id || opt.text || String(idx), text: opt.text || opt.id || String(opt), isCorrect: opt.isCorrect };
+        });
+      }
+    } catch (e) {}
 
-      return {
-        id: q.id,
-        quiz_id: q.quiz_id,
-        question_text: q.question_text,
-        question_type: q.question_type,
-        options: parsedOptions,
-        points: q.points,
-        sort_order: q.sort_order
-      };
-    });
-  } else {
-    questions = questions.map(q => {
-      let parsedOptions = [];
-      try {
-        parsedOptions = JSON.parse(q.options_json || '[]');
-      } catch (e) {}
-      return {
-        ...q,
-        options: parsedOptions
-      };
-    });
-  }
+    if (q.question_type === 'true_false' && parsedOptions.length === 0) {
+      const isTrue = String(q.correct_answer_text || '').toLowerCase().trim() === 'true';
+      parsedOptions = [
+        { id: 'true', text: 'True (Run)', isCorrect: isTrue },
+        { id: 'false', text: 'False (Been)', isCorrect: !isTrue }
+      ];
+    }
+
+    const safeOptions = isProfessor 
+      ? parsedOptions 
+      : parsedOptions.map(({ isCorrect, ...rest }) => rest);
+
+    return {
+      id: q.id,
+      quiz_id: q.quiz_id,
+      question_text: q.question_text,
+      question_type: q.question_type,
+      options: safeOptions,
+      points: q.points,
+      sort_order: q.sort_order,
+      ...(isProfessor ? { correct_answer_text: q.correct_answer_text } : {})
+    };
+  });
 
   res.json({ questions });
 });
@@ -136,10 +138,25 @@ router.get('/:id/questions', requireAuth, (req, res) => {
 // 4. Question Bank: Add question to quiz (Professor only)
 router.post('/:id/questions', requireProfessor, (req, res) => {
   const quizId = parseInt(req.params.id);
-  const { question_text, question_type, options, correct_answer_text, points } = req.body;
+  const { question_text, question_type, options, points } = req.body;
+  const correct_answer_text = (req.body.correct_answer_text || req.body.correct_answer || '').trim();
 
   if (!question_text || !question_type) {
     return res.status(400).json({ error: 'Question text and question type are required.' });
+  }
+
+  let finalOptions = null;
+  if (question_type === 'true_false') {
+    finalOptions = [
+      { id: 'true', text: 'True (Run)', isCorrect: correct_answer_text.toLowerCase() === 'true' || correct_answer_text.toLowerCase() === 'run' },
+      { id: 'false', text: 'False (Been)', isCorrect: correct_answer_text.toLowerCase() === 'false' || correct_answer_text.toLowerCase() === 'been' }
+    ];
+  } else if (options) {
+    if (typeof options === 'string') {
+      try { finalOptions = JSON.parse(options); } catch (e) { finalOptions = options; }
+    } else {
+      finalOptions = options;
+    }
   }
 
   const maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM quiz_questions WHERE quiz_id = ?').get(quizId).m || 0;
@@ -152,8 +169,8 @@ router.post('/:id/questions', requireProfessor, (req, res) => {
     quizId,
     question_text.trim(),
     question_type,
-    options ? JSON.stringify(options) : null,
-    correct_answer_text ? correct_answer_text.trim() : null,
+    finalOptions ? JSON.stringify(finalOptions) : null,
+    correct_answer_text || null,
     parseFloat(points) || 10.0,
     maxOrder + 1
   );
@@ -274,8 +291,23 @@ router.post('/attempts/:attemptId/submit', requireAuth, (req, res) => {
       if (q.question_type === 'single_choice' || q.question_type === 'true_false') {
         let opts = [];
         try { opts = JSON.parse(q.options_json || '[]'); } catch (e) {}
-        const correctOpt = opts.find(o => o.isCorrect);
+        const correctOpt = Array.isArray(opts) ? opts.find(o => o && o.isCorrect) : null;
+        let isCorrect = false;
+
+        const normUser = String(userAns || '').toLowerCase().trim();
+        const normCorrect = String(q.correct_answer_text || (correctOpt ? correctOpt.id : '')).toLowerCase().trim();
+
         if (correctOpt && userAns === correctOpt.id) {
+          isCorrect = true;
+        } else if (normUser && (
+          normUser === normCorrect ||
+          (normUser === 'true' && (normCorrect === 'run' || normCorrect === 'true' || normCorrect === '1')) ||
+          (normUser === 'false' && (normCorrect === 'been' || normCorrect === 'false' || normCorrect === '0'))
+        )) {
+          isCorrect = true;
+        }
+
+        if (isCorrect) {
           pointsAwarded = q.points;
           feedback = 'Correct';
         } else {

@@ -1062,3 +1062,43 @@ a:hover {
     display: none;
   }
 }
+
+/* ====================================================================
+   TRUE / FALSE INTERACTIVE EXAM CARDS
+   ==================================================================== */
+.quiz-tf-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.85rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--bg-surface-alt);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.quiz-tf-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.quiz-tf-card .tf-icon {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.quiz-tf-card .tf-text {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.quiz-tf-card.selected-true {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #059669 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+}
+.quiz-tf-card.selected-false {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}

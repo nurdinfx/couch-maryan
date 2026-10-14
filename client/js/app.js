@@ -754,26 +754,28 @@ const App = {
     e.preventDefault();
     const form = e.target;
     const qType = form.question_type.value;
-    const optionsText = form.options_text ? form.options_text.value : '';
+    const optionsText = form.options_text ? form.options_text.value : "";
     let options = null;
-    if (qType === 'multiple_choice' && optionsText) {
-      options = optionsText.split('\n').map(o => o.trim()).filter(Boolean);
+    if (qType === "multiple_choice" && optionsText) {
+      options = optionsText.split("\n").map(o => o.trim()).filter(Boolean);
     }
+    const correctAnswer = form.correct_answer ? form.correct_answer.value : null;
     try {
       await API.addQuizQuestion(quizId, {
         question_text: form.question_text.value,
         question_type: qType,
-        options: options ? JSON.stringify(options) : null,
-        correct_answer: form.correct_answer ? form.correct_answer.value : null,
-        points: parseFloat(form.points.value) || 1,
+        options: options,
+        correct_answer: correctAnswer,
+        correct_answer_text: correctAnswer,
+        points: parseFloat(form.points.value) || 10,
         explanation: form.explanation ? form.explanation.value : null
       });
-      this.showToast('✅ Question added!');
-      // Reset form to add another
+      this.showToast("Question added successfully!");
       form.reset();
       App.handleQuestionTypeChange(form.question_type.value);
+      this.refreshCurrentView();
     } catch (err) {
-      this.showToast(err.message, 'error');
+      this.showToast(err.message, "error");
     }
   },
 

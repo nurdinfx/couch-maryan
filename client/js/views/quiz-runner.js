@@ -20,7 +20,7 @@ const QuizView = {
 
     // If active attempt requested, or user clicked start
     if (params.action === 'run' && params.attemptId) {
-      return this.renderActiveExamRunner(params.attemptId);
+      return this.renderActiveExamRunner(params.attemptId, quizId, quiz);
     }
 
     if (params.action === 'review' && params.attemptId) {
@@ -157,28 +157,25 @@ const QuizView = {
   async startAttempt(quizId) {
     try {
       const data = await API.startQuizAttempt(quizId);
-      window.location.hash = `#/course/1/quiz/${quizId}?action=run&attemptId=${data.attempt.id}`;
+      const courseId = this.currentQuiz ? this.currentQuiz.course_id : 1;
+      window.location.hash = `#/course/${courseId}/quiz/${quizId}?action=run&attemptId=${data.attempt.id}`;
     } catch (err) {
       App.showToast(err.message, 'error');
     }
   },
 
-  async renderActiveExamRunner(attemptId) {
+  async renderActiveExamRunner(attemptId, quizId, quiz) {
     setTimeout(async () => {
       try {
-        const data = await API.request(`/quizzes/attempts/${attemptId}/review`).catch(async () => {
-          // If in progress, fetch questions from start
-          return null;
-        });
-
-        // Fetch live runner questions
-        const quizRes = await API.request(`/quizzes/1/questions`);
+        const qId = quizId || (quiz ? quiz.id : 1);
+        const quizRes = await API.request(`/quizzes/${qId}/questions`);
         QuizView.questions = quizRes.questions || [];
-        QuizView.currentAttempt = { id: attemptId };
+        QuizView.currentAttempt = { id: attemptId, quizId: qId };
+        QuizView.currentQuiz = quiz;
         QuizView.answers = {};
 
-        // Start countdown timer: 30 minutes
-        QuizView.remainingSeconds = 30 * 60;
+        const timeLimit = (quiz && quiz.time_limit_minutes) ? quiz.time_limit_minutes : 30;
+        QuizView.remainingSeconds = timeLimit * 60;
         if (QuizView.timerInterval) clearInterval(QuizView.timerInterval);
 
         QuizView.timerInterval = setInterval(() => {
@@ -189,7 +186,7 @@ const QuizView = {
             const secs = QuizView.remainingSeconds % 60;
             timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
             if (QuizView.remainingSeconds <= 300) {
-              timerEl.style.color = '#ef4444'; // Red alert under 5 minutes
+              timerEl.style.color = '#ef4444';
             }
           }
           if (QuizView.remainingSeconds <= 0) {
@@ -205,12 +202,14 @@ const QuizView = {
       }
     }, 50);
 
+    const examTitle = quiz ? quiz.title : 'Online Examination';
+
     return `
       <!-- Sticky Exam Timer & Header -->
       <div class="quiz-header-bar">
         <div>
           <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Examination In Progress</div>
-          <h2 style="font-size: 1.15rem; margin: 0;">Midterm Examination: Distributed Systems Architecture</h2>
+          <h2 style="font-size: 1.15rem; margin: 0;">${examTitle}</h2>
         </div>
 
         <div class="quiz-timer-box">
@@ -277,39 +276,102 @@ const QuizView = {
   },
 
   renderQuestionInputs(q) {
-    if (q.question_type === 'single_choice' || q.question_type === 'true_false') {
-      return (q.options || []).map(opt => `
-        <label class="quiz-option-label">
-          <input type="radio" name="question_${q.id}" value="${opt.id}" onchange="QuizView.recordAnswer(${q.id}, '${opt.id}')">
-          <span style="font-size: 0.92rem;">${opt.text}</span>
-        </label>
-      `).join('');
+    if (q.question_type === 'true_false') {
+      const selected = this.answers[q.id];
+      return `
+        <div class="quiz-tf-group" style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+          <label id="tf-true-${q.id}" class="quiz-tf-card ${selected === 'true' ? 'selected-true' : ''}" onclick="QuizView.selectTrueFalse(${q.id}, 'true')">
+            <input type="radio" name="question_${q.id}" value="true" ${selected === 'true' ? 'checked' : ''} style="display:none;">
+            <span class="tf-icon">✔</span>
+            <span class="tf-text">Run (True)</span>
+          </label>
+          <label id="tf-false-${q.id}" class="quiz-tf-card ${selected === 'false' ? 'selected-false' : ''}" onclick="QuizView.selectTrueFalse(${q.id}, 'false')">
+            <input type="radio" name="question_${q.id}" value="false" ${selected === 'false' ? 'checked' : ''} style="display:none;">
+            <span class="tf-icon">✖</span>
+            <span class="tf-text">Been (False)</span>
+          </label>
+        </div>
+      `;
+    }
+
+    if (q.question_type === 'single_choice') {
+      let options = q.options || [];
+      if (typeof options === 'string') {
+        try { options = JSON.parse(options); } catch (e) { options = []; }
+      }
+      return `
+        <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.75rem;">
+          ${options.map((opt, i) => {
+            const val = typeof opt === 'object' ? (opt.id || opt.text) : opt;
+            const label = typeof opt === 'object' ? (opt.text || opt.id) : opt;
+            const isChecked = this.answers[q.id] === val;
+            return `
+              <label class="quiz-option-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; background: var(--bg-surface-alt);">
+                <input type="radio" name="question_${q.id}" value="${val}" ${isChecked ? 'checked' : ''} onchange="QuizView.recordAnswer(${q.id}, '${val}')" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-size: 0.95rem; font-weight: 500;">${label}</span>
+              </label>
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     if (q.question_type === 'multiple_choice') {
-      return (q.options || []).map(opt => `
-        <label class="quiz-option-label">
-          <input type="checkbox" name="question_${q.id}" value="${opt.id}" onchange="QuizView.recordMultiAnswer(${q.id}, '${opt.id}')">
-          <span style="font-size: 0.92rem;">${opt.text}</span>
-        </label>
-      `).join('');
+      let options = q.options || [];
+      if (typeof options === 'string') {
+        try { options = JSON.parse(options); } catch (e) { options = []; }
+      }
+      return `
+        <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.75rem;">
+          ${options.map((opt, i) => {
+            const val = typeof opt === 'object' ? (opt.id || opt.text) : opt;
+            const label = typeof opt === 'object' ? (opt.text || opt.id) : opt;
+            const isChecked = Array.isArray(this.answers[q.id]) && this.answers[q.id].includes(val);
+            return `
+              <label class="quiz-option-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; background: var(--bg-surface-alt);">
+                <input type="checkbox" name="question_${q.id}" value="${val}" ${isChecked ? 'checked' : ''} onchange="QuizView.recordMultiAnswer(${q.id}, '${val}')" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-size: 0.95rem; font-weight: 500;">${label}</span>
+              </label>
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     if (q.question_type === 'short_answer') {
       return `
-        <input type="text" placeholder="Type your concise answer..." style="width: 100%; max-width: 400px; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem;"
-               oninput="QuizView.recordAnswer(${q.id}, this.value)">
+        <div style="margin-top: 0.75rem;">
+          <input type="text" placeholder="Qor jawaabtaada kooban halkan..." style="width: 100%; max-width: 450px; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem;"
+                 value="${this.answers[q.id] || ''}" oninput="QuizView.recordAnswer(${q.id}, this.value)">
+        </div>
       `;
     }
 
     if (q.question_type === 'essay') {
       return `
-        <textarea rows="5" placeholder="Enter your detailed technical explanation..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem;"
-                  oninput="QuizView.recordAnswer(${q.id}, this.value)"></textarea>
+        <div style="margin-top: 0.75rem;">
+          <textarea rows="5" placeholder="Qor sharraxaaddaada oo faahfaahsan halkan..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.92rem;"
+                    oninput="QuizView.recordAnswer(${q.id}, this.value)">${this.answers[q.id] || ''}</textarea>
+        </div>
       `;
     }
 
     return '';
+  },
+
+  selectTrueFalse(questionId, val) {
+    this.recordAnswer(questionId, val);
+    const trueCard = document.getElementById(`tf-true-${questionId}`);
+    const falseCard = document.getElementById(`tf-false-${questionId}`);
+    if (trueCard && falseCard) {
+      if (val === 'true') {
+        trueCard.classList.add('selected-true');
+        falseCard.classList.remove('selected-false');
+      } else {
+        falseCard.classList.add('selected-false');
+        trueCard.classList.remove('selected-true');
+      }
+    }
   },
 
   recordAnswer(questionId, val) {
@@ -348,13 +410,14 @@ const QuizView = {
 
     try {
       const res = await API.submitQuizAttempt(this.currentAttempt.id, this.answers);
-      App.showToast('Exam submitted and graded successfully! 🏆');
-      window.location.hash = `#/course/1/quiz/1?action=review&attemptId=${this.currentAttempt.id}`;
+      App.showToast('Exam submitted and graded successfully!');
+      const courseId = this.currentQuiz ? this.currentQuiz.course_id : 1;
+      const quizId = this.currentQuiz ? this.currentQuiz.id : 1;
+      window.location.hash = `#/course/${courseId}/quiz/${quizId}?action=review&attemptId=${this.currentAttempt.id}`;
     } catch (err) {
       App.showToast(err.message, 'error');
     }
   },
-
   async renderAttemptReview(attemptId, isProfessor) {
     setTimeout(async () => {
       try {
@@ -473,6 +536,66 @@ const QuizView = {
       });
       App.closeModal();
       App.showToast('Essay graded successfully!');
+      App.refreshCurrentView();
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
+
+  async previewQuestionBank(quizId) {
+    try {
+      const res = await API.request(`/quizzes/${quizId}/questions`);
+      const questions = res.questions || [];
+      App.showCustomModal(`
+        <div class="modal-dialog" style="max-width: 650px;">
+          <div class="modal-header">
+            <h3>Questions Bank (${questions.length} Questions)</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <div class="modal-body" style="max-height: 480px; overflow-y: auto;">
+            ${questions.length === 0 ? '<p style="text-align:center;color:var(--text-muted);padding:2rem;">No questions in bank yet.</p>' : ''}
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              ${questions.map((q, idx) => `
+                <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                    <span style="font-weight:700; color: var(--primary);">Q${idx + 1}: ${q.question_type.toUpperCase()}</span>
+                    <span class="badge badge-primary">${q.points} pts</span>
+                  </div>
+                  <div style="font-weight:600; margin-bottom: 0.5rem;">${q.question_text}</div>
+                  ${q.options && q.options.length ? `
+                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 0.5rem;">
+                      Options: ${q.options.map(o => o.text).join(' | ')}
+                    </div>
+                  ` : ''}
+                  ${q.correct_answer_text ? `
+                    <div style="font-size:0.82rem; color:var(--success); font-weight: 600;">
+                      Correct Answer: ${q.correct_answer_text}
+                    </div>
+                  ` : ''}
+                  <div style="margin-top: 0.5rem; text-align: right;">
+                    <button class="btn btn-danger btn-sm" onclick="QuizView.deleteQuestion(${quizId}, ${q.id})">Delete</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="App.closeModal()">Close</button>
+            <button class="btn btn-primary" onclick="App.closeModal(); App.showModal('addQuestionModal', { quizId: ${quizId} })">+ Add Question</button>
+          </div>
+        </div>
+      `);
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
+
+  async deleteQuestion(quizId, questionId) {
+    if (!confirm('Are you sure you want to delete this question?')) return;
+    try {
+      await API.request(`/quizzes/questions/${questionId}`, { method: 'DELETE' });
+      App.showToast('Question deleted!');
+      this.previewQuestionBank(quizId);
       App.refreshCurrentView();
     } catch (err) {
       App.showToast(err.message, 'error');
