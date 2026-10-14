@@ -1,0 +1,53 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 723 >>
+stream
+BT
+/F1 18 Tf
+50 720 Td
+(Assignment 1: Distributed Object Storage Implementation) Tj
+/F1 12 Tf
+0 -30 Td
+(Weight: 20% | Maximum Score: 100 Points | Due: End of Week 3) Tj
+/F1 10 Tf
+0 -25 Td
+(Objective: Build a fault-tolerant chunk-based file storage system utilizing consistent hashing.) Tj
+0 -16 Td
+(Task 1: Implement Consistent Hashing Ring with virtual nodes 30 pts.) Tj
+0 -16 Td
+(Task 2: Implement Replication Factor R=3 with quorum consensus 30 pts.) Tj
+0 -16 Td
+(Task 3: Failure detection and node re-balancing heartbeat protocol 30 pts.) Tj
+0 -16 Td
+(Task 4: Unit tests and benchmark performance report 10 pts.) Tj
+0 -16 Td
+(Submit your code repository zip file along with your written analysis report.) Tj
+0 -16 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000010 00000 n 
+0000000060 00000 n 
+0000000117 00000 n 
+0000000228 00000 n 
+00000001003 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1073
+%%EOF

@@ -1,0 +1,85 @@
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const { db } = require('../../database/db');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { logAudit } = require('../middleware/audit');
+
+// 1. System Health & Diagnostics (Admin only)
+router.get('/health', requireAdmin, (req, res) => {
+  const dbPath = path.join(__dirname, '..', '..', 'database', 'faculty_lms.db');
+  let dbSizeBytes = 0;
+  if (fs.existsSync(dbPath)) {
+    dbSizeBytes = fs.statSync(dbPath).size;
+  }
+
+  const counts = {
+    users: db.prepare('SELECT COUNT(*) as c FROM users').get().c,
+    courses: db.prepare('SELECT COUNT(*) as c FROM courses').get().c,
+    lessons: db.prepare('SELECT COUNT(*) as c FROM lessons').get().c,
+    submissions: db.prepare('SELECT COUNT(*) as c FROM assignment_submissions').get().c,
+    quiz_attempts: db.prepare('SELECT COUNT(*) as c FROM quiz_attempts').get().c,
+    audit_logs: db.prepare('SELECT COUNT(*) as c FROM audit_logs').get().c,
+    certificates: db.prepare('SELECT COUNT(*) as c FROM certificates').get().c
+  };
+
+  res.json({
+    status: 'healthy',
+    systemTime: new Date().toISOString(),
+    uptimeSeconds: Math.floor(process.uptime()),
+    database: {
+      type: 'SQLite3 WAL',
+      sizeBytes: dbSizeBytes,
+      sizeFormatted: `${(dbSizeBytes / (1024 * 1024)).toFixed(2)} MB`,
+      recordsCount: counts
+    },
+    nodeVersion: process.version,
+    platform: process.platform
+  });
+});
+
+// 2. Audit Logs (Admin only)
+router.get('/audit-logs', requireAdmin, (req, res) => {
+  const logs = db.prepare(`
+    SELECT al.*, u.full_name as user_name, u.email as user_email, u.role as user_role
+    FROM audit_logs al
+    LEFT JOIN users u ON al.user_id = u.id
+    ORDER BY al.created_at DESC
+    LIMIT 50
+  `).all();
+
+  res.json({ logs });
+});
+
+// 3. User Management: Reset password / Toggle status
+router.post('/users/:id/reset-password', requireAdmin, (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { new_password } = req.body;
+
+  if (!new_password || new_password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(new_password, 10);
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashedPassword, userId);
+
+  const targetUser = db.prepare('SELECT full_name, email FROM users WHERE id = ?').get(userId);
+  logAudit(req.user.id, 'PASSWORD_RESET', `Admin reset password for user ${targetUser.email}`, req);
+
+  res.json({ message: `Password reset successfully for ${targetUser.full_name}.` });
+});
+
+// 4. Download Backup (Admin only)
+router.get('/backup-db', requireAdmin, (req, res) => {
+  const dbPath = path.join(__dirname, '..', '..', 'database', 'faculty_lms.db');
+  if (!fs.existsSync(dbPath)) {
+    return res.status(404).send('Database file not found');
+  }
+
+  logAudit(req.user.id, 'BACKUP_DOWNLOAD', 'Admin exported SQLite database backup', req);
+  res.download(dbPath, `faculty_lms_backup_${new Date().toISOString().slice(0, 10)}.db`);
+});
+
+module.exports = router;

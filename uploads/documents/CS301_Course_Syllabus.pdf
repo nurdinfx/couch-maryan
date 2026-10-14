@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 779 >>
+stream
+BT
+/F1 18 Tf
+50 720 Td
+(CS301: Cloud Computing and Distributed Systems) Tj
+/F1 12 Tf
+0 -30 Td
+(Faculty of Computing & Information Science - Instructor: Prof. Maryam Al-Mansoor) Tj
+/F1 10 Tf
+0 -25 Td
+(Welcome to CS301. This course covers cloud architectures, microservices, containerization, and scalability.) Tj
+0 -16 Td
+(Grading Breakdown: Assignments 30%, Midterm Exam 25%, Quizzes 20%, Final Project 20%, Attendance 5%.) Tj
+0 -16 Td
+(Course Policies: Submissions must be uploaded on time. Late submissions are subject to 10% penalty per day.) Tj
+0 -16 Td
+(Office Hours: Tuesdays and Thursdays 14:00 - 16:00, Faculty Office Room 402 or via Moodle Messenger.) Tj
+0 -16 Td
+(Academic Integrity: All code submissions will be checked for authenticity and plagiarism.) Tj
+0 -16 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000010 00000 n 
+0000000060 00000 n 
+0000000117 00000 n 
+0000000228 00000 n 
+00000001059 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1129
+%%EOF
