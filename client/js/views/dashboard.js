@@ -5,6 +5,15 @@
 const DashboardView = {
   async render() {
     const user = API.currentUser;
+    if (!user) {
+      return `
+        <div class="card" style="padding: 2.5rem; text-align: center; max-width: 500px; margin: 3rem auto;">
+          <h2>Faculty LMS Portal</h2>
+          <p class="text-muted" style="margin: 1rem 0 1.5rem;">Fadlan gal akoonkaaga si aad u gasho koorsooyinkaaga.</p>
+          <button class="btn btn-primary" onclick="App.showLoginModal()">Gal Akoonka (Login)</button>
+        </div>
+      `;
+    }
     const isProfessor = user.role === 'professor' || user.role === 'admin';
 
     const coursesData = await API.getCourses();

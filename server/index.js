@@ -4,12 +4,24 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
 
-const { initSchema } = require('../database/db');
+const { db, initSchema } = require('../database/db');
 const { generateAssets } = require('../database/create-sample-assets');
+const { seed } = require('../database/seed-data');
 
 // Ensure database and sample files exist
 initSchema();
 generateAssets();
+
+// Auto-seed demo faculty data if database has no users (e.g. fresh cloud deploy)
+try {
+  const row = db.prepare('SELECT count(*) as count FROM users').get();
+  if (!row || row.count === 0) {
+    console.log('Database is empty on startup. Automatically seeding faculty LMS data...');
+    seed();
+  }
+} catch (err) {
+  console.error('Auto-seed check error:', err);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +67,16 @@ app.use('/api/messages', require('./routes/messages'));
 app.use('/api/calendar', require('./routes/calendar'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/admin', require('./routes/admin'));
+
+// Seed endpoint to re-seed or initialize on demand
+app.get('/api/seed', (req, res) => {
+  try {
+    seed();
+    res.json({ success: true, message: 'Faculty LMS demo data seeded successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Notifications API
 app.get('/api/notifications', require('./middleware/auth').requireAuth, (req, res) => {
