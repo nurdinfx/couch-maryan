@@ -231,17 +231,41 @@ router.delete('/students/:id', requireAuth, (req, res) => {
   if (req.user.role !== 'professor' && req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Only the professor or administrator can remove student accounts.' });
   }
-
   const studentId = parseInt(req.params.id);
-  const student = db.prepare('SELECT email, full_name FROM users WHERE id = ?').get(studentId);
+  const student = db.prepare('SELECT id, email, full_name, role FROM users WHERE id = ?').get(studentId);
   if (!student) {
     return res.status(404).json({ error: 'Student not found.' });
   }
-
-  db.prepare('DELETE FROM users WHERE id = ?').run(studentId);
-  logAudit(req.user.id, 'STUDENT_DELETED', `Deleted student ${student.email}`, req);
-
-  res.json({ message: `Student account ${student.full_name} removed from faculty.` });
+  if (student.role !== 'student') {
+    return res.status(400).json({ error: 'Only student accounts can be deleted from here.' });
+  }
+  try {
+    const deleteTx = db.transaction(() => {
+      db.prepare('DELETE FROM forum_replies WHERE author_id = ?').run(studentId);
+      db.prepare('DELETE FROM forum_topics WHERE author_id = ?').run(studentId);
+      db.prepare('DELETE FROM messages WHERE sender_id = ? OR recipient_id = ?').run(studentId, studentId);
+      db.prepare('DELETE FROM notifications WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM attendance_records WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM awarded_badges WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM certificates WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM lesson_progress WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM assignment_submissions WHERE user_id = ?').run(studentId);
+      const attempts = db.prepare('SELECT id FROM quiz_attempts WHERE user_id = ?').all(studentId);
+      for (const att of attempts) {
+        db.prepare('DELETE FROM quiz_attempt_answers WHERE attempt_id = ?').run(att.id);
+      }
+      db.prepare('DELETE FROM quiz_attempts WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM enrollments WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM audit_logs WHERE user_id = ?').run(studentId);
+      db.prepare('DELETE FROM users WHERE id = ?').run(studentId);
+    });
+    deleteTx();
+    logAudit(req.user.id, 'STUDENT_DELETED', 'Deleted student ' + student.email, req);
+    res.json({ message: 'Student account ' + student.full_name + ' removed from faculty.' });
+  } catch (err) {
+    console.error('Delete student error:', err);
+    res.status(500).json({ error: 'Failed to delete student: ' + err.message });
+  }
 });
 
 module.exports = router;
