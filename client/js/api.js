@@ -15,8 +15,16 @@ const API = {
     }
   },
 
+  getBaseUrl() {
+    if (window.__API_URL__) return window.__API_URL__;
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.includes('onrender.com')) {
+      return localStorage.getItem('couch_api_url') || 'https://couch-maryan.onrender.com';
+    }
+    return '';
+  },
+
   async request(endpoint, options = {}) {
-    const url = `/api${endpoint}`;
+    const url = `${this.getBaseUrl()}/api${endpoint}`;
     const headers = options.headers || {};
 
     if (this.token) {
