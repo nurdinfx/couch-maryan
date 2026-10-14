@@ -8,6 +8,17 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
 // 1. System Health & Diagnostics (Admin only)
+router.post('/clear-mock', requireAdmin, (req, res) => {
+  try {
+    const { clearMockData } = require('../../database/clear-mock');
+    clearMockData();
+    logAudit(req.user.id, 'MOCK_DATA_CLEARED', 'Cleared all mock courses and test students', req);
+    res.json({ success: true, message: 'All mock courses and test students cleared successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/health', requireAdmin, (req, res) => {
   const dbPath = path.join(__dirname, '..', '..', 'database', 'faculty_lms.db');
   let dbSizeBytes = 0;

@@ -7,6 +7,7 @@ const fs = require('fs');
 const { db, initSchema } = require('../database/db');
 const { generateAssets } = require('../database/create-sample-assets');
 const { seed } = require('../database/seed-data');
+const { clearMockData } = require('../database/clear-mock');
 
 // Ensure database and sample files exist
 initSchema();
@@ -16,11 +17,11 @@ generateAssets();
 try {
   const row = db.prepare('SELECT count(*) as count FROM users').get();
   if (!row || row.count === 0) {
-    console.log('Database is empty on startup. Automatically seeding faculty LMS data...');
-    seed();
+    console.log('Database empty on startup. Initializing clean faculty LMS system...');
+    clearMockData();
   }
 } catch (err) {
-  console.error('Auto-seed check error:', err);
+  console.error('Init check error:', err);
 }
 
 const app = express();
@@ -69,6 +70,16 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Seed endpoint to re-seed or initialize on demand
+// Clean wipe endpoint to remove all mock courses & test students
+app.get('/api/clear-mock', (req, res) => {
+  try {
+    clearMockData();
+    res.json({ success: true, message: 'All mock courses, test students, and mock records have been cleared! System is 100% clean and ready for real courses.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/seed', (req, res) => {
   try {
     seed();

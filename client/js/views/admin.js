@@ -3,6 +3,19 @@
 // ====================================================================
 
 const AdminView = {
+  async clearMockData() {
+    if (!confirm('Ma hubtaa inaad tirtirto dhammaan koorsooyinka tijaabada ah iyo ardayda mock-ga ah si aad real xog ugu bilowdo?')) return;
+    try {
+      const res = await API.request('/admin/clear-mock', { method: 'POST' });
+      App.showToast(res.message || 'Xogtii mock-ga ahayd waa la tirtiray!', 'success');
+      setTimeout(() => {
+        window.location.hash = '#/dashboard';
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
   async render() {
     const health = await API.getAdminHealth().catch(() => null);
     const logsData = await API.getAuditLogs().catch(() => ({ logs: [] }));
