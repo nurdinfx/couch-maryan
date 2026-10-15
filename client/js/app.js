@@ -95,6 +95,7 @@ const App = {
   },
 
   async handleRoute() {
+    this.closeDrawerOnMobile();
     const { path, segments, query } = this.parseRoute();
     const container = document.getElementById('main-content');
     if (!container) return;
@@ -170,13 +171,24 @@ const App = {
   toggleDrawer() {
     const drawer = document.getElementById('left-drawer');
     const content = document.getElementById('main-content');
+    const backdrop = document.getElementById('drawer-backdrop');
     if (!drawer) return;
 
     if (window.innerWidth <= 900) {
-      drawer.classList.toggle('mobile-open');
+      const isOpen = drawer.classList.toggle('mobile-open');
+      if (backdrop) backdrop.classList.toggle('active', isOpen);
     } else {
       drawer.classList.toggle('collapsed');
-      content.classList.toggle('expanded');
+      if (content) content.classList.toggle('expanded');
+    }
+  },
+
+  closeDrawerOnMobile() {
+    if (window.innerWidth <= 900) {
+      const drawer = document.getElementById('left-drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      if (drawer) drawer.classList.remove('mobile-open');
+      if (backdrop) backdrop.classList.remove('active');
     }
   },
 
@@ -376,20 +388,13 @@ const App = {
                 </select>
               </div>
               <div style="margin-bottom: 1rem;">
-                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Title</label>
-                <input type="text" name="title" required placeholder="e.g. Lecture 4: Consensus Topologies" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Title *</label>
+                <input type="text" name="title" required placeholder="e.g. Lecture 4: Anatomy & Physiology" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
               </div>
-              <div id="activity-dynamic-field" style="margin-bottom: 1rem;">
-                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Video URL (.mp4 or stream)</label>
-                <input type="url" name="video_url" placeholder="https://..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-              </div>
+              <div id="activity-dynamic-field"></div>
               <div style="margin-bottom: 1rem;">
-                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Upload Media File (Optional)</label>
-                <input type="file" name="file" style="font-size: 0.85rem; width: 100%;">
-              </div>
-              <div style="margin-bottom: 1rem;">
-                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Description / Notes</label>
-                <textarea name="description" rows="3" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Description / Notes (Optional)</label>
+                <textarea name="description" rows="2" placeholder="Brief summary of this activity..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
               </div>
             </div>
             <div class="modal-footer">
@@ -399,6 +404,7 @@ const App = {
           </form>
         </div>
       `);
+      setTimeout(() => this.handleActivityTypeChange('video'), 30);
     } else if (name === 'addAttendanceSessionModal') {
       const today = new Date().toISOString().slice(0, 10);
       this.showCustomModal(`
@@ -755,11 +761,52 @@ const App = {
     if (!field) return;
     if (type === 'video') {
       field.innerHTML = `
-        <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Video URL (.mp4 or stream)</label>
-        <input type="url" name="video_url" placeholder="https://example.com/video.mp4" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <div style="font-weight:700;font-size:0.84rem;margin-bottom:0.6rem;color:var(--primary);display:flex;align-items:center;gap:0.4rem;">
+            <span>🎥</span> Xulashada Video-ga (Link ama Device-kaaga):
+          </div>
+
+          <div style="margin-bottom: 0.85rem;">
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              🔗 1. Video Link (YouTube, Vimeo, ama MP4 Link toos ah)
+            </label>
+            <input type="url" name="video_url" id="activity-video-url" placeholder="https://www.youtube.com/watch?v=... ama https://youtu.be/..." style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxay si toos ah u taageertaa YouTube (HD, Fullscreen, Shorts) iyo Vimeo.
+            </span>
+          </div>
+
+          <div style="text-align: center; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin: 0.5rem 0;">— AMA —</div>
+
+          <div>
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              💻 2. Ka soo geli Kumbuyuutarkaaga / Device-ka (MP4, WebM)
+            </label>
+            <input type="file" name="file" id="activity-video-file" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxaad device-kaaga uga soo shuban kartaa video toos ah (MP4, WebM ilaa 100MB).
+            </span>
+          </div>
+        </div>
+      `;
+    } else if (type === 'document') {
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.4rem;">
+            📄 Soo geli Faylka Document-ka (.pdf, .docx, .pptx) *
+          </label>
+          <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" required style="font-size: 0.82rem; width: 100%; padding: 0.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+        </div>
       `;
     } else {
-      field.innerHTML = ``;
+      field.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">
+            📝 Qoraalka Casharka (Reading Body)
+          </label>
+          <textarea name="content_body" rows="5" placeholder="Halkan ku qor qoraalka iyo nuxurka casharka..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;"></textarea>
+        </div>
+      `;
     }
   },
 
