@@ -226,8 +226,11 @@ const LessonView = {
         `;
       }
 
-      // C: HTML5 Video (Uploaded from Device or Direct MP4/WebM URL)
-      const validSrc = videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+      // C: HTML5 Video (Uploaded from Device or Direct MP4/WebM/MOV URL)
+      let validSrc = videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+      if (validSrc.startsWith('/') && !validSrc.startsWith('//')) {
+        validSrc = (typeof API !== 'undefined' && API.getBaseUrl ? API.getBaseUrl() : '') + validSrc;
+      }
       
       setTimeout(() => {
         const vid = document.getElementById('lesson-video-element');
@@ -240,9 +243,10 @@ const LessonView = {
       return `
         <!-- HTML5 16:9 Widescreen Video Player -->
         <div class="video-player-container widescreen-16-9" id="video-wrapper">
-          <video id="lesson-video-element" controls playsinline preload="metadata">
+          <video id="lesson-video-element" src="${validSrc}" controls playsinline preload="metadata">
             <source src="${validSrc}" type="video/mp4">
             <source src="${validSrc}" type="video/webm">
+            <source src="${validSrc}" type="video/quicktime">
             Your browser does not support HTML5 video streaming.
           </video>
         </div>

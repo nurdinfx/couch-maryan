@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const { db } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
-const { upload } = require('../middleware/upload');
+const { upload, safeUploadSingle, isVideoFile } = require('../middleware/upload');
 const { logAudit } = require('../middleware/audit');
 
 // 1. Get single lesson
@@ -56,7 +56,7 @@ router.get('/:id', requireAuth, (req, res) => {
 });
 
 // 2. Create Lesson (Professor only) - Supports text, video URL, or uploaded document/video
-router.post('/modules/:moduleId', requireProfessor, upload.single('file'), (req, res) => {
+router.post('/modules/:moduleId', requireProfessor, safeUploadSingle('file'), (req, res) => {
   const moduleId = parseInt(req.params.moduleId);
   const moduleRecord = db.prepare('SELECT course_id FROM modules WHERE id = ?').get(moduleId);
   if (!moduleRecord) {
@@ -77,11 +77,15 @@ router.post('/modules/:moduleId', requireProfessor, upload.single('file'), (req,
   let file_size_bytes = 0;
 
   if (req.file) {
-    const subfolder = req.file.mimetype.startsWith('video/') ? 'videos' : 'documents';
+    const isVideo = isVideoFile(req.file, req) || content_type === 'video';
+    const subfolder = isVideo ? 'videos' : 'documents';
     file_url = `/uploads/${subfolder}/${req.file.filename}`;
     file_name = req.file.originalname;
     file_size_bytes = req.file.size;
   }
+
+  const trimmedVideoUrl = (video_url && typeof video_url === 'string') ? video_url.trim() : null;
+  const finalVideoUrl = trimmedVideoUrl || (content_type === 'video' && file_url ? file_url : null);
 
   const maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM lessons WHERE module_id = ?').get(moduleId).m || 0;
 
@@ -98,7 +102,7 @@ router.post('/modules/:moduleId', requireProfessor, upload.single('file'), (req,
     content_type,
     description || '',
     content_body || '',
-    video_url || (content_type === 'video' && file_url ? file_url : null),
+    finalVideoUrl,
     parseInt(video_duration_seconds) || 0,
     file_url,
     file_name,
@@ -114,7 +118,7 @@ router.post('/modules/:moduleId', requireProfessor, upload.single('file'), (req,
 });
 
 // 3. Update Lesson (Professor only)
-router.put('/:id', requireProfessor, upload.single('file'), (req, res) => {
+router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
   const lessonId = parseInt(req.params.id);
   const existing = db.prepare('SELECT * FROM lessons WHERE id = ?').get(lessonId);
   if (!existing) {
@@ -131,7 +135,8 @@ router.put('/:id', requireProfessor, upload.single('file'), (req, res) => {
   let file_size_bytes = existing.file_size_bytes;
 
   if (req.file) {
-    const subfolder = req.file.mimetype.startsWith('video/') ? 'videos' : 'documents';
+    const isVideo = isVideoFile(req.file, req) || existing.content_type === 'video';
+    const subfolder = isVideo ? 'videos' : 'documents';
     file_url = `/uploads/${subfolder}/${req.file.filename}`;
     file_name = req.file.originalname;
     file_size_bytes = req.file.size;

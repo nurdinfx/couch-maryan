@@ -780,11 +780,11 @@ const App = {
 
           <div>
             <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
-              💻 2. Ka soo geli Kumbuyuutarkaaga / Device-ka (MP4, WebM)
+              💻 2. Ka soo geli Kumbuyuutarkaaga / Device-ka (MP4, MOV, WebM, MKV)
             </label>
-            <input type="file" name="file" id="activity-video-file" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+            <input type="file" name="file" id="activity-video-file" accept="video/*,.mp4,.mov,.mkv,.webm,.avi,.m4v,.3gp,.wmv,.ogv" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
             <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
-              ✓ Waxaad device-kaaga uga soo shuban kartaa video toos ah (MP4, WebM ilaa 100MB).
+              ✓ Waxaad device-kaaga uga soo shuban kartaa video toos ah (MP4, MOV, WebM, MKV ilaa 500MB).
             </span>
           </div>
         </div>
@@ -1066,6 +1066,8 @@ const App = {
   async handleAddActivity(e, moduleId) {
     e.preventDefault();
     const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Add Activity';
 
     // If moduleId wasn't passed directly (course-level button), read from the dropdown
     if (!moduleId) {
@@ -1078,13 +1080,24 @@ const App = {
     }
 
     const formData = new FormData(form);
+
+    // Provide friendly progress indication during upload
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Fadlan sug... Waxaa socda soo gelinta (Uploading)...';
+    }
+
     try {
       await API.createLesson(moduleId, formData);
       this.closeModal();
-      this.showToast('Activity added to section!');
+      this.showToast('Casharka / Video-ga si guul leh ayaa loo daray! ✓');
       this.refreshCurrentView();
     } catch (err) {
-      this.showToast(err.message, 'error');
+      this.showToast(err.message || 'Khalad ayaa ka dhacay soo gelinta casharka.', 'error');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+      }
     }
   },
 
