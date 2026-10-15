@@ -74,6 +74,14 @@ const CourseView = {
               <button class="btn btn-outline btn-sm" onclick="App.showModal('addAssignmentModal', { courseId: ${course.id} })" style="border-color:#06b6d4;color:#06b6d4;">
                 📌 Add Assignment
               </button>
+              <div style="display: flex; gap: 0.4rem; margin-top: 0.2rem;">
+                <button class="btn btn-outline btn-sm" onclick="App.showModal('editCourseModal', { courseId: ${course.id} })" style="flex: 1; border-color: var(--primary); color: var(--primary);">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="App.deleteCourse(${course.id}, '${(course.title || '').replace(/'/g, "\\'")}')" style="flex: 1; border-color: var(--danger); color: var(--danger);">
+                  🗑 Delete
+                </button>
+              </div>
             </div>
           `}
         </div>

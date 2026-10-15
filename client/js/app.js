@@ -1,4 +1,4 @@
-﻿// ====================================================================
+// ====================================================================
 // FACULTY LMS - MAIN APPLICATION ROUTER & CONTROLLER
 // ====================================================================
 
@@ -234,7 +234,7 @@ const App = {
     if (modalRoot) modalRoot.innerHTML = '';
   },
 
-  showModal(name, context = {}) {
+  async showModal(name, context = {}) {
     if (name === 'createCourseModal') {
       const presets = [
         { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&fit=crop&q=80', label: '💻 Programming' },
@@ -329,14 +329,44 @@ const App = {
         </div>
       `);
     } else if (name === 'addActivityModal') {
+      // Build module selector if no specific moduleId was passed (course-level button)
+      let moduleSelectorHtml = '';
+      let formModuleId = context.moduleId || null;
+
+      if (!formModuleId && context.courseId) {
+        // Fetch modules for this course so professor can pick one
+        try {
+          const courseData = await API.getCourse(context.courseId);
+          const modules = courseData.modules || [];
+          if (modules.length > 0) {
+            moduleSelectorHtml = `
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">📂 Section (Module) *</label>
+                <select id="activity-module-select" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                  <option value="">— Choose a section —</option>
+                  ${modules.map(m => `<option value="${m.id}">${m.title}</option>`).join('')}
+                </select>
+              </div>`;
+          } else {
+            moduleSelectorHtml = `
+              <div style="margin-bottom:1rem; padding:0.75rem; background:#fef3c7; border-radius:var(--radius-md); font-size:0.85rem; color:#92400e;">
+                ⚠️ No sections found. Please create a section first before adding an activity.
+              </div>`;
+          }
+        } catch (e) {
+          console.error('Could not load modules:', e);
+        }
+      }
+
       this.showCustomModal(`
         <div class="modal-dialog">
           <div class="modal-header">
             <h3>Add Activity / Learning Resource</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
-          <form onsubmit="App.handleAddActivity(event, ${context.moduleId || 1})">
+          <form onsubmit="App.handleAddActivity(event, ${formModuleId || 'null'})">
             <div class="modal-body">
+              ${moduleSelectorHtml}
               <div style="margin-bottom: 1rem;">
                 <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Activity Type</label>
                 <select name="content_type" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);" onchange="App.handleActivityTypeChange(this.value)">
@@ -351,7 +381,7 @@ const App = {
               </div>
               <div id="activity-dynamic-field" style="margin-bottom: 1rem;">
                 <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Video URL (.mp4 or stream)</label>
-                <input type="url" name="video_url" placeholder="https://..." value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                <input type="url" name="video_url" placeholder="https://..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
               </div>
               <div style="margin-bottom: 1rem;">
                 <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Upload Media File (Optional)</label>
@@ -642,6 +672,81 @@ const App = {
           </form>
         </div>
       `);
+    } else if (name === 'editCourseModal') {
+      try {
+        const courseData = await API.getCourse(context.courseId);
+        const course = courseData.course || courseData;
+        const presets = [
+          { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&fit=crop&q=80', label: '💻 Programming' },
+          { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&fit=crop&q=80', label: '🤖 AI / ML' },
+          { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&fit=crop&q=80', label: '🔐 Cybersecurity' },
+          { url: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&fit=crop&q=80', label: '☁️ Cloud' },
+          { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&fit=crop&q=80', label: '📊 Data Science' },
+          { url: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&fit=crop&q=80', label: '🗄️ Databases' }
+        ];
+
+        this.showCustomModal(`
+          <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-header">
+              <h3>✏️ Wax ka beddel Koorsada: ${course.code || ''}</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form id="edit-course-form" onsubmit="App.handleEditCourse(event, ${course.id})">
+              <div class="modal-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Code *</label>
+                    <input type="text" name="code" required value="${course.code || ''}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Pass % (default 60)</label>
+                    <input type="number" name="pass_percentage" min="1" max="100" value="${course.pass_percentage || 60}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Title *</label>
+                  <input type="text" name="title" required value="${(course.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
+                  <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${course.description || ''}</textarea>
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📷 Course Thumbnail</label>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                    ${presets.map((p) => `
+                      <div class="thumb-preset" data-url="${p.url}" onclick="App.selectCoverPreset(this, '${p.url}')" style="cursor:pointer;border:2px solid ${course.cover_image === p.url ? 'var(--primary)' : 'var(--border-color)'};border-radius:var(--radius-md);overflow:hidden;transition:border-color 0.2s;">
+                        <img src="${p.url}" alt="${p.label}" style="width:100%;height:60px;object-fit:cover;display:block;">
+                        <div style="padding:0.2rem 0.4rem;font-size:0.7rem;font-weight:600;text-align:center;">${p.label}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <input type="hidden" name="cover_image" id="cover-preset-url" value="${course.cover_image || ''}">
+                  <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <div style="flex:1;">
+                      <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">Upload new image</label>
+                      <input type="file" name="cover_file" accept="image/*" onchange="App.previewCoverFile(this)" style="font-size:0.8rem;width:100%;">
+                    </div>
+                    <div style="flex:1;">
+                      <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">or paste image URL</label>
+                      <input type="url" name="cover_url_input" value="${course.cover_image && !course.cover_image.startsWith('/uploads') ? course.cover_image : ''}" placeholder="https://..." oninput="App.setCoverUrl(this.value)" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                    </div>
+                  </div>
+                  <div id="cover-preview-container" style="margin-top:0.5rem;${course.cover_image ? 'display:block;' : 'display:none;'}">
+                    <img id="cover-preview-img" src="${course.cover_image || ''}" alt="Preview" style="width:100%;max-height:120px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-color);">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+              </div>
+            </form>
+          </div>
+        `);
+      } catch (err) {
+        this.showToast('Koorso xogteeda lama soo heli karo: ' + err.message, 'error');
+      }
     }
   },
 
@@ -651,7 +756,7 @@ const App = {
     if (type === 'video') {
       field.innerHTML = `
         <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Video URL (.mp4 or stream)</label>
-        <input type="url" name="video_url" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+        <input type="url" name="video_url" placeholder="https://example.com/video.mp4" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
       `;
     } else {
       field.innerHTML = ``;
@@ -725,6 +830,54 @@ const App = {
       this.closeModal();
       this.showToast('✅ Course created successfully!');
       this.navigate(`/course/${res.course.id}`);
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleEditCourse(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const fileInput = form.querySelector('[name="cover_file"]');
+    const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+    try {
+      if (hasFile) {
+        const fd = new FormData(form);
+        fd.delete('cover_url_input');
+        await API.updateCourse(courseId, fd);
+      } else {
+        const presetUrl = (document.getElementById('cover-preset-url') || {}).value || '';
+        const urlInput = form.cover_url_input ? form.cover_url_input.value : '';
+        const coverImage = presetUrl || urlInput || '';
+        await API.updateCourse(courseId, {
+          code: form.code.value,
+          title: form.title.value,
+          description: form.description.value,
+          pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+          cover_image: coverImage
+        });
+      }
+      this.closeModal();
+      this.showToast('✅ Koorsada si guul leh ayaa loo cusboonaysiiyay!', 'success');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async deleteCourse(courseId, title) {
+    const courseTitle = title || 'koorsadan';
+    if (!confirm(`Ma hubtaa inaad tirtirto "${courseTitle}"?\nDhammaan casharrada, quizzes-ka, iyo assignments-ka ku jira way tirtirmi doonaan.`)) {
+      return;
+    }
+    try {
+      await API.deleteCourse(courseId);
+      this.showToast('🗑 Koorsadii si guul leh ayaa loo tirtiray!', 'success');
+      if (window.location.hash.startsWith(`#/course/${courseId}`)) {
+        this.navigate('/dashboard');
+      } else {
+        this.refreshCurrentView();
+      }
     } catch (err) {
       this.showToast(err.message, 'error');
     }
@@ -866,6 +1019,17 @@ const App = {
   async handleAddActivity(e, moduleId) {
     e.preventDefault();
     const form = e.target;
+
+    // If moduleId wasn't passed directly (course-level button), read from the dropdown
+    if (!moduleId) {
+      const moduleSelect = document.getElementById('activity-module-select');
+      if (!moduleSelect || !moduleSelect.value) {
+        this.showToast('Fadlan dooro qaybta (module) aad casharku ku geli doono!', 'error');
+        return;
+      }
+      moduleId = parseInt(moduleSelect.value);
+    }
+
     const formData = new FormData(form);
     try {
       await API.createLesson(moduleId, formData);

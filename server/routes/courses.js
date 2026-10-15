@@ -224,7 +224,7 @@ router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
 // 4. Update Course (Professor only)
 router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => {
   const courseId = parseInt(req.params.id);
-  const { title, description, cover_image, start_date, end_date, is_published, pass_percentage } = req.body;
+  const { code, title, description, cover_image, start_date, end_date, is_published, pass_percentage } = req.body;
 
   let finalCover = cover_image;
   if (req.file) {
@@ -233,7 +233,8 @@ router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => 
 
   db.prepare(`
     UPDATE courses
-    SET title = COALESCE(?, title),
+    SET code = COALESCE(?, code),
+        title = COALESCE(?, title),
         description = COALESCE(?, description),
         cover_image = COALESCE(?, cover_image),
         start_date = COALESCE(?, start_date),
@@ -241,7 +242,7 @@ router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => 
         is_published = COALESCE(?, is_published),
         pass_percentage = COALESCE(?, pass_percentage)
     WHERE id = ?
-  `).run(title, description, finalCover, start_date, end_date, is_published, pass_percentage, courseId);
+  `).run(code, title, description, finalCover, start_date, end_date, is_published, pass_percentage, courseId);
 
   logAudit(req.user.id, 'COURSE_UPDATED', `Updated course details for id ${courseId}`, req);
 

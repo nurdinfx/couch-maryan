@@ -149,10 +149,14 @@ const DashboardView = {
                 <span>📝 ${c.assignments_count || 1} Assignments</span>
               </div>
 
-              <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+              <div style="display: flex; gap: 0.5rem; margin-top: auto; flex-wrap: wrap;">
                 <a href="#/course/${c.id}" class="btn btn-primary btn-sm" style="flex: 1;">Open Course</a>
                 <a href="#/course/${c.id}?tab=participants" class="btn btn-outline btn-sm">Roster</a>
                 <a href="#/course/${c.id}?tab=grades" class="btn btn-outline btn-sm">Grades</a>
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--primary); color:var(--primary);" onclick="App.showModal('editCourseModal', { courseId: ${c.id} })">✏️ Edit</button>
+                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="App.deleteCourse(${c.id}, '${c.title.replace(/'/g, "\\'")}')">🗑 Delete</button>
               </div>
             </div>
           </div>
