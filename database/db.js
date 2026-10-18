@@ -21,7 +21,7 @@ function initSchema() {
       avatar_url TEXT,
       student_id_number TEXT,
       academic_year TEXT DEFAULT 'Year 1',
-      department TEXT DEFAULT 'GUUREY Learning Platform',
+      department TEXT DEFAULT 'Guray Sicid Learning Platform',
       bio TEXT,
       is_active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP

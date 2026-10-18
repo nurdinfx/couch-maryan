@@ -1,5 +1,5 @@
 // ====================================================================
-// VIEW: GUUREY LEARNING PLATFORM - SYSTEM & ADMIN MANAGEMENT
+// VIEW: GURAY SICID LEARNING PLATFORM - SYSTEM & ADMIN MANAGEMENT
 // Supports administrator registration, system diagnostics,
 // audit logging, and security maintenance.
 // ====================================================================
@@ -173,7 +173,7 @@ const AdminView = {
           </div>
           <div style="flex: 1; min-width: 200px;">
             <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.35rem;">New Temporary Password</label>
-            <input type="text" name="new_password" required minlength="6" value="guureyPass2026!" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary);">
+            <input type="text" name="new_password" required minlength="6" value="gurayPass2026!" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary);">
           </div>
           <button type="submit" class="btn btn-primary" style="padding: 0.65rem 1.5rem; font-weight: 700;">
             ${I18N.t('admin.reset_pw_btn', 'Update Password')}
@@ -239,14 +239,14 @@ const AdminView = {
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 ${I18N.t('students.full_name', 'Full Name')} *
               </label>
-              <input type="text" name="full_name" required placeholder="e.g. Eng. Guurey" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+              <input type="text" name="full_name" required placeholder="e.g. Eng. Guray Sicid" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
             </div>
 
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 ${I18N.t('students.email', 'Email Address')} *
               </label>
-              <input type="email" name="email" required placeholder="admin@guurey.edu" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+              <input type="email" name="email" required placeholder="admin@guraysicid.edu" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
             </div>
 
             <div style="margin-bottom: 1.15rem;">

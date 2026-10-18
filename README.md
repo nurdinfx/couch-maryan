@@ -1,7 +1,7 @@
-# Faculty LMS: Moodle-Style Learning Management System
-### Designed Specifically for One Faculty and One Professor (Prof. Maryam Al-Mansoor)
+# Guray Sicid Learning Platform
+### Learning without limit • Advanced Academic Management Platform
 
-A production-grade, secure, and modern Learning Management System inspired by Moodle 4+ (Boost Theme), purpose-built for a single university faculty (**Faculty of Midwifery**) managed by a single professor (**Prof. Maryam Al-Mansoor**).
+A production-grade, secure, and modern Learning Management System featuring the official **GS** brand identity, bilingual Somali/English internationalization, student academic year tiering, and persistent storage.
 
 ---
 

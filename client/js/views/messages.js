@@ -1,5 +1,5 @@
 // ====================================================================
-// VIEW: GUUREY LEARNING PLATFORM - DIRECT ACADEMIC MESSENGER
+// VIEW: GURAY SICID LEARNING PLATFORM - DIRECT ACADEMIC MESSENGER
 // Real-time direct communication with multimedia support:
 // allows students, professors, and administrators to exchange text,
 // images/photos, and documents (PDF, Word, Excel, etc.).

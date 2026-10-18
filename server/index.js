@@ -23,7 +23,7 @@ try {
     const hash = bcrypt.hashSync('admin123', 10);
     db.prepare(`
       INSERT INTO users (email, password_hash, full_name, role, department)
-      VALUES ('admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'GUUREY Learning Platform')
+      VALUES ('admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'Guray Sicid Learning Platform')
     `).run(hash);
   }
 
@@ -32,7 +32,7 @@ try {
     const hash = bcrypt.hashSync('password123', 10);
     db.prepare(`
       INSERT INTO users (email, password_hash, full_name, role, department)
-      VALUES ('professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'GUUREY Learning Platform')
+      VALUES ('professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'Guray Sicid Learning Platform')
     `).run(hash);
   }
 } catch (err) {

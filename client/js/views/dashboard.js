@@ -38,12 +38,12 @@ const DashboardView = {
       <div class="page-header-container">
         <div>
           <div class="breadcrumb-trail">
-            <span>GUUREY Learning Platform</span>
+            <span>Guray Sicid Learning Platform</span>
             <span class="breadcrumb-sep">/</span>
             <span>${isSomali ? 'Xarunta Guud (Dashboard)' : 'Professor Dashboard'}</span>
           </div>
           <h1 class="page-title">${isSomali ? 'Ku soo dhawow mar kale' : 'Welcome back'}, ${user.full_name}</h1>
-          <p class="page-description">GUUREY Learning platform • Learning without limit</p>
+          <p class="page-description">Guray Sicid Learning Platform • Learning without limit</p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
           <button class="btn btn-outline" onclick="App.showModal('createCourseModal')">

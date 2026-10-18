@@ -140,7 +140,7 @@ router.post('/admins', requireAuth, (req, res) => {
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
-    department || 'GUUREY Learning Platform Administration'
+    department || 'Guray Sicid Learning Platform Administration'
   );
 
   const newAdmin = db.prepare('SELECT id, email, full_name, role, department, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);

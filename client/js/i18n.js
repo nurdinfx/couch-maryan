@@ -1,5 +1,5 @@
 // ====================================================================
-// GUUREY LEARNING PLATFORM - INTERNATIONALIZATION (i18n) ENGINE
+// GURAY SICID LEARNING PLATFORM - INTERNATIONALIZATION (i18n) ENGINE
 // Supports: Somali (so) & English (en) across all platform components
 // ====================================================================
 
@@ -9,7 +9,7 @@ const I18N = {
   translations: {
     en: {
       brand: {
-        name: 'GUUREY Learning platform',
+        name: 'Guray Sicid Learning Platform',
         tagline: 'Learning without limit',
         faculty: 'Academic Excellence'
       },
@@ -161,7 +161,7 @@ const I18N = {
         document_label: '📄 Document'
       },
       login: {
-        portal_title: 'GUUREY Learning platform',
+        portal_title: 'Guray Sicid Learning Platform',
         portal_tagline: 'Learning without limit',
         heading: 'Sign In to Your Account',
         sub: 'Please enter your registered credentials to access the academic system.',
@@ -190,7 +190,7 @@ const I18N = {
     },
     so: {
       brand: {
-        name: 'GUUREY Learning platform',
+        name: 'Guray Sicid Learning Platform',
         tagline: 'Learning without limit',
         faculty: 'Waxbarasho Tayo Sare Leh'
       },
@@ -342,7 +342,7 @@ const I18N = {
         document_label: '📄 Document'
       },
       login: {
-        portal_title: 'GUUREY Learning platform',
+        portal_title: 'Guray Sicid Learning Platform',
         portal_tagline: 'Learning without limit',
         heading: 'Gal Akoonkaaga',
         sub: 'Fadlan geli xogtaada saxda ah si aad u gasho nidaamka waxbarashada.',

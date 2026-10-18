@@ -100,7 +100,7 @@ router.post('/register', (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10);
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, bio)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'GUUREY Learning Platform', ?)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'Guray Sicid Learning Platform', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
@@ -123,7 +123,7 @@ router.post('/register', (req, res) => {
   // Welcome notification
   db.prepare(`
     INSERT INTO notifications (user_id, title, message, type, link)
-    VALUES (?, 'Welcome to GUUREY Learning Platform', ?, 'info', '#/dashboard')
+    VALUES (?, 'Welcome to Guray Sicid Learning Platform', ?, 'info', '#/dashboard')
   `).run(newUser.id, `Your ${studentYear} student account is active. Learning without limit!`);
 
   try {
@@ -212,7 +212,7 @@ router.post('/students', requireAuth, (req, res) => {
 
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, is_active)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'GUUREY Learning Platform', ?)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'Guray Sicid Learning Platform', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,

@@ -1,5 +1,5 @@
 // ====================================================================
-// VIEW: GUUREY LEARNING PLATFORM - STUDENT ACCOUNT MANAGEMENT & ACCESS CONTROL
+// VIEW: GURAY SICID LEARNING PLATFORM - STUDENT ACCOUNT MANAGEMENT & ACCESS CONTROL
 // Controls student registration, academic year access (Year 1 - Year 4),
 // course authorization restrictions, and credential management.
 // ====================================================================
@@ -218,7 +218,7 @@ const StudentsView = {
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                   ${I18N.t('students.email', 'Email Address')} *
                 </label>
-                <input type="email" name="email" required placeholder="student@guurey.edu" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+                <input type="email" name="email" required placeholder="student@guraysicid.edu" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
               </div>
             </div>
 

@@ -7,7 +7,7 @@ const App = {
   isDrawerCollapsed: false,
 
   async init() {
-    console.log('Initializing GUUREY Learning Platform...');
+    console.log('Initializing Guray Sicid Learning Platform...');
 
     // Setup Theme toggle
     const savedTheme = localStorage.getItem('faculty_theme') || 'light';
