@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../../database/db');
+const { db, savePersistence } = require('../../database/db');
 const { requireAuth } = require('../middleware/auth');
+const { safeUploadSingle } = require('../middleware/upload');
 
 // 1. Get List of Conversations for Current User
 router.get('/conversations', requireAuth, (req, res) => {
@@ -14,7 +15,16 @@ router.get('/conversations', requireAuth, (req, res) => {
       u.full_name,
       u.avatar_url,
       u.role,
-      (SELECT content FROM messages WHERE (sender_id = u.id AND recipient_id = ?) OR (sender_id = ? AND recipient_id = u.id) ORDER BY created_at DESC LIMIT 1) as last_message,
+      (SELECT 
+        CASE 
+          WHEN content IS NOT NULL AND trim(content) != '' THEN content
+          WHEN attachment_type = 'image' THEN '📷 [Sawir / Image]'
+          WHEN attachment_name IS NOT NULL THEN '📎 [Document: ' || attachment_name || ']'
+          ELSE 'Message'
+        END
+       FROM messages 
+       WHERE (sender_id = u.id AND recipient_id = ?) OR (sender_id = ? AND recipient_id = u.id) 
+       ORDER BY created_at DESC LIMIT 1) as last_message,
       (SELECT created_at FROM messages WHERE (sender_id = u.id AND recipient_id = ?) OR (sender_id = ? AND recipient_id = u.id) ORDER BY created_at DESC LIMIT 1) as last_message_at,
       (SELECT COUNT(*) FROM messages WHERE sender_id = u.id AND recipient_id = ? AND is_read = 0) as unread_count
     FROM users u
@@ -53,25 +63,44 @@ router.get('/thread/:otherUserId', requireAuth, (req, res) => {
   res.json({ otherUser, messages });
 });
 
-// 3. Send Direct Message
-router.post('/', requireAuth, (req, res) => {
+// 3. Send Direct Message (supports text and/or file attachments: images, documents, PDFs)
+router.post('/', requireAuth, safeUploadSingle('attachment'), (req, res) => {
   const senderId = req.user.id;
   const { recipient_id, content } = req.body;
 
-  if (!recipient_id || !content || !content.trim()) {
-    return res.status(400).json({ error: 'Recipient and message content are required.' });
+  if (!recipient_id) {
+    return res.status(400).json({ error: 'Recipient is required.' });
+  }
+
+  let textContent = (content || '').trim();
+  let attachmentUrl = null;
+  let attachmentName = null;
+  let attachmentType = null;
+  let fileSizeBytes = null;
+
+  if (req.file) {
+    attachmentUrl = `/uploads/messages/${req.file.filename}`;
+    attachmentName = req.file.originalname;
+    attachmentType = (req.file.mimetype && req.file.mimetype.startsWith('image/')) ? 'image' : 'document';
+    fileSizeBytes = req.file.size;
+  }
+
+  if (!textContent && !attachmentUrl) {
+    return res.status(400).json({ error: 'Please enter a message or select a file/image to attach.' });
   }
 
   const result = db.prepare(`
-    INSERT INTO messages (sender_id, recipient_id, content)
-    VALUES (?, ?, ?)
-  `).run(senderId, parseInt(recipient_id), content.trim());
+    INSERT INTO messages (sender_id, recipient_id, content, attachment_url, attachment_name, attachment_type, file_size_bytes)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(senderId, parseInt(recipient_id), textContent, attachmentUrl, attachmentName, attachmentType, fileSizeBytes);
+
+  const notifSnippet = textContent || (attachmentType === 'image' ? '📷 Sent an image attachment' : `📎 Sent document: ${attachmentName}`);
 
   // Notify recipient
   db.prepare(`
     INSERT INTO notifications (user_id, title, message, type, link)
     VALUES (?, 'New Direct Message', ?, 'message', '#/messages')
-  `).run(parseInt(recipient_id), `${req.user.full_name}: ${content.trim().substring(0, 60)}`);
+  `).run(parseInt(recipient_id), `${req.user.full_name}: ${notifSnippet.substring(0, 60)}`);
 
   const newMsg = db.prepare(`
     SELECT m.*, u.full_name as sender_name, u.avatar_url as sender_avatar
@@ -80,7 +109,14 @@ router.post('/', requireAuth, (req, res) => {
     WHERE m.id = ?
   `).get(result.lastInsertRowid);
 
+  try {
+    savePersistence(db);
+  } catch (e) {
+    console.error('Error saving persistence on message:', e);
+  }
+
   res.status(201).json({ message: 'Message sent', directMessage: newMsg });
 });
 
 module.exports = router;
+

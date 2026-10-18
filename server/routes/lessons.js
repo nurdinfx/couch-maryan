@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { db } = require('../../database/db');
+const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { upload, safeUploadSingle, isVideoFile } = require('../middleware/upload');
 const { logAudit } = require('../middleware/audit');
@@ -17,6 +17,7 @@ router.get('/:id', requireAuth, (req, res) => {
       c.id as course_id,
       c.title as course_title,
       c.code as course_code,
+      c.target_year as course_target_year,
       lp.is_completed as student_completed,
       lp.video_watched_seconds,
       lp.video_watch_percentage,
@@ -30,6 +31,19 @@ router.get('/:id', requireAuth, (req, res) => {
 
   if (!lesson) {
     return res.status(404).json({ error: 'Lesson not found.' });
+  }
+
+  // Academic year access control for students
+  if (req.user.role === 'student') {
+    const studentYear = req.user.academic_year || 'Year 1';
+    const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(userId, lesson.course_id);
+    const isYearAllowed = !lesson.course_target_year || lesson.course_target_year === 'All Years' || lesson.course_target_year === studentYear;
+
+    if (!isEnrolled && !isYearAllowed) {
+      return res.status(403).json({
+        error: `Ma geli kartid casharkan: Casharkani wuxuu qayb ka yahay koorso u gaar ah ${lesson.course_target_year}. Heerkaagu waa ${studentYear}. (Access Denied: This lesson is restricted to ${lesson.course_target_year} students.)`
+      });
+    }
   }
 
   // Get sibling lessons in the same course for prev/next navigation
@@ -113,6 +127,7 @@ router.post('/modules/:moduleId', requireProfessor, safeUploadSingle('file'), (r
 
   const newLesson = db.prepare('SELECT * FROM lessons WHERE id = ?').get(result.lastInsertRowid);
   logAudit(req.user.id, 'LESSON_CREATED', `Created lesson ${newLesson.title} in course ${moduleRecord.course_id}`, req);
+  try { savePersistence(db); } catch (e) {}
 
   res.status(201).json({ message: 'Lesson created successfully', lesson: newLesson });
 });
@@ -166,6 +181,8 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
     lessonId
   );
 
+  try { savePersistence(db); } catch (e) {}
+
   const updated = db.prepare('SELECT * FROM lessons WHERE id = ?').get(lessonId);
   res.json({ message: 'Lesson updated successfully', lesson: updated });
 });
@@ -174,6 +191,7 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
 router.delete('/:id', requireProfessor, (req, res) => {
   const lessonId = parseInt(req.params.id);
   db.prepare('DELETE FROM lessons WHERE id = ?').run(lessonId);
+  try { savePersistence(db); } catch (e) {}
   res.json({ message: 'Lesson deleted successfully.' });
 });
 
@@ -236,6 +254,8 @@ router.post('/:id/progress', requireAuth, (req, res) => {
 
   // Automatic Badge Evaluation for student!
   checkAndAwardBadges(userId, lesson.course_id);
+
+  try { savePersistence(db); } catch (e) {}
 
   // Return updated state
   const updatedProgress = db.prepare('SELECT * FROM lesson_progress WHERE user_id = ? AND lesson_id = ?').get(userId, lessonId);

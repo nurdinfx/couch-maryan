@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="so">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gal Akoonka | Faculty LMS Portal</title>
-  <meta name="description" content="Faculty of Midwifery - Academic Portal Login">
+  <title>GUUREY Learning platform | Learning without limit</title>
+  <meta name="description" content="GUUREY Learning platform - Learning without limit">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,25 +20,30 @@
   <div class="orb orb-3"></div>
   <div class="particles" id="particles"></div>
 
+  <!-- Language Switcher Bar at Top Right -->
+  <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
+    <button type="button" onclick="toggleLoginLanguage()" id="login-lang-btn" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s ease;">
+      <span id="login-lang-flag">🇸🇴</span>
+      <span id="login-lang-label">Soomaali</span>
+    </button>
+  </div>
+
   <!-- Main Container -->
   <main class="login-wrapper">
 
     <!-- University Brand Header -->
     <header class="login-logo">
-      <div class="login-logo-icon" aria-hidden="true">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-        </svg>
+      <div class="login-logo-icon" aria-hidden="true" style="background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;">
+        G
       </div>
-      <h1>Faculty LMS Portal</h1>
-      <p>Faculty of Midwifery</p>
+      <h1 id="login-portal-title">GUUREY Learning platform</h1>
+      <p id="login-portal-tagline" style="color: #0284c7; font-weight: 600;">Learning without limit</p>
     </header>
 
     <!-- Glassmorphic Card -->
     <section class="login-card" aria-labelledby="login-heading">
       <h2 id="login-heading" class="login-card-title">Gal Akoonkaaga</h2>
-      <p class="login-card-sub">Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.</p>
+      <p id="login-card-sub" class="login-card-sub">Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.</p>
 
       <!-- Alert Box -->
       <div class="login-error" id="login-error" role="alert" aria-live="polite">
@@ -125,14 +130,14 @@
           <line x1="12" y1="16" x2="12" y2="12"/>
           <line x1="12" y1="8" x2="12.01" y2="8"/>
         </svg>
-        <span>Akoonka ardayda waxaa sameeya Macallinka ama Maamulka Kuliyadda.</span>
+        <span id="login-footer-note-text">Akoonka ardayda waxaa sameeya Maamulka Kuliyadda.</span>
       </div>
 
     </section>
 
-    <!-- University Portal Footer -->
+    <!-- Platform Footer -->
     <footer class="login-footer">
-      <p>Faculty LMS Portal &bull; Faculty of Midwifery</p>
+      <p id="login-footer-copyright">GUUREY Learning platform &bull; Learning without limit</p>
     </footer>
 
   </main>
@@ -145,11 +150,52 @@
       </svg>
     </div>
     <div class="success-text" id="success-name">Ku soo dhawow!</div>
-    <div class="success-sub">Waxaa si toos ah laguu galinayaa boggaaga...</div>
+    <div class="success-sub" id="success-sub-text">Waxaa si toos ah laguu galinayaa boggaaga...</div>
   </div>
 
   <script src="js/api.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
+    // Initialize language on login page
+    function applyLoginLanguage() {
+      const lang = I18N.getLang();
+      const flagEl = document.getElementById('login-lang-flag');
+      const labelEl = document.getElementById('login-lang-label');
+      const headingEl = document.getElementById('login-heading');
+      const subEl = document.getElementById('login-card-sub');
+      const emailLabel = document.querySelector('label[for="login-email"]');
+      const passLabel = document.querySelector('label[for="login-password"]');
+      const btnText = document.querySelector('#login-btn .btn-text');
+      const noteEl = document.getElementById('login-footer-note-text');
+
+      if (lang === 'so') {
+        if (flagEl) flagEl.textContent = '🇸🇴';
+        if (labelEl) labelEl.textContent = 'Soomaali';
+        if (headingEl) headingEl.textContent = 'Gal Akoonkaaga';
+        if (subEl) subEl.textContent = 'Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.';
+        if (emailLabel) emailLabel.textContent = 'Cinwaanka Email-ka';
+        if (passLabel) passLabel.textContent = 'Furaha Sirta ah (Password)';
+        if (btnText) btnText.textContent = 'Gal Nidaamka';
+        if (noteEl) noteEl.textContent = 'Akoonka ardayda waxaa sameeya Maamulka Kuliyadda.';
+      } else {
+        if (flagEl) flagEl.textContent = '🇬🇧';
+        if (labelEl) labelEl.textContent = 'English';
+        if (headingEl) headingEl.textContent = 'Sign In to Your Account';
+        if (subEl) subEl.textContent = 'Please enter your registered credentials to access the academic system.';
+        if (emailLabel) emailLabel.textContent = 'Email Address';
+        if (passLabel) passLabel.textContent = 'Password';
+        if (btnText) btnText.textContent = 'Sign In to Platform';
+        if (noteEl) noteEl.textContent = 'Student accounts are created and provisioned by faculty administration.';
+      }
+    }
+
+    function toggleLoginLanguage() {
+      I18N.toggleLang();
+      applyLoginLanguage();
+    }
+
+    document.addEventListener('DOMContentLoaded', applyLoginLanguage);
+
     // Check existing session
     (function checkExistingSession() {
       const token = localStorage.getItem('faculty_lms_token');

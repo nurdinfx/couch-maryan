@@ -20,13 +20,14 @@ function initSchema() {
       role TEXT NOT NULL CHECK(role IN ('professor', 'student', 'admin')),
       avatar_url TEXT,
       student_id_number TEXT,
-      department TEXT DEFAULT 'Faculty of Midwifery',
+      academic_year TEXT DEFAULT 'Year 1',
+      department TEXT DEFAULT 'GUUREY Learning Platform',
       bio TEXT,
       is_active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
-    -- 2. Courses (Scoped strictly to this one faculty)
+    -- 2. Courses
     CREATE TABLE IF NOT EXISTS courses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       code TEXT UNIQUE NOT NULL,
@@ -34,6 +35,7 @@ function initSchema() {
       description TEXT,
       cover_image TEXT,
       professor_id INTEGER REFERENCES users(id),
+      target_year TEXT DEFAULT 'All Years',
       start_date DATE,
       end_date DATE,
       is_published INTEGER DEFAULT 1,
@@ -277,7 +279,11 @@ function initSchema() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
       recipient_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      content TEXT NOT NULL,
+      content TEXT,
+      attachment_url TEXT,
+      attachment_name TEXT,
+      attachment_type TEXT,
+      file_size_bytes INTEGER,
       is_read INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -311,9 +317,28 @@ function initSchema() {
     );
   `);
 
+  // Safe incremental migrations for existing databases
+  try { db.exec("ALTER TABLE users ADD COLUMN academic_year TEXT DEFAULT 'Year 1'"); } catch (e) {}
+  try { db.exec("ALTER TABLE courses ADD COLUMN target_year TEXT DEFAULT 'All Years'"); } catch (e) {}
+  try { db.exec("ALTER TABLE messages ADD COLUMN attachment_url TEXT"); } catch (e) {}
+  try { db.exec("ALTER TABLE messages ADD COLUMN attachment_name TEXT"); } catch (e) {}
+  try { db.exec("ALTER TABLE messages ADD COLUMN attachment_type TEXT"); } catch (e) {}
+  try { db.exec("ALTER TABLE messages ADD COLUMN file_size_bytes INTEGER"); } catch (e) {}
+
   console.log('Database tables verified and initialized successfully.');
+
+  // Hydrate from persistent JSON if needed
+  try {
+    const { restorePersistence } = require('./persistence');
+    restorePersistence(db);
+  } catch (err) {
+    console.error('Persistence restore notice:', err.message);
+  }
 }
 
 initSchema();
 
-module.exports = { db, initSchema };
+const { savePersistence, restorePersistence } = require('./persistence');
+
+module.exports = { db, initSchema, savePersistence, restorePersistence };
+

@@ -8,17 +8,32 @@ const { db, initSchema } = require('../database/db');
 const { generateAssets } = require('../database/create-sample-assets');
 const { seed } = require('../database/seed-data');
 const { clearMockData } = require('../database/clear-mock');
+const { restorePersistence } = require('../database/persistence');
+const bcrypt = require('bcryptjs');
 
 // Ensure database and sample files exist
 initSchema();
 generateAssets();
+restorePersistence(db);
 
-// Auto-seed demo faculty data if database has no users (e.g. fresh cloud deploy)
+// Ensure default admin & professor accounts exist without deleting any data
 try {
-  const row = db.prepare('SELECT count(*) as count FROM users').get();
-  if (!row || row.count === 0) {
-    console.log('Database empty on startup. Initializing clean faculty LMS system...');
-    clearMockData();
+  let admin = db.prepare("SELECT id FROM users WHERE email = 'admin@faculty.edu'").get();
+  if (!admin) {
+    const hash = bcrypt.hashSync('admin123', 10);
+    db.prepare(`
+      INSERT INTO users (email, password_hash, full_name, role, department)
+      VALUES ('admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'GUUREY Learning Platform')
+    `).run(hash);
+  }
+
+  let prof = db.prepare("SELECT id FROM users WHERE role = 'professor'").get();
+  if (!prof) {
+    const hash = bcrypt.hashSync('password123', 10);
+    db.prepare(`
+      INSERT INTO users (email, password_hash, full_name, role, department)
+      VALUES ('professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'GUUREY Learning Platform')
+    `).run(hash);
   }
 } catch (err) {
   console.error('Init check error:', err);

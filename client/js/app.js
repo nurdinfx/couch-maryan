@@ -7,11 +7,20 @@ const App = {
   isDrawerCollapsed: false,
 
   async init() {
-    console.log('Initializing Faculty LMS Application...');
+    console.log('Initializing GUUREY Learning Platform...');
 
     // Setup Theme toggle
     const savedTheme = localStorage.getItem('faculty_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Setup Language
+    if (typeof I18N !== 'undefined') {
+      this.applyLanguage();
+      window.addEventListener('language-changed', () => {
+        this.applyLanguage();
+        this.refreshCurrentView();
+      });
+    }
 
     // Setup hash router listener
     window.addEventListener('hashchange', () => this.handleRoute());
@@ -39,6 +48,55 @@ const App = {
     this.setupSearch();
   },
 
+  toggleLanguage() {
+    if (typeof I18N === 'undefined') return;
+    const next = I18N.toggleLang();
+    this.applyLanguage();
+    this.showToast(next === 'so' ? 'Luuqada nidaamka: Soomaali 🇸🇴' : 'System Language: English 🇬🇧');
+    this.refreshCurrentView();
+  },
+
+  applyLanguage() {
+    if (typeof I18N === 'undefined') return;
+    const lang = I18N.getLang();
+    const flag = document.getElementById('lang-flag-indicator');
+    const label = document.getElementById('lang-label-indicator');
+    const btn = document.getElementById('lang-switcher-btn');
+    if (flag) flag.textContent = lang === 'so' ? '🇸🇴' : '🇬🇧';
+    if (label) label.textContent = lang === 'so' ? 'Soomaali' : 'English';
+    if (btn) btn.title = lang === 'so' ? 'Switch to English' : 'U baddal Soomaali';
+
+    const brandTitle = document.getElementById('brand-title-text');
+    const brandSub = document.getElementById('brand-subtitle-text');
+    if (brandTitle) brandTitle.textContent = I18N.t('brand.name');
+    if (brandSub) brandSub.textContent = I18N.t('brand.tagline');
+
+    const searchInput = document.getElementById('site-search-input');
+    if (searchInput) searchInput.placeholder = I18N.t('nav.search_placeholder');
+
+    const dSecNav = document.getElementById('drawer-sec-nav');
+    const dSecMgmt = document.getElementById('drawer-sec-mgmt');
+    if (dSecNav) dSecNav.textContent = I18N.t('nav.academic_nav');
+    if (dSecMgmt) dSecMgmt.textContent = I18N.t('nav.faculty_mgmt');
+
+    const navMap = {
+      'nav-txt-dashboard': 'nav.dashboard',
+      'nav-txt-courses': 'nav.courses',
+      'nav-txt-gradebook': 'nav.gradebook',
+      'nav-txt-attendance': 'nav.attendance',
+      'nav-txt-badges': 'nav.badges',
+      'nav-txt-discussions': 'nav.discussions',
+      'nav-txt-calendar': 'nav.calendar',
+      'nav-txt-messages': 'nav.messages',
+      'nav-txt-students': 'nav.students',
+      'nav-txt-admin': 'nav.admin'
+    };
+
+    for (const [id, key] of Object.entries(navMap)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = I18N.t(key);
+    }
+  },
 
   logout() {
     API.setToken(null);
@@ -277,6 +335,19 @@ const App = {
               <div style="margin-bottom:1rem;">
                 <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Title *</label>
                 <input type="text" name="title" required placeholder="e.g. Advanced Database Systems" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">🎯 Sanadka / Heerka Koorso (Target Level) *</label>
+                <select name="target_year" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-surface);color:var(--text-main);">
+                  <option value="All Years">Dhammaan Sanadaha (Furan / Open to All)</option>
+                  <option value="Year 1">Year 1 (Ardayda Sanadka 1-aad oo Kaliya)</option>
+                  <option value="Year 2">Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
+                  <option value="Year 3">Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
+                  <option value="Year 4">Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                </select>
+                <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
+                  Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
+                </small>
               </div>
               <div style="margin-bottom:1rem;">
                 <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
@@ -714,6 +785,19 @@ const App = {
                   <input type="text" name="title" required value="${(course.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">🎯 Sanadka / Heerka Koorso (Target Level) *</label>
+                  <select name="target_year" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-surface);color:var(--text-main);">
+                    <option value="All Years" ${(!course.target_year || course.target_year === 'All Years') ? 'selected' : ''}>Dhammaan Sanadaha (Furan / Open to All)</option>
+                    <option value="Year 1" ${course.target_year === 'Year 1' ? 'selected' : ''}>Year 1 (Ardayda Sanadka 1-aad oo Kaliya)</option>
+                    <option value="Year 2" ${course.target_year === 'Year 2' ? 'selected' : ''}>Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
+                    <option value="Year 3" ${course.target_year === 'Year 3' ? 'selected' : ''}>Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
+                    <option value="Year 4" ${course.target_year === 'Year 4' ? 'selected' : ''}>Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                  </select>
+                  <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
+                    Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
+                  </small>
+                </div>
+                <div style="margin-bottom:1rem;">
                   <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
                   <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${course.description || ''}</textarea>
                 </div>
@@ -871,11 +955,12 @@ const App = {
           title: form.title.value,
           description: form.description.value,
           pass_percentage: form.pass_percentage.value,
+          target_year: form.target_year ? form.target_year.value : 'All Years',
           cover_image: coverImage
         });
       }
       this.closeModal();
-      this.showToast('✅ Course created successfully!');
+      this.showToast('✅ Koorsada si guul leh ayaa loo abuuray (Course created)!');
       this.navigate(`/course/${res.course.id}`);
     } catch (err) {
       this.showToast(err.message, 'error');
@@ -901,6 +986,7 @@ const App = {
           title: form.title.value,
           description: form.description.value,
           pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+          target_year: form.target_year ? form.target_year.value : 'All Years',
           cover_image: coverImage
         });
       }

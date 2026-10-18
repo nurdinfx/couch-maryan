@@ -363,7 +363,18 @@ const API = {
     return this.request(`/messages/thread/${otherUserId}`);
   },
 
-  async sendMessage(recipientId, content) {
+  async sendMessage(recipientId, content, attachmentFile = null) {
+    if (attachmentFile) {
+      const fd = new FormData();
+      fd.append('recipient_id', recipientId);
+      if (content) fd.append('content', content);
+      fd.append('attachment', attachmentFile);
+      return this.request('/messages', {
+        method: 'POST',
+        body: fd
+      });
+    }
+
     return this.request('/messages', {
       method: 'POST',
       body: JSON.stringify({ recipient_id: recipientId, content })
@@ -391,6 +402,23 @@ const API = {
     return this.request('/admin/audit-logs');
   },
 
+  async getAdmins() {
+    return this.request('/admin/admins');
+  },
+
+  async createAdmin(adminData) {
+    return this.request('/admin/admins', {
+      method: 'POST',
+      body: JSON.stringify(adminData)
+    });
+  },
+
+  async deleteAdmin(adminId) {
+    return this.request(`/admin/admins/${adminId}`, {
+      method: 'DELETE'
+    });
+  },
+
   async createBadge(badgeData) {
     return this.request('/badges', {
       method: 'POST',
@@ -405,6 +433,13 @@ const API = {
   async createStudent(studentData) {
     return this.request('/auth/students', {
       method: 'POST',
+      body: JSON.stringify(studentData)
+    });
+  },
+
+  async updateStudent(studentId, studentData) {
+    return this.request(`/auth/students/${studentId}`, {
+      method: 'PUT',
       body: JSON.stringify(studentData)
     });
   },

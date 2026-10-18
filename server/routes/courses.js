@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../../database/db');
+const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
-// 1. Get all courses (with role-aware enrollment & progress info)
+// 1. Get all courses (with role-aware enrollment, academic year filtering & progress info)
 router.get('/', requireAuth, (req, res) => {
   const user = req.user;
   let courses;
@@ -23,7 +23,8 @@ router.get('/', requireAuth, (req, res) => {
       ORDER BY c.created_at DESC
     `).all();
   } else {
-    // For students: retrieve courses with individual calculated progress
+    // For students: retrieve ONLY courses designated for their academic year or specifically enrolled
+    const studentYear = user.academic_year || 'Year 1';
     courses = db.prepare(`
       SELECT c.*,
         u.full_name as professor_name,
@@ -36,9 +37,10 @@ router.get('/', requireAuth, (req, res) => {
         (SELECT final_grade FROM certificates cert WHERE cert.course_id = c.id AND cert.user_id = ?) as certificate_grade
       FROM courses c
       LEFT JOIN users u ON c.professor_id = u.id
-      WHERE c.is_published = 1 OR EXISTS(SELECT 1 FROM enrollments e WHERE e.course_id = c.id AND e.user_id = ?)
+      WHERE (c.is_published = 1 AND (c.target_year IS NULL OR c.target_year = 'All Years' OR c.target_year = ?))
+         OR EXISTS(SELECT 1 FROM enrollments e WHERE e.course_id = c.id AND e.user_id = ?)
       ORDER BY c.created_at DESC
-    `).all(user.id, user.id, user.id, user.id);
+    `).all(user.id, user.id, user.id, studentYear, user.id);
 
     // Compute progress % accurately
     courses = courses.map(c => {
@@ -56,7 +58,7 @@ router.get('/', requireAuth, (req, res) => {
   res.json({ courses });
 });
 
-// 2. Get single course with full Moodle hierarchy (Modules -> Lessons, Assignments, Quizzes)
+// 2. Get single course with full hierarchy (Modules -> Lessons, Assignments, Quizzes)
 router.get('/:id', requireAuth, (req, res) => {
   const courseId = parseInt(req.params.id);
   const user = req.user;
@@ -72,13 +74,22 @@ router.get('/:id', requireAuth, (req, res) => {
     return res.status(404).json({ error: 'Course not found.' });
   }
 
-  // Check enrollment if student
+  // Check enrollment & strict academic year access control for students
   if (user.role === 'student') {
     const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(user.id, courseId);
+    const studentYear = user.academic_year || 'Year 1';
+    const isYearAllowed = !course.target_year || course.target_year === 'All Years' || course.target_year === studentYear;
+
+    if (!isEnrolled && !isYearAllowed) {
+      return res.status(403).json({
+        error: `Ma geli kartid casharradan: Koorsadani waxay u gaar tahay ardayda ${course.target_year}. Heerkaaga waxbarasho waa ${studentYear}. (Access Denied: This course is restricted to ${course.target_year} students only. Your account is ${studentYear}.)`
+      });
+    }
+
     if (!isEnrolled) {
-      // Auto-enroll if course is published
       if (course.is_published) {
         db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)').run(user.id, courseId);
+        try { savePersistence(db); } catch (e) {}
       } else {
         return res.status(403).json({ error: 'You are not enrolled in this course.' });
       }
@@ -172,7 +183,7 @@ const { upload } = require('../middleware/upload');
 
 // 3. Create Course (Professor only)
 router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
-  const { code, title, description, cover_image, start_date, end_date, pass_percentage } = req.body;
+  const { code, title, description, cover_image, target_year, start_date, end_date, pass_percentage } = req.body;
 
   if (!code || !title) {
     return res.status(400).json({ error: 'Course code and title are required.' });
@@ -188,15 +199,18 @@ router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
     finalCover = `/uploads/covers/${req.file.filename}`;
   }
 
+  const assignedTargetYear = target_year || 'All Years';
+
   const result = db.prepare(`
-    INSERT INTO courses (code, title, description, cover_image, professor_id, start_date, end_date, is_published, pass_percentage)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)
+    INSERT INTO courses (code, title, description, cover_image, professor_id, target_year, start_date, end_date, is_published, pass_percentage)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
   `).run(
     code.trim().toUpperCase(),
     title.trim(),
     description || '',
     finalCover,
     req.user.id,
+    assignedTargetYear,
     start_date || '2026-09-01',
     end_date || '2026-12-31',
     pass_percentage || 60.0
@@ -210,12 +224,19 @@ router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
     VALUES (?, 'General & Course Orientation', 'Course announcements, syllabus, and introductory resources.', 1, 1)
   `).run(newCourseId);
 
-  // Enroll all active students in the faculty (single quotes for SQLite string literal)
-  const students = db.prepare("SELECT id FROM users WHERE role = 'student'").all();
+  // Enroll students matching target_year (or all if 'All Years')
+  let students;
+  if (assignedTargetYear === 'All Years') {
+    students = db.prepare("SELECT id FROM users WHERE role = 'student'").all();
+  } else {
+    students = db.prepare("SELECT id FROM users WHERE role = 'student' AND (academic_year = ? OR academic_year IS NULL)").all(assignedTargetYear);
+  }
   const enrollStmt = db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)');
   students.forEach(s => enrollStmt.run(s.id, newCourseId));
 
-  logAudit(req.user.id, 'COURSE_CREATED', `Created course ${code} - ${title}`, req);
+  try { savePersistence(db); } catch (e) {}
+
+  logAudit(req.user.id, 'COURSE_CREATED', `Created course ${code} - ${title} for ${assignedTargetYear}`, req);
 
   const created = db.prepare('SELECT * FROM courses WHERE id = ?').get(newCourseId);
   res.status(201).json({ message: 'Course created successfully', course: created });
@@ -224,7 +245,7 @@ router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
 // 4. Update Course (Professor only)
 router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => {
   const courseId = parseInt(req.params.id);
-  const { code, title, description, cover_image, start_date, end_date, is_published, pass_percentage } = req.body;
+  const { code, title, description, cover_image, target_year, start_date, end_date, is_published, pass_percentage } = req.body;
 
   let finalCover = cover_image;
   if (req.file) {
@@ -237,12 +258,15 @@ router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => 
         title = COALESCE(?, title),
         description = COALESCE(?, description),
         cover_image = COALESCE(?, cover_image),
+        target_year = COALESCE(?, target_year),
         start_date = COALESCE(?, start_date),
         end_date = COALESCE(?, end_date),
         is_published = COALESCE(?, is_published),
         pass_percentage = COALESCE(?, pass_percentage)
     WHERE id = ?
-  `).run(code, title, description, finalCover, start_date, end_date, is_published, pass_percentage, courseId);
+  `).run(code, title, description, finalCover, target_year, start_date, end_date, is_published, pass_percentage, courseId);
+
+  try { savePersistence(db); } catch (e) {}
 
   logAudit(req.user.id, 'COURSE_UPDATED', `Updated course details for id ${courseId}`, req);
 
@@ -260,6 +284,7 @@ router.delete('/:id', requireProfessor, (req, res) => {
   }
 
   db.prepare('DELETE FROM courses WHERE id = ?').run(courseId);
+  try { savePersistence(db); } catch (e) {}
   logAudit(req.user.id, 'COURSE_DELETED', `Deleted course ${course.code}: ${course.title}`, req);
 
   res.json({ message: 'Course deleted successfully' });
@@ -281,6 +306,8 @@ router.post('/:id/modules', requireProfessor, (req, res) => {
     VALUES (?, ?, ?, ?, 1)
   `).run(courseId, title.trim(), description || '', maxOrder + 1);
 
+  try { savePersistence(db); } catch (e) {}
+
   const newModule = db.prepare('SELECT * FROM modules WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json({ message: 'Module created successfully', module: newModule });
 });
@@ -299,6 +326,8 @@ router.put('/modules/:moduleId', requireProfessor, (req, res) => {
     WHERE id = ?
   `).run(title, description, is_published, sort_order, moduleId);
 
+  try { savePersistence(db); } catch (e) {}
+
   const updated = db.prepare('SELECT * FROM modules WHERE id = ?').get(moduleId);
   res.json({ message: 'Module updated successfully', module: updated });
 });
@@ -307,6 +336,7 @@ router.put('/modules/:moduleId', requireProfessor, (req, res) => {
 router.delete('/modules/:moduleId', requireProfessor, (req, res) => {
   const moduleId = parseInt(req.params.moduleId);
   db.prepare('DELETE FROM modules WHERE id = ?').run(moduleId);
+  try { savePersistence(db); } catch (e) {}
   res.json({ message: 'Module and all contained lessons deleted successfully.' });
 });
 

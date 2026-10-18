@@ -17,6 +17,8 @@ const storage = multer.diskStorage({
     let subfolder = 'documents';
     if (isVideoFile(file, req)) {
       subfolder = 'videos';
+    } else if (req.baseUrl.includes('messages')) {
+      subfolder = 'messages';
     } else if (req.baseUrl.includes('submissions') || req.path.includes('submit')) {
       subfolder = 'submissions';
     } else if (file.mimetype && file.mimetype.startsWith('image/')) {

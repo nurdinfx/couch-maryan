@@ -32,23 +32,25 @@ const DashboardView = {
     const totalAssignments = courses.reduce((acc, c) => acc + (c.assignments_count || 0), 0);
     const totalQuizzes = courses.reduce((acc, c) => acc + (c.quizzes_count || 0), 0);
 
+    const isSomali = (typeof I18N !== 'undefined' ? I18N.getLang() : 'so') === 'so';
+
     return `
       <div class="page-header-container">
         <div>
           <div class="breadcrumb-trail">
-            <span>Faculty LMS</span>
+            <span>GUUREY Learning Platform</span>
             <span class="breadcrumb-sep">/</span>
-            <span>Professor Dashboard</span>
+            <span>${isSomali ? 'Xarunta Guud (Dashboard)' : 'Professor Dashboard'}</span>
           </div>
-          <h1 class="page-title">Welcome back, ${user.full_name}</h1>
-          <p class="page-description">Academic Overview for Faculty of Midwifery</p>
+          <h1 class="page-title">${isSomali ? 'Ku soo dhawow mar kale' : 'Welcome back'}, ${user.full_name}</h1>
+          <p class="page-description">GUUREY Learning platform • Learning without limit</p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
           <button class="btn btn-outline" onclick="App.showModal('createCourseModal')">
-            <span>+</span> New Course
+            <span>+</span> ${isSomali ? 'Koorso Cusub' : 'New Course'}
           </button>
           <a href="#/gradebook" class="btn btn-primary">
-            <span>📊</span> Open Gradebook
+            <span>📊</span> ${isSomali ? 'Fur Buundooyinka' : 'Open Gradebook'}
           </a>
         </div>
       </div>
@@ -59,108 +61,81 @@ const DashboardView = {
           <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">👨‍🎓</div>
           <div>
             <div class="stat-value">${totalStudents}</div>
-            <div class="stat-label">Enrolled Students</div>
+            <div class="stat-label">${isSomali ? 'Ardayda Dhigata' : 'Enrolled Students'}</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background: #e8f0fe; color: var(--primary);">📚</div>
           <div>
             <div class="stat-value">${courses.length}</div>
-            <div class="stat-label">Active Courses</div>
+            <div class="stat-label">${isSomali ? 'Koorsooyinka Firfircoon' : 'Active Courses'}</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background: #fef3c7; color: #d97706;">📝</div>
           <div>
             <div class="stat-value">${totalAssignments}</div>
-            <div class="stat-label">Assignments & Labs</div>
+            <div class="stat-label">${isSomali ? 'Layliyada & Labs' : 'Assignments & Labs'}</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background: #dcfce7; color: #16a34a;">🏆</div>
           <div>
             <div class="stat-value">${totalQuizzes}</div>
-            <div class="stat-label">Examinations</div>
+            <div class="stat-label">${isSomali ? 'Imtixaanaadka' : 'Examinations'}</div>
           </div>
         </div>
       </div>
 
-      ${courses.length > 0 ? `
-      <!-- Priority Action: Submissions Awaiting Review & At-Risk Warning -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-        
-        <!-- Needs Grading Card -->
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>⏳</span> Submissions Awaiting Grading
-            </h3>
-            <span class="badge badge-warning">1 Pending</span>
-          </div>
-          <div style="background: var(--bg-surface-alt); border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <div style="font-weight: 700; font-size: 0.9rem;">Assignment 1: Distributed Object Storage Ring</div>
-                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Submitted by: <strong>Marcus Vance</strong> (STU-2026-083)</div>
-              </div>
-              <a href="#/course/1/assignment/1" class="btn btn-sm btn-primary">Review & Grade</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Academic Alert / At Risk Card (Requirement 15: Students at risk based on transparent rules) -->
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; color: var(--danger);">
-              <span>⚠️</span> Academic Alert: Students At-Risk
-            </h3>
-            <span class="badge badge-danger">Attention Needed</span>
-          </div>
-          <div style="background: var(--danger-bg); border-radius: var(--radius-md); padding: 0.85rem 1rem; border: 1px solid var(--danger-border); display: flex; align-items: center; justify-content: space-between;">
-            <div>
-              <div style="font-weight: 700; color: #991b1b; font-size: 0.88rem;">Marcus Vance</div>
-              <div style="font-size: 0.76rem; color: #7f1d1d; margin-top: 0.15rem;">Course Progress: <strong>16.7%</strong> | Attendance: <strong>50%</strong> (2 Unexcused Absences)</div>
-            </div>
-            <a href="#/messages?recipient=4" class="btn btn-sm btn-outline" style="border-color: var(--danger-border); color: #991b1b;">Message Student</a>
-          </div>
-        </div>
-
-      </div>
-
-      ` : ''}
-      <!-- Faculty Courses -->
+      <!-- Faculty Courses Header -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h2 style="font-size: 1.3rem;">Courses You Teach</h2>
-        <span style="font-size: 0.85rem; color: var(--text-muted);">${courses.length} Faculty Courses</span>
+        <h2 style="font-size: 1.3rem;">${isSomali ? 'Koorsooyinka aad Dhigto' : 'Courses You Teach'}</h2>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">${courses.length} ${isSomali ? 'Koorso' : 'Courses'}</span>
       </div>
 
       <div class="course-grid">
         ${courses.length > 0 ? courses.map(c => `
           <div class="course-card">
-            <img src="${c.cover_image}" class="course-cover-img" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+            <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'}" class="course-cover-img" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
             <div class="course-card-body">
-              <div class="course-code">${c.code}</div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span class="course-code">${c.code}</span>
+                <span class="badge badge-primary" style="font-size: 0.7rem; font-weight: 700; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+                  🎯 ${c.target_year || 'All Years'}
+                </span>
+              </div>
               <h3 class="course-card-title">${c.title}</h3>
-              <p class="course-card-desc">${c.description || 'Comprehensive curriculum designed for computer science and engineering majors.'}</p>
+              <p class="course-card-desc">${c.description || (isSomali ? 'Manaahij waxbarasho oo casri ah.' : 'Comprehensive academic curriculum.')}</p>
               
               <div style="display: flex; gap: 0.75rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem;">
-                <span>👥 ${c.enrolled_students_count || 4} Students</span>
-                <span>📖 ${c.modules_count || 4} Modules</span>
-                <span>📝 ${c.assignments_count || 1} Assignments</span>
+                <span>👥 ${c.enrolled_students_count || 0} ${isSomali ? 'Arday' : 'Students'}</span>
+                <span>📖 ${c.modules_count || 0} ${isSomali ? 'Qaybood' : 'Modules'}</span>
+                <span>📝 ${c.assignments_count || 0} ${isSomali ? 'Layli' : 'Assignments'}</span>
               </div>
 
               <div style="display: flex; gap: 0.5rem; margin-top: auto; flex-wrap: wrap;">
-                <a href="#/course/${c.id}" class="btn btn-primary btn-sm" style="flex: 1;">Open Course</a>
-                <a href="#/course/${c.id}?tab=participants" class="btn btn-outline btn-sm">Roster</a>
-                <a href="#/course/${c.id}?tab=grades" class="btn btn-outline btn-sm">Grades</a>
+                <a href="#/course/${c.id}" class="btn btn-primary btn-sm" style="flex: 1;">${isSomali ? 'Fur Koorsada' : 'Open Course'}</a>
+                <a href="#/course/${c.id}?tab=participants" class="btn btn-outline btn-sm">${isSomali ? 'Ardayda' : 'Roster'}</a>
+                <a href="#/course/${c.id}?tab=grades" class="btn btn-outline btn-sm">${isSomali ? 'Buundooyinka' : 'Grades'}</a>
               </div>
               <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--primary); color:var(--primary);" onclick="App.showModal('editCourseModal', { courseId: ${c.id} })">✏️ Edit</button>
-                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="App.deleteCourse(${c.id}, '${c.title.replace(/'/g, "\\'")}')">🗑 Delete</button>
+                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--primary); color:var(--primary);" onclick="App.showModal('editCourseModal', { courseId: ${c.id} })">✏️ ${isSomali ? 'Baddal' : 'Edit'}</button>
+                <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="App.deleteCourse(${c.id}, '${c.title.replace(/'/g, "\\'")}')">🗑 ${isSomali ? 'Tirtir' : 'Delete'}</button>
               </div>
             </div>
           </div>
-        `).join('') : `<div style="grid-column:1/-1;text-align:center;padding:3.5rem 1.5rem;background:var(--bg-card);border:2px dashed var(--border-color);border-radius:var(--radius-lg)"><div style="font-size:3rem;margin-bottom:0.75rem">📚</div><h3 style="margin-bottom:0.5rem">Weli Koorso Laguma darin</h3><p class="text-muted" style="margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto">System-ka waa la nadiifiyay. Hadda waxaad bilaabi kartaa inaad ku darto koorsadaadii koowaad.</p><button class="btn btn-primary" onclick="App.showModal('createCourseModal')"><span>+</span> Abuur Koorso Cusub</button></div>`}
+        `).join('') : `
+          <div style="grid-column:1/-1;text-align:center;padding:3.5rem 1.5rem;background:var(--bg-card);border:2px dashed var(--border-color);border-radius:var(--radius-lg)">
+            <div style="font-size:3rem;margin-bottom:0.75rem">📚</div>
+            <h3 style="margin-bottom:0.5rem">${isSomali ? 'Weli Koorso Laguma darin' : 'No Courses Added Yet'}</h3>
+            <p class="text-muted" style="margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto">
+              ${isSomali ? 'Bilaab hadda abuurista koorsadaada koowaad adoo dooranaya heerka sanadka (Year 1 - Year 4).' : 'Start creating your courses and assigning them to academic levels (Year 1 to Year 4).'}
+            </p>
+            <button class="btn btn-primary" onclick="App.showModal('createCourseModal')">
+              <span>+</span> ${isSomali ? 'Abuur Koorso Cusub' : 'Create New Course'}
+            </button>
+          </div>
+        `}
       </div>
     `;
   },

@@ -30,8 +30,9 @@ const CourseView = {
           <img src="${course.cover_image}" style="width: 180px; height: 120px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-sm);" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
           
           <div style="flex: 1; min-width: 280px;">
-            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap;">
               <span class="course-code" style="font-size: 0.85rem;">${course.code}</span>
+              <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700; font-size: 0.78rem;">🎯 ${course.target_year || 'All Years'}</span>
               ${course.is_published ? '<span class="badge badge-success">Published</span>' : '<span class="badge badge-warning">Draft</span>'}
             </div>
             <h1 style="font-size: 1.6rem; margin-bottom: 0.5rem;">${course.title}</h1>

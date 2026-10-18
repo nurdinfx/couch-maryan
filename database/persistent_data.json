@@ -1,0 +1,154 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "professor@faculty.edu",
+      "password_hash": "$2b$10$vd6NZibQDwVr0.G9S6E8wu9LRagcWizUNpbIz7JP94ahGvm4CnfnS",
+      "full_name": "Prof. Maryam Al-Mansoor",
+      "role": "professor",
+      "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": null,
+      "department": "Faculty of Midwifery",
+      "bio": "Associate Professor of Distributed Systems & Cloud Infrastructure.",
+      "created_at": "2026-10-14 14:15:31",
+      "is_active": 1,
+      "academic_year": "Year 1"
+    },
+    {
+      "id": 2,
+      "email": "admin@faculty.edu",
+      "password_hash": "$2b$10$48IuJooVqq95GeVGNIpmw.u7OaPAknMiw4I0FysUl4jAS7/p4wZt6",
+      "full_name": "Faculty Administrator",
+      "role": "admin",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      "student_id_number": null,
+      "department": "Office of the Dean",
+      "bio": "Systems Administrator & Academic Registrar.",
+      "created_at": "2026-10-14 14:15:31",
+      "is_active": 1,
+      "academic_year": "Year 1"
+    }
+  ],
+  "courses": [
+    {
+      "id": 7,
+      "code": "MID101",
+      "title": "Test Course",
+      "description": "Test",
+      "cover_image": null,
+      "professor_id": 1,
+      "start_date": null,
+      "end_date": null,
+      "is_published": 1,
+      "pass_percentage": 60,
+      "created_at": "2026-10-15 04:53:56",
+      "target_year": "All Years"
+    }
+  ],
+  "enrollments": [],
+  "modules": [
+    {
+      "id": 8,
+      "course_id": 7,
+      "title": "Week 1: Introduction",
+      "description": null,
+      "sort_order": 0,
+      "is_published": 1
+    }
+  ],
+  "lessons": [
+    {
+      "id": 7,
+      "module_id": 8,
+      "course_id": 7,
+      "title": "Test Device Video MP4",
+      "content_type": "video",
+      "description": "",
+      "content_body": "",
+      "video_url": "/uploads/videos/1792040036165_my_video.mp4",
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/videos/1792040036165_my_video.mp4",
+      "file_name": "my_video.mp4",
+      "file_size_bytes": 23,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-15 04:53:56"
+    },
+    {
+      "id": 8,
+      "module_id": 8,
+      "course_id": 7,
+      "title": "Test Device Video MP4",
+      "content_type": "video",
+      "description": "",
+      "content_body": "",
+      "video_url": "/uploads/videos/1792040179030_my_video.mp4",
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/videos/1792040179030_my_video.mp4",
+      "file_name": "my_video.mp4",
+      "file_size_bytes": 23,
+      "is_required_for_completion": 1,
+      "sort_order": 2,
+      "is_published": 1,
+      "created_at": "2026-10-15 04:56:19"
+    },
+    {
+      "id": 9,
+      "module_id": 8,
+      "course_id": 7,
+      "title": "Test Device Video MOV",
+      "content_type": "video",
+      "description": "",
+      "content_body": "",
+      "video_url": "/uploads/videos/1792040179058_sample.mov",
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/videos/1792040179058_sample.mov",
+      "file_name": "sample.mov",
+      "file_size_bytes": 23,
+      "is_required_for_completion": 1,
+      "sort_order": 3,
+      "is_published": 1,
+      "created_at": "2026-10-15 04:56:19"
+    }
+  ],
+  "lesson_progress": [],
+  "assignments": [],
+  "assignment_submissions": [],
+  "quizzes": [],
+  "quiz_questions": [],
+  "quiz_attempts": [],
+  "quiz_attempt_answers": [],
+  "attendance_sessions": [],
+  "attendance_records": [],
+  "badges": [],
+  "awarded_badges": [],
+  "certificates": [],
+  "announcements": [],
+  "forum_topics": [],
+  "forum_replies": [],
+  "messages": [],
+  "notifications": [],
+  "system_settings": [
+    {
+      "key": "faculty_name",
+      "value": "Faculty of Computing & Information Science"
+    },
+    {
+      "key": "institution_name",
+      "value": "Faculty Academic Portal"
+    },
+    {
+      "key": "primary_professor",
+      "value": "Prof. Maryam Al-Mansoor"
+    },
+    {
+      "key": "moodle_theme",
+      "value": "boost_light"
+    },
+    {
+      "key": "allow_student_self_registration",
+      "value": "true"
+    }
+  ]
+}

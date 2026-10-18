@@ -83,9 +83,9 @@ router.get('/me', requireAuth, (req, res) => {
   });
 });
 
-// 4. Student Self-Registration (Strictly for this faculty)
+// 4. Student Self-Registration
 router.post('/register', (req, res) => {
-  const { email, password, full_name, student_id_number, bio } = req.body;
+  const { email, password, full_name, student_id_number, academic_year, bio } = req.body;
 
   if (!email || !password || !full_name) {
     return res.status(400).json({ error: 'Name, email, and password are required.' });
@@ -96,33 +96,43 @@ router.post('/register', (req, res) => {
     return res.status(400).json({ error: 'An account with this email address already exists.' });
   }
 
+  const studentYear = academic_year || 'Year 1';
   const hashedPassword = bcrypt.hashSync(password, 10);
   const result = db.prepare(`
-    INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, department, bio)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Midwifery', ?)
+    INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, bio)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'GUUREY Learning Platform', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
     student_id_number || `STU-2026-${Math.floor(100 + Math.random() * 900)}`,
+    studentYear,
     bio || ''
   );
 
-  const newUser = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio FROM users WHERE id = ?').get(result.lastInsertRowid);
+  const newUser = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, academic_year, department, bio FROM users WHERE id = ?').get(result.lastInsertRowid);
   
-  // Auto-enroll new student in default faculty courses
-  const courses = db.prepare('SELECT id FROM courses WHERE is_published = 1').all();
+  // Auto-enroll new student strictly in courses designated for their academic year or All Years
+  const courses = db.prepare(`
+    SELECT id FROM courses 
+    WHERE is_published = 1 AND (target_year IS NULL OR target_year = 'All Years' OR target_year = ?)
+  `).all(studentYear);
   const insertEnrollment = db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)');
   courses.forEach(c => insertEnrollment.run(newUser.id, c.id));
 
   // Welcome notification
   db.prepare(`
     INSERT INTO notifications (user_id, title, message, type, link)
-    VALUES (?, 'Welcome to the Faculty LMS', 'Your student account is active. You are enrolled in the semester courses.', 'info', '#/dashboard')
-  `).run(newUser.id);
+    VALUES (?, 'Welcome to GUUREY Learning Platform', ?, 'info', '#/dashboard')
+  `).run(newUser.id, `Your ${studentYear} student account is active. Learning without limit!`);
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
 
   const token = generateToken(newUser);
-  logAudit(newUser.id, 'STUDENT_REGISTER', `New student registered: ${newUser.email}`, req);
+  logAudit(newUser.id, 'STUDENT_REGISTER', `New student registered: ${newUser.email} (${studentYear})`, req);
 
   res.status(201).json({
     message: 'Registration successful',
@@ -142,29 +152,41 @@ router.put('/profile', requireAuth, (req, res) => {
     WHERE id = ?
   `).run(full_name, bio, avatar_url, req.user.id);
 
-  const updated = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio FROM users WHERE id = ?').get(req.user.id);
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  const updated = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, academic_year, department, bio FROM users WHERE id = ?').get(req.user.id);
   res.json({ message: 'Profile updated successfully', user: updated });
 });
 
 // 6. List Faculty Members / Users (for picker or directory)
 router.get('/directory', requireAuth, (req, res) => {
   const users = db.prepare(`
-    SELECT id, full_name, email, role, avatar_url, department
+    SELECT id, full_name, email, role, avatar_url, academic_year, department
     FROM users
     ORDER BY role ASC, full_name ASC
   `).all();
   res.json({ users });
 });
 
-// 7. Professor Student User Management (List, Create, Deactivate, Delete)
+// 7. Student User Management (List, Create, Update Access/Year, Deactivate, Delete)
 router.get('/students', requireAuth, (req, res) => {
   const students = db.prepare(`
-    SELECT u.id, u.email, u.full_name, u.student_id_number, u.department, u.is_active, u.created_at, u.avatar_url,
+    SELECT u.id, u.email, u.full_name, u.student_id_number, u.academic_year, u.department, u.is_active, u.created_at, u.avatar_url,
       (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) as enrolled_count
     FROM users u
     WHERE u.role = 'student'
     ORDER BY u.created_at DESC
   `).all();
+
+  // Attach enrolled course IDs for each student
+  for (const s of students) {
+    const enrolledCourses = db.prepare('SELECT course_id FROM enrollments WHERE user_id = ?').all(s.id);
+    s.enrolled_course_ids = enrolledCourses.map(c => c.course_id);
+  }
+
   res.json({ students });
 });
 
@@ -173,7 +195,7 @@ router.post('/students', requireAuth, (req, res) => {
     return res.status(403).json({ error: 'Only the professor or administrator can create student accounts.' });
   }
 
-  const { email, password, full_name, student_id_number, is_active } = req.body;
+  const { email, password, full_name, student_id_number, academic_year, course_ids, is_active } = req.body;
   if (!email || !full_name) {
     return res.status(400).json({ error: 'Student email and full name are required.' });
   }
@@ -186,29 +208,83 @@ router.post('/students', requireAuth, (req, res) => {
   const defaultPassword = password || 'student123';
   const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
   const activeVal = is_active !== undefined ? (is_active ? 1 : 0) : 1;
+  const assignedYear = academic_year || 'Year 1';
 
   const result = db.prepare(`
-    INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, department, is_active)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, 'Faculty of Midwifery', ?)
+    INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, is_active)
+    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'GUUREY Learning Platform', ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
     student_id_number || `STU-2026-${Math.floor(100 + Math.random() * 900)}`,
+    assignedYear,
     activeVal
   );
 
   const newStudentId = result.lastInsertRowid;
 
-  // Auto enroll in published courses
-  const courses = db.prepare('SELECT id FROM courses WHERE is_published = 1').all();
+  // Enroll in specifically selected courses, OR auto-enroll in courses matching the student's year
   const enrollStmt = db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)');
-  courses.forEach(c => enrollStmt.run(newStudentId, c.id));
+  if (Array.isArray(course_ids) && course_ids.length > 0) {
+    course_ids.forEach(cid => enrollStmt.run(newStudentId, parseInt(cid)));
+  } else {
+    const matchingCourses = db.prepare(`
+      SELECT id FROM courses 
+      WHERE is_published = 1 AND (target_year IS NULL OR target_year = 'All Years' OR target_year = ?)
+    `).all(assignedYear);
+    matchingCourses.forEach(c => enrollStmt.run(newStudentId, c.id));
+  }
 
-  logAudit(req.user.id, 'STUDENT_ACCOUNT_CREATED', `Prof created student ${full_name} (${email})`, req);
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
 
-  const student = db.prepare('SELECT id, email, full_name, student_id_number, is_active, created_at FROM users WHERE id = ?').get(newStudentId);
+  logAudit(req.user.id, 'STUDENT_ACCOUNT_CREATED', `Admin/Prof created student ${full_name} (${email}, ${assignedYear})`, req);
+
+  const student = db.prepare('SELECT id, email, full_name, student_id_number, academic_year, is_active, created_at FROM users WHERE id = ?').get(newStudentId);
   res.status(201).json({ message: 'Student account created successfully', student });
+});
+
+// Update student details (Year, Course access, Name, Email)
+router.put('/students/:id', requireAuth, (req, res) => {
+  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const studentId = parseInt(req.params.id);
+  const { full_name, email, academic_year, course_ids, is_active } = req.body;
+
+  db.prepare(`
+    UPDATE users
+    SET full_name = COALESCE(?, full_name),
+        email = COALESCE(?, email),
+        academic_year = COALESCE(?, academic_year),
+        is_active = COALESCE(?, is_active)
+    WHERE id = ? AND role = 'student'
+  `).run(
+    full_name,
+    email ? email.trim().toLowerCase() : null,
+    academic_year,
+    is_active !== undefined ? (is_active ? 1 : 0) : null,
+    studentId
+  );
+
+  // If course_ids array provided, re-sync student's course access permissions
+  if (Array.isArray(course_ids)) {
+    db.prepare('DELETE FROM enrollments WHERE user_id = ?').run(studentId);
+    const enrollStmt = db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)');
+    course_ids.forEach(cid => enrollStmt.run(studentId, parseInt(cid)));
+  }
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  const student = db.prepare('SELECT id, email, full_name, student_id_number, academic_year, is_active, created_at FROM users WHERE id = ?').get(studentId);
+  res.json({ message: 'Student information and course access updated successfully', student });
 });
 
 router.put('/students/:id/status', requireAuth, (req, res) => {
@@ -221,6 +297,11 @@ router.put('/students/:id/status', requireAuth, (req, res) => {
 
   db.prepare('UPDATE users SET is_active = ? WHERE id = ?').run(is_active ? 1 : 0, studentId);
   const student = db.prepare('SELECT id, email, full_name, is_active FROM users WHERE id = ?').get(studentId);
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
 
   logAudit(req.user.id, 'STUDENT_STATUS_TOGGLED', `Changed ${student.email} access active=${is_active}`, req);
 
@@ -260,6 +341,10 @@ router.delete('/students/:id', requireAuth, (req, res) => {
       db.prepare('DELETE FROM users WHERE id = ?').run(studentId);
     });
     deleteTx();
+    try {
+      const { savePersistence } = require('../../database/db');
+      savePersistence(db);
+    } catch (e) {}
     logAudit(req.user.id, 'STUDENT_DELETED', 'Deleted student ' + student.email, req);
     res.json({ message: 'Student account ' + student.full_name + ' removed from faculty.' });
   } catch (err) {

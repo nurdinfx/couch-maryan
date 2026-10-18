@@ -1,5 +1,5 @@
 node_modules/
-*.db
-*.sqlite
 .env
 .DS_Store
+*.db-wal
+*.db-shm
