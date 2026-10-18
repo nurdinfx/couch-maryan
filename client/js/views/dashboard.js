@@ -129,7 +129,7 @@ const DashboardView = {
             <div style="font-size:3rem;margin-bottom:0.75rem">📚</div>
             <h3 style="margin-bottom:0.5rem">${isSomali ? 'Weli Koorso Laguma darin' : 'No Courses Added Yet'}</h3>
             <p class="text-muted" style="margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto">
-              ${isSomali ? 'Bilaab hadda abuurista koorsadaada koowaad adoo dooranaya heerka sanadka (Year 1 - Year 4).' : 'Start creating your courses and assigning them to academic levels (Year 1 to Year 4).'}
+              ${isSomali ? 'Bilaab hadda abuurista koorsadaada koowaad adoo dooranaya heerka sanadka (Year 1 - Year 5).' : 'Start creating your courses and assigning them to academic levels (Year 1 to Year 5).'}
             </p>
             <button class="btn btn-primary" onclick="App.showModal('createCourseModal')">
               <span>+</span> ${isSomali ? 'Abuur Koorso Cusub' : 'Create New Course'}

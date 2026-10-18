@@ -1,6 +1,6 @@
 // ====================================================================
 // VIEW: GURAY SICID LEARNING PLATFORM - STUDENT ACCOUNT MANAGEMENT & ACCESS CONTROL
-// Controls student registration, academic year access (Year 1 - Year 4),
+// Controls student registration, academic year access (Year 1 - Year 5),
 // course authorization restrictions, and credential management.
 // ====================================================================
 
@@ -50,7 +50,7 @@ const StudentsView = {
             ${I18N.t('students.page_title', 'Faculty Student Accounts & Access Control')}
           </h1>
           <p class="page-description" style="color: var(--text-muted); max-width: 650px; font-size: 0.95rem;">
-            ${I18N.t('students.page_desc', 'Create student accounts, set academic year levels (Year 1 - Year 4), restrict course access, and manage credentials')}
+            ${I18N.t('students.page_desc', 'Create student accounts, set academic year levels (Year 1 - Year 5), restrict course access, and manage credentials')}
           </p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
@@ -90,7 +90,7 @@ const StudentsView = {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">${I18N.t('students.roster_title', 'Student Access & Level Roster')}</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">${I18N.t('students.roster_sub', 'Control student login rights, assign Year 1 - Year 4 access, and manage credentials')}</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">${I18N.t('students.roster_sub', 'Control student login rights, assign Year 1 - Year 5 access, and manage credentials')}</p>
           </div>
         </div>
 
@@ -119,6 +119,7 @@ const StudentsView = {
                 if (yearLabel === 'Year 2') { yearBadgeBg = '#fef3c7'; yearBadgeColor = '#b45309'; }
                 else if (yearLabel === 'Year 3') { yearBadgeBg = '#f3e8ff'; yearBadgeColor = '#7e22ce'; }
                 else if (yearLabel === 'Year 4') { yearBadgeBg = '#dcfce7'; yearBadgeColor = '#15803d'; }
+                else if (yearLabel === 'Year 5') { yearBadgeBg = '#ffe4e6'; yearBadgeColor = '#e11d48'; }
 
                 return `
                   <tr style="border-bottom: 1px solid var(--border-color);">
@@ -238,6 +239,7 @@ const StudentsView = {
                   <option value="Year 2">Year 2 (Fasalka 2aad)</option>
                   <option value="Year 3">Year 3 (Fasalka 3aad)</option>
                   <option value="Year 4">Year 4 (Fasalka 4aad)</option>
+                  <option value="Year 5">Year 5 (Fasalka 5aad)</option>
                 </select>
               </div>
             </div>
@@ -358,6 +360,7 @@ const StudentsView = {
                   <option value="Year 2" ${student.academic_year === 'Year 2' ? 'selected' : ''}>Year 2 (Fasalka 2aad)</option>
                   <option value="Year 3" ${student.academic_year === 'Year 3' ? 'selected' : ''}>Year 3 (Fasalka 3aad)</option>
                   <option value="Year 4" ${student.academic_year === 'Year 4' ? 'selected' : ''}>Year 4 (Fasalka 4aad)</option>
+                  <option value="Year 5" ${student.academic_year === 'Year 5' ? 'selected' : ''}>Year 5 (Fasalka 5aad)</option>
                 </select>
               </div>
             </div>

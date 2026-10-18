@@ -215,8 +215,8 @@ const App = {
           ` : `
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
               ${cList.map(c => {
-                const yearBg = c.target_year === 'Year 2' ? '#fef3c7' : c.target_year === 'Year 3' ? '#f3e8ff' : c.target_year === 'Year 4' ? '#dcfce7' : '#e0f2fe';
-                const yearColor = c.target_year === 'Year 2' ? '#b45309' : c.target_year === 'Year 3' ? '#7e22ce' : c.target_year === 'Year 4' ? '#15803d' : '#0369a1';
+                const yearBg = c.target_year === 'Year 2' ? '#fef3c7' : c.target_year === 'Year 3' ? '#f3e8ff' : c.target_year === 'Year 4' ? '#dcfce7' : c.target_year === 'Year 5' ? '#ffe4e6' : '#e0f2fe';
+                const yearColor = c.target_year === 'Year 2' ? '#b45309' : c.target_year === 'Year 3' ? '#7e22ce' : c.target_year === 'Year 4' ? '#15803d' : c.target_year === 'Year 5' ? '#e11d48' : '#0369a1';
                 return `
                   <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow 0.25s, transform 0.2s; cursor: pointer;"
                        onclick="App.navigate('/course/${c.id}')"
@@ -472,6 +472,7 @@ const App = {
                   <option value="Year 2">Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
                   <option value="Year 3">Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
                   <option value="Year 4">Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                  <option value="Year 5">Year 5 (Ardayda Sanadka 5-aad oo Kaliya)</option>
                 </select>
                 <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
                   Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
@@ -920,6 +921,7 @@ const App = {
                     <option value="Year 2" ${course.target_year === 'Year 2' ? 'selected' : ''}>Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
                     <option value="Year 3" ${course.target_year === 'Year 3' ? 'selected' : ''}>Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
                     <option value="Year 4" ${course.target_year === 'Year 4' ? 'selected' : ''}>Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                    <option value="Year 5" ${course.target_year === 'Year 5' ? 'selected' : ''}>Year 5 (Ardayda Sanadka 5-aad oo Kaliya)</option>
                   </select>
                   <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
                     Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
