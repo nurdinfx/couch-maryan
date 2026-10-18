@@ -9,7 +9,29 @@ const CourseView = {
     const user = API.currentUser;
     const isProfessor = user.role === 'professor' || user.role === 'admin';
 
-    const courseData = await API.getCourse(courseId);
+    let courseData = null;
+    try {
+      courseData = await API.getCourse(courseId);
+    } catch (err) {
+      return `
+        <div class="breadcrumb-trail">
+          <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>${I18N.t('nav.courses', 'Courses')}</span>
+        </div>
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center; box-shadow: var(--shadow-sm); margin-top: 1rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+          <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--danger); margin-bottom: 0.5rem;">
+            Koorsada Lama Helin / Course Not Found
+          </h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            ${err.message || 'The requested course does not exist or you do not have permission to access it.'}
+          </p>
+          <a href="#/dashboard" class="btn btn-primary">${I18N.t('nav.dashboard', 'Return to Dashboard')}</a>
+        </div>
+      `;
+    }
+
     const course = courseData.course;
     const modules = courseData.modules || [];
     const announcements = courseData.announcements || [];

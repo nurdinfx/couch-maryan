@@ -171,7 +171,82 @@ const App = {
       if (segments.length === 0 || segments[0] === 'dashboard') {
         container.innerHTML = await DashboardView.render();
       } else if (segments[0] === 'courses') {
-        container.innerHTML = await DashboardView.render();
+        // Full Course Catalog page
+        const cData = await API.getCourses().catch(() => ({ courses: [] }));
+        const cList = cData.courses || [];
+        const isProfessor = API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin');
+        container.innerHTML = `
+          <div class="breadcrumb-trail">
+            <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span>${I18N.t('nav.courses', 'Course Catalog')}</span>
+          </div>
+          <div class="page-header-container" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+            <div>
+              <h1 class="page-title" style="font-size: 1.85rem; font-weight: 800; margin-bottom: 0.4rem;">
+                📚 ${I18N.t('nav.courses', 'Course Catalog')}
+              </h1>
+              <p class="page-description" style="color: var(--text-muted); font-size: 0.95rem;">
+                ${isProfessor ? I18N.t('dashboard.prof_overview', 'All published courses you manage') : I18N.t('dashboard.my_courses', 'Your enrolled courses')}
+              </p>
+            </div>
+            ${isProfessor ? `
+              <button class="btn btn-primary" onclick="App.showModal('createCourseModal')" style="font-weight: 600; padding: 0.65rem 1.25rem;">
+                + ${I18N.t('dashboard.create_course_now', 'New Course')}
+              </button>
+            ` : ''}
+          </div>
+
+          ${cList.length === 0 ? `
+            <div style="background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center;">
+              <div style="font-size: 3.5rem; margin-bottom: 1rem;">📚</div>
+              <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+                ${I18N.t('dashboard.no_courses_title', 'No Courses Found')}
+              </h2>
+              <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 1.5rem;">
+                ${I18N.t('dashboard.no_courses_desc', 'No courses available yet. Create one to get started.')}
+              </p>
+              ${isProfessor ? `
+                <button class="btn btn-primary" onclick="App.showModal('createCourseModal')">
+                  + ${I18N.t('dashboard.create_course_now', 'Create First Course')}
+                </button>
+              ` : ''}
+            </div>
+          ` : `
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              ${cList.map(c => {
+                const yearBg = c.target_year === 'Year 2' ? '#fef3c7' : c.target_year === 'Year 3' ? '#f3e8ff' : c.target_year === 'Year 4' ? '#dcfce7' : '#e0f2fe';
+                const yearColor = c.target_year === 'Year 2' ? '#b45309' : c.target_year === 'Year 3' ? '#7e22ce' : c.target_year === 'Year 4' ? '#15803d' : '#0369a1';
+                return `
+                  <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow 0.25s, transform 0.2s; cursor: pointer;"
+                       onclick="App.navigate('/course/${c.id}')"
+                       onmouseover="this.style.boxShadow='var(--shadow-lg)'; this.style.transform='translateY(-3px)'"
+                       onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)'">
+                    <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'}" 
+                         style="width: 100%; height: 160px; object-fit: cover;" 
+                         onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+                    <div style="padding: 1.25rem;">
+                      <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <code style="font-size: 0.75rem; background: var(--bg-surface-alt); padding: 0.2rem 0.5rem; border-radius: 4px;">${c.code}</code>
+                        <span style="background: ${yearBg}; color: ${yearColor}; font-weight: 700; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 999px;">🎯 ${c.target_year || 'All Years'}</span>
+                        ${c.is_published ? '<span class="badge badge-success" style="font-size: 0.72rem;">Published</span>' : '<span class="badge badge-warning" style="font-size: 0.72rem;">Draft</span>'}
+                      </div>
+                      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.35;">${c.title}</h3>
+                      <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        ${c.description || '—'}
+                      </p>
+                      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
+                        <span>👥 ${c.enrolled_students_count || 0} ${I18N.t('dashboard.students_count', 'Students')}</span>
+                        <span>📖 ${c.lessons_count || 0} ${I18N.t('nav.courses', 'Lessons')}</span>
+                        ${c.progress_percentage !== undefined ? `<span style="font-weight: 700; color: var(--primary);">${c.progress_percentage}% Done</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        `;
       } else if (segments[0] === 'course') {
         const courseId = segments[1];
         if (segments[2] === 'lesson') {
@@ -183,17 +258,68 @@ const App = {
         } else {
           container.innerHTML = await CourseView.render({ id: courseId, tab: query.tab });
         }
-      } else if (segments[0] === 'gradebook') {
-        container.innerHTML = await CourseView.render({ id: 1, tab: 'grades' });
-      } else if (segments[0] === 'attendance') {
-        container.innerHTML = await CourseView.render({ id: 1, tab: 'attendance' });
-      } else if (segments[0] === 'badges' || segments[0] === 'certificates') {
-        container.innerHTML = await BadgesView.render();
-      } else if (segments[0] === 'discussions') {
-        if (segments[1]) {
+      } else if (segments[0] === 'gradebook' || segments[0] === 'attendance' || segments[0] === 'discussions') {
+        const tabType = segments[0] === 'gradebook' ? 'grades' : (segments[0] === 'attendance' ? 'attendance' : 'discussions');
+
+        if (segments[0] === 'discussions' && segments[1]) {
           container.innerHTML = await TopicView.render({ id: segments[1] });
         } else {
-          container.innerHTML = await CourseView.render({ id: 1, tab: 'discussions' });
+          // Dynamically fetch available courses instead of hardcoding course ID 1
+          const coursesRes = await API.getCourses().catch(() => ({ courses: [] }));
+          const coursesList = coursesRes.courses || [];
+
+          if (coursesList.length === 0) {
+            const pageTitle = segments[0] === 'gradebook' 
+              ? I18N.t('nav.gradebook', 'Gradebook Matrix') 
+              : (segments[0] === 'attendance' ? I18N.t('nav.attendance', 'Attendance Records') : I18N.t('nav.discussions', 'Course Forum'));
+            container.innerHTML = `
+              <div class="breadcrumb-trail">
+                <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>${pageTitle}</span>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center; box-shadow: var(--shadow-sm); margin-top: 1rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">📚</div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+                  ${I18N.t('dashboard.no_courses_title', 'Weli Koorso Laguma darin / No Courses Added Yet')}
+                </h2>
+                <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+                  ${I18N.t('dashboard.no_courses_desc', 'Fadlan abuur koorso cusub si aad u maamusho buundooyinka, xaadiriska, iyo madasha doodaha.')}
+                </p>
+                ${(API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin')) ? `
+                  <button class="btn btn-primary" onclick="App.showModal('createCourseModal')" style="font-weight: 600; padding: 0.65rem 1.25rem;">
+                    + ${I18N.t('dashboard.create_course_now', 'Abuur Koorso Cusub')}
+                  </button>
+                ` : `
+                  <a href="#/dashboard" class="btn btn-primary">${I18N.t('nav.dashboard', 'Return to Dashboard')}</a>
+                `}
+              </div>
+            `;
+          } else {
+            // Find target course: query.courseId or first available course
+            const targetCourseId = query.courseId || query.id || coursesList[0].id;
+            const targetCourse = coursesList.find(c => c.id == targetCourseId) || coursesList[0];
+
+            // Render Course Switcher toolbar if more than 1 course exists
+            const courseSelectorHtml = coursesList.length > 1 ? `
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 1.25rem;">📚</span>
+                  <label for="route-course-picker" style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Dooro Koorsada (Select Course):</label>
+                </div>
+                <select id="route-course-picker" onchange="window.location.hash = '#/${segments[0]}?courseId=' + this.value" style="padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.9rem; font-weight: 600; background: var(--bg-surface-alt); color: var(--text-primary); cursor: pointer; min-width: 260px;">
+                  ${coursesList.map(c => `
+                    <option value="${c.id}" ${c.id === targetCourse.id ? 'selected' : ''}>
+                      ${c.code} - ${c.title} (${c.target_year || 'All Years'})
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+            ` : '';
+
+            const renderedView = await CourseView.render({ id: targetCourse.id, tab: tabType });
+            container.innerHTML = courseSelectorHtml + renderedView;
+          }
         }
       } else if (segments[0] === 'messages') {
         container.innerHTML = await MessagesView.render(query);
@@ -203,6 +329,8 @@ const App = {
         container.innerHTML = await AdminView.render();
       } else if (segments[0] === 'students') {
         container.innerHTML = await StudentsView.render();
+      } else if (segments[0] === 'badges' || segments[0] === 'certificates') {
+        container.innerHTML = await BadgesView.render();
       } else {
         container.innerHTML = await DashboardView.render();
       }
