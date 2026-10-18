@@ -19,8 +19,20 @@ router.post('/clear-mock', requireAdmin, (req, res) => {
   }
 });
 
+// Database Backup Download Endpoint (Admin only)
+router.get(['/backup', '/backup-db'], requireAdmin, (req, res) => {
+  const { dbPath } = require('../../database/db');
+  if (!fs.existsSync(dbPath)) {
+    return res.status(404).json({ error: 'Database file not found' });
+  }
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const downloadName = `guray_sicid_lms_backup_${dateStr}.db`;
+  logAudit(req.user.id, 'DATABASE_BACKUP_DOWNLOAD', `Downloaded backup: ${downloadName}`, req);
+  res.download(dbPath, downloadName);
+});
+
 router.get('/health', requireAdmin, (req, res) => {
-  const dbPath = path.join(__dirname, '..', '..', 'database', 'faculty_lms.db');
+  const { dbPath } = require('../../database/db');
   let dbSizeBytes = 0;
   if (fs.existsSync(dbPath)) {
     dbSizeBytes = fs.statSync(dbPath).size;

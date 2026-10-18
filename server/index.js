@@ -49,7 +49,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Static file hosting for uploaded educational media (videos, PDFs, submissions)
-const uploadsDir = path.join(__dirname, '..', 'uploads');
+const uploadsDir = process.env.UPLOADS_DIR || (process.env.DATA_DIR ? path.join(process.env.DATA_DIR, 'uploads') : path.join(__dirname, '..', 'uploads'));
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -84,21 +84,15 @@ app.use('/api/calendar', require('./routes/calendar'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Seed endpoint to re-seed or initialize on demand
-// Clean wipe endpoint to remove all mock courses & test students
-app.get('/api/clear-mock', (req, res) => {
-  try {
-    clearMockData();
-    res.json({ success: true, message: 'All mock courses, test students, and mock records have been cleared! System is 100% clean and ready for real courses.' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+// Protected maintenance endpoints (Requires secret key - disabled for public GET to prevent accidental wipes)
+app.post('/api/maintenance/seed', (req, res) => {
+  const secret = req.query.secret || req.headers['x-maintenance-secret'];
+  if (!process.env.MAINTENANCE_SECRET || secret !== process.env.MAINTENANCE_SECRET) {
+    return res.status(403).json({ error: 'Action forbidden: Requires valid MAINTENANCE_SECRET' });
   }
-});
-
-app.get('/api/seed', (req, res) => {
   try {
     seed();
-    res.json({ success: true, message: 'Faculty LMS demo data seeded successfully!' });
+    res.json({ success: true, message: 'Platform demo data seeded successfully!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

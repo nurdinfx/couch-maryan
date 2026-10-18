@@ -2,7 +2,11 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.join(__dirname, 'faculty_lms.db');
+const dataDir = process.env.DATA_DIR || __dirname;
+if (!fs.existsSync(dataDir)) {
+  try { fs.mkdirSync(dataDir, { recursive: true }); } catch (e) {}
+}
+const dbPath = process.env.DB_PATH || path.join(dataDir, 'faculty_lms.db');
 const db = new Database(dbPath);
 
 // Enable Foreign Keys and WAL mode for high performance and integrity
@@ -340,5 +344,5 @@ initSchema();
 
 const { savePersistence, restorePersistence } = require('./persistence');
 
-module.exports = { db, initSchema, savePersistence, restorePersistence };
+module.exports = { db, dbPath, dataDir, initSchema, savePersistence, restorePersistence };
 

@@ -25,7 +25,8 @@ const storage = multer.diskStorage({
       subfolder = 'covers';
     }
 
-    const destDir = path.join(__dirname, '..', '..', 'uploads', subfolder);
+    const baseUploadsDir = process.env.UPLOADS_DIR || (process.env.DATA_DIR ? path.join(process.env.DATA_DIR, 'uploads') : path.join(__dirname, '..', '..', 'uploads'));
+    const destDir = path.join(baseUploadsDir, subfolder);
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
     }

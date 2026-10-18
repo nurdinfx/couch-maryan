@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PERSISTENCE_FILE = path.join(__dirname, 'persistent_data.json');
+const PERSISTENCE_FILE = path.join(process.env.DATA_DIR || __dirname, 'persistent_data.json');
 
 const TABLES = [
   'users',
@@ -74,14 +74,11 @@ function restorePersistence(db) {
     const snapshot = JSON.parse(raw);
 
     const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
-    const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
 
-    // Only restore if current DB is empty or has fewer courses/users than snapshot
-    const snapshotUsers = snapshot.users || [];
-    const snapshotCourses = snapshot.courses || [];
-
-    if (usersCount === 0 || coursesCount < snapshotCourses.length || usersCount < snapshotUsers.length) {
-      console.log('Hydrating database from persistent_data.json...');
+    // CRITICAL: NEVER overwrite or wipe an existing database.
+    // Only hydrate from snapshot if the database is 100% brand new (0 users).
+    if (usersCount === 0 && snapshot.users && snapshot.users.length > 0) {
+      console.log('Fresh database detected (0 users). Initializing initial base data...');
       const tx = db.transaction(() => {
         for (const table of TABLES) {
           const rows = snapshot[table];
@@ -93,14 +90,16 @@ function restorePersistence(db) {
             const values = Object.values(row);
 
             db.prepare(`
-              INSERT OR REPLACE INTO ${table} (${cols.join(', ')})
+              INSERT OR IGNORE INTO ${table} (${cols.join(', ')})
               VALUES (${placeholders})
             `).run(...values);
           }
         }
       });
       tx();
-      console.log('Database successfully restored from persistent_data.json');
+      console.log('Database successfully initialized from initial template.');
+    } else {
+      console.log(`Database already has active data (${usersCount} users). Skipping restore to protect live records.`);
     }
   } catch (err) {
     console.error('Failed to restore persistence JSON:', err.message);
