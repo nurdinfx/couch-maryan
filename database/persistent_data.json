@@ -628,15 +628,15 @@
       "last_accessed_at": "2026-10-19 04:22:27"
     },
     {
-      "id": 72,
+      "id": 73,
       "user_id": 3,
       "lesson_id": 4,
       "course_id": 1,
       "is_completed": 1,
       "video_watched_seconds": 590,
       "video_watch_percentage": 90,
-      "completed_at": "2026-10-19 04:52:39",
-      "last_accessed_at": "2026-10-19 04:52:39"
+      "completed_at": "2026-10-19 04:54:21",
+      "last_accessed_at": "2026-10-19 04:54:21"
     }
   ],
   "assignments": [
@@ -696,11 +696,11 @@
       "file_name": "Alex_Chen_CS301_Assignment1_Storage.pdf",
       "file_size_bytes": 45120,
       "status": "graded",
-      "submitted_at": "2026-10-19 04:52:39",
+      "submitted_at": "2026-10-19 04:54:21",
       "grade": 95,
       "feedback": "Exceptional virtual node distribution analysis and partition recovery.",
       "graded_by": 1,
-      "graded_at": "2026-10-19 04:52:40",
+      "graded_at": "2026-10-19 04:54:22",
       "is_grades_released": 1
     },
     {
@@ -856,7 +856,7 @@
       "user_id": 3,
       "attempt_number": 1,
       "started_at": "2026-10-19 04:29:38",
-      "submitted_at": "2026-10-19 04:52:40",
+      "submitted_at": "2026-10-19 04:54:22",
       "score": 45,
       "max_score": 65,
       "percentage": 69.2,
@@ -1165,6 +1165,56 @@
       "is_auto_graded": 0,
       "graded_manually": 0,
       "feedback": "Pending professor evaluation"
+    },
+    {
+      "id": 76,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 77,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 78,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 79,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 80,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
     }
   ],
   "attendance_sessions": [
@@ -1208,7 +1258,7 @@
       "user_id": 5,
       "status": "present",
       "notes": "Lab leader",
-      "recorded_at": "2026-10-19 04:52:40"
+      "recorded_at": "2026-10-19 04:54:22"
     },
     {
       "id": 62,
@@ -1240,7 +1290,7 @@
       "user_id": 2,
       "status": "present",
       "notes": "Active discussion",
-      "recorded_at": "2026-10-19 04:52:40"
+      "recorded_at": "2026-10-19 04:54:22"
     },
     {
       "id": 66,
@@ -1272,7 +1322,7 @@
       "user_id": 3,
       "status": "present",
       "notes": "",
-      "recorded_at": "2026-10-19 04:52:40"
+      "recorded_at": "2026-10-19 04:54:22"
     },
     {
       "id": 70,
@@ -1304,7 +1354,7 @@
       "user_id": 4,
       "status": "late",
       "notes": "Late by 15 mins",
-      "recorded_at": "2026-10-19 04:52:40"
+      "recorded_at": "2026-10-19 04:54:22"
     },
     {
       "id": 74,
@@ -1550,6 +1600,13 @@
       "author_id": 2,
       "content": "Testing distributed consensus with automated verification runner.",
       "created_at": "2026-10-19 04:52:40"
+    },
+    {
+      "id": 20,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:54:22"
     }
   ],
   "messages": [
@@ -1632,6 +1689,18 @@
       "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
       "is_read": 0,
       "created_at": "2026-10-19 04:52:40",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 23,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:54:22",
       "attachment_url": null,
       "attachment_name": null,
       "attachment_type": null,
@@ -1748,6 +1817,26 @@
       "link": "#/messages",
       "is_read": 0,
       "created_at": "2026-10-19 04:52:40"
+    },
+    {
+      "id": 31,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 32,
+      "user_id": 1,
+      "title": "New Direct Message",
+      "message": "Alex Chen: Hello Professor Maryam, checking in regarding the consensus ",
+      "type": "message",
+      "link": "#/messages",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:54:22"
     }
   ],
   "system_settings": [

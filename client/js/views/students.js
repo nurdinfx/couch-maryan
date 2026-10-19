@@ -1,7 +1,7 @@
 // ====================================================================
 // VIEW: GURAY SICID LEARNING PLATFORM - STUDENT ACCOUNT MANAGEMENT & ACCESS CONTROL
 // Controls student registration, academic year access (Year 1 - Year 5),
-// course authorization restrictions, and credential management.
+// course authorization restrictions, faculty assignment, and credential management.
 // ====================================================================
 
 const StudentsView = {
@@ -100,6 +100,7 @@ const StudentsView = {
               <tr style="border-bottom: 1px solid var(--border-color); background: var(--bg-surface-alt);">
                 <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">${I18N.t('students.col_student', 'Student')}</th>
                 <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">${I18N.t('students.col_id', 'Student ID')}</th>
+                <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">Faculty</th>
                 <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">${I18N.t('students.col_year', 'Academic Level')}</th>
                 <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">${I18N.t('students.col_courses', 'Course Access')}</th>
                 <th style="padding: 0.85rem 1rem; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; color: var(--text-muted);">${I18N.t('students.col_status', 'Login Status')}</th>
@@ -133,6 +134,15 @@ const StudentsView = {
                       </div>
                     </td>
                     <td style="padding: 1rem;"><code style="background: var(--bg-surface-alt); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">${s.student_id_number || 'N/A'}</code></td>
+                    <td style="padding: 1rem;">
+                      ${(() => {
+                        const f = s.faculty || 'General';
+                        const fc = {Computer:['#dbeafe','#1d4ed8'],Health:['#dcfce7','#15803d'],Engineering:['#fef9c3','#a16207'],Business:['#ede9fe','#6d28d9'],Education:['#ffe4e6','#be123c'],Mathematics:['#fce7f3','#9d174d'],Law:['#fdf4ff','#a21caf'],Islamic:['#fff7ed','#c2410c'],Social:['#ecfeff','#0e7490']};
+                        const key = Object.keys(fc).find(k => f.includes(k));
+                        const [bg, color] = key ? fc[key] : ['#f1f5f9','#475569'];
+                        return `<span style="background:${bg};color:${color};padding:0.25rem 0.6rem;border-radius:999px;font-size:0.78rem;font-weight:700;white-space:nowrap;">${f}</span>`;
+                      })()}
+                    </td>
                     <td style="padding: 1rem;">
                       <span class="badge" style="background: ${yearBadgeBg}; color: ${yearBadgeColor}; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 0.3rem;">
                         🎯 ${yearLabel}
@@ -177,7 +187,7 @@ const StudentsView = {
 
               ${students.length === 0 ? `
                 <tr>
-                  <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                  <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
                     ${I18N.t('students.roster_sub', 'No student accounts found. Click "Register New Student" above to create an account.')}
                   </td>
                 </tr>
@@ -242,6 +252,30 @@ const StudentsView = {
                   <option value="Year 5">Year 5 (Fasalka 5aad)</option>
                 </select>
               </div>
+            </div>
+
+            <!-- Faculty Assignment -->
+            <div style="margin-bottom: 1.15rem; background: #f0f9ff; border: 2px solid #0284c7; border-radius: var(--radius-md); padding: 1rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.5rem; color: #0369a1;">
+                🏛️ Faculty Assignment *
+              </label>
+              <p style="font-size: 0.78rem; color: #0369a1; margin-bottom: 0.75rem; opacity: 0.85;">
+                Assign the student to their faculty. They will only see courses from their assigned faculty.
+              </p>
+              <select name="faculty" required style="width: 100%; padding: 0.75rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; background: white; color: #0369a1;">
+                ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
+                  {value:'Computer Science',label:'💻 Computer Science'},
+                  {value:'Health Science',label:'🏥 Health Science'},
+                  {value:'Engineering',label:'⚙️ Engineering'},
+                  {value:'Business',label:'💼 Business & Management'},
+                  {value:'Education',label:'📚 Education'},
+                  {value:'Mathematics',label:'📐 Mathematics & Statistics'},
+                  {value:'Law',label:'⚖️ Law & Legal Studies'},
+                  {value:'Islamic Studies',label:'🕌 Islamic Studies'},
+                  {value:'Social Sciences',label:'🌍 Social Sciences'},
+                  {value:'General',label:'🏫 General / All Faculties'}
+                ]).map(f => `<option value="${f.value}">${f.label}</option>`).join('')}
+              </select>
             </div>
 
             <!-- Course Access Selector -->
@@ -310,6 +344,7 @@ const StudentsView = {
         email: form.email.value,
         password: form.password.value,
         academic_year: form.academic_year.value,
+        faculty: form.faculty.value,
         course_ids: course_ids,
         is_active: form.is_active.checked
       });
@@ -365,6 +400,27 @@ const StudentsView = {
               </div>
             </div>
 
+            <!-- Faculty Assignment -->
+            <div style="margin-bottom: 1.15rem; background: #f0f9ff; border: 2px solid #0284c7; border-radius: var(--radius-md); padding: 1rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.5rem; color: #0369a1;">
+                🏛️ Faculty Assignment *
+              </label>
+              <select name="faculty" style="width: 100%; padding: 0.75rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; background: white; color: #0369a1;">
+                ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
+                  {value:'Computer Science',label:'💻 Computer Science'},
+                  {value:'Health Science',label:'🏥 Health Science'},
+                  {value:'Engineering',label:'⚙️ Engineering'},
+                  {value:'Business',label:'💼 Business & Management'},
+                  {value:'Education',label:'📚 Education'},
+                  {value:'Mathematics',label:'📐 Mathematics & Statistics'},
+                  {value:'Law',label:'⚖️ Law & Legal Studies'},
+                  {value:'Islamic Studies',label:'🕌 Islamic Studies'},
+                  {value:'Social Sciences',label:'🌍 Social Sciences'},
+                  {value:'General',label:'🏫 General / All Faculties'}
+                ]).map(f => `<option value="${f.value}" ${f.value === (student.faculty || 'General') ? 'selected' : ''}>${f.label}</option>`).join('')}
+              </select>
+            </div>
+
             <!-- Course Access Restrictions -->
             <div style="margin-bottom: 1.25rem; background: var(--bg-surface-alt); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-primary);">
@@ -417,6 +473,7 @@ const StudentsView = {
         full_name: form.full_name.value,
         email: form.email.value,
         academic_year: form.academic_year.value,
+        faculty: form.faculty ? form.faculty.value : undefined,
         course_ids: course_ids,
         is_active: form.is_active.checked
       });

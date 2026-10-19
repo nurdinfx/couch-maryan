@@ -462,5 +462,28 @@ const API = {
       method: 'POST',
       body: JSON.stringify({ new_password: newPassword })
     });
+  },
+
+  // Professor Management
+  async getProfessors() {
+    return this.request('/auth/professors');
+  },
+
+  async createProfessor(profData) {
+    return this.request('/auth/professors', {
+      method: 'POST',
+      body: JSON.stringify(profData)
+    });
+  },
+
+  async updateProfessor(profId, profData) {
+    return this.request(`/auth/professors/${profId}`, {
+      method: 'PUT',
+      body: JSON.stringify(profData)
+    });
+  },
+
+  async deleteProfessor(profId) {
+    return this.request(`/auth/professors/${profId}`, { method: 'DELETE' });
   }
 };

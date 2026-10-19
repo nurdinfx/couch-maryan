@@ -26,6 +26,7 @@ function initSchema() {
       student_id_number TEXT,
       academic_year TEXT DEFAULT 'Year 1',
       department TEXT DEFAULT 'Guray Sicid Learning Platform',
+      faculty TEXT DEFAULT 'General',
       bio TEXT,
       is_active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -40,6 +41,7 @@ function initSchema() {
       cover_image TEXT,
       professor_id INTEGER REFERENCES users(id),
       target_year TEXT DEFAULT 'All Years',
+      faculty TEXT DEFAULT 'General',
       start_date DATE,
       end_date DATE,
       is_published INTEGER DEFAULT 1,
@@ -328,6 +330,9 @@ function initSchema() {
   try { db.exec("ALTER TABLE messages ADD COLUMN attachment_name TEXT"); } catch (e) {}
   try { db.exec("ALTER TABLE messages ADD COLUMN attachment_type TEXT"); } catch (e) {}
   try { db.exec("ALTER TABLE messages ADD COLUMN file_size_bytes INTEGER"); } catch (e) {}
+  // Faculty system migration
+  try { db.exec("ALTER TABLE users ADD COLUMN faculty TEXT DEFAULT 'General'"); } catch (e) {}
+  try { db.exec("ALTER TABLE courses ADD COLUMN faculty TEXT DEFAULT 'General'"); } catch (e) {}
 
   console.log('Database tables verified and initialized successfully.');
 
