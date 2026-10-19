@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { db } = require('./database/db');
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -100,6 +101,8 @@ async function runTests() {
 
   // 5. Video Progress Tracking & Lesson Completion
   await test('Student watches video and progress updates realistically', async () => {
+    try { db.prepare('DELETE FROM lesson_progress WHERE user_id = 3 AND lesson_id = 4').run(); } catch (e) {}
+
     // Report 50% watched on Lesson 4 (Docker & Container Internals) for Fatima
     const res1 = await req('/api/lessons/4/progress', {
       method: 'POST',
@@ -271,6 +274,59 @@ async function runTests() {
     const res = await req('/api/search?q=Cloud', {}, alexToken);
     assert.strictEqual(res.status, 200);
     assert(res.data.results.length >= 1, 'Search must return results for "Cloud"');
+  })();
+
+  // 16. Public Website & SEO Routes
+  await test('Public homepage (GET /) loads with Guray Sicid branding', async () => {
+    const res = await fetch(`${BASE_URL}/`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert(html.includes('Guray Sicid'), 'Must include platform title');
+    assert(html.includes('Learning Platform'), 'Must include platform subtitle');
+  })();
+
+  await test('Public features page (GET /features) loads', async () => {
+    const res = await fetch(`${BASE_URL}/features`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert(html.includes('Higher Education'), 'Must include features content');
+  })();
+
+  await test('Public interactive demo (GET /demo) loads with sample student', async () => {
+    const res = await fetch(`${BASE_URL}/demo`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert(html.includes('PUBLIC DEMO MODE'), 'Must contain demo mode indicator');
+    assert(html.includes('Khadar Jamac'), 'Must contain sample fictional student');
+  })();
+
+  await test('Public bilingual tutorials (GET /tutorials) loads with EN/SO options', async () => {
+    const res = await fetch(`${BASE_URL}/tutorials`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert(html.includes('English Tutorials'), 'Must include English tutorials tab');
+    assert(html.includes('Tababarrada Af-Soomaaliga'), 'Must include Somali tutorials tab');
+  })();
+
+  await test('Public login route (GET /login) loads existing login screen', async () => {
+    const res = await fetch(`${BASE_URL}/login`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert(html.includes('login-form'), 'Must contain existing login form');
+    assert(html.includes('Gal Akoonkaaga'), 'Must contain existing Somali login heading');
+  })();
+
+  await test('Public sitemap.xml and robots.txt SEO files are crawlable', async () => {
+    const smRes = await fetch(`${BASE_URL}/sitemap.xml`);
+    assert.strictEqual(smRes.status, 200);
+    const sitemap = await smRes.text();
+    assert(sitemap.includes('https://couch-maryan.onrender.com/'), 'Sitemap must contain canonical URL');
+
+    const rbRes = await fetch(`${BASE_URL}/robots.txt`);
+    assert.strictEqual(rbRes.status, 200);
+    const robots = await rbRes.text();
+    assert(robots.includes('Disallow: /api/'), 'Robots must protect private API');
+    assert(robots.includes('Sitemap:'), 'Robots must reference sitemap');
   })();
 
   console.log('====================================================');

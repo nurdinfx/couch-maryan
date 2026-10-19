@@ -131,9 +131,22 @@ app.get('/api/notifications', require('./middleware/auth').requireAuth, (req, re
   res.json({ notifications: notifs });
 });
 
-// Single Page Application fallback to index.html
+// Public Website Clean URL Routing
+app.get('/', (req, res) => res.sendFile(path.join(clientDir, 'index.html')));
+app.get(['/features', '/features.html'], (req, res) => res.sendFile(path.join(clientDir, 'features.html')));
+app.get(['/demo', '/demo.html'], (req, res) => res.sendFile(path.join(clientDir, 'demo.html')));
+app.get(['/tutorials', '/tutorials.html'], (req, res) => res.sendFile(path.join(clientDir, 'tutorials.html')));
+app.get(['/login', '/login.html'], (req, res) => res.sendFile(path.join(clientDir, 'login.html')));
+app.get(['/app', '/app.html', '/lms'], (req, res) => res.sendFile(path.join(clientDir, 'app.html')));
+app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(clientDir, 'sitemap.xml')));
+app.get('/robots.txt', (req, res) => res.sendFile(path.join(clientDir, 'robots.txt')));
+
+// Single Page Application fallback to index.html or app.html
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    if (req.path.startsWith('/app') || req.path.startsWith('/dashboard') || req.path.startsWith('/courses')) {
+      return res.sendFile(path.join(clientDir, 'app.html'));
+    }
     return res.sendFile(path.join(clientDir, 'index.html'));
   }
   if (req.path.startsWith('/api')) {

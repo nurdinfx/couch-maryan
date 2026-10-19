@@ -7,6 +7,26 @@
     {
       "source": "/uploads/:match*",
       "destination": "https://couch-maryan.onrender.com/uploads/:match*"
+    },
+    {
+      "source": "/features",
+      "destination": "/features.html"
+    },
+    {
+      "source": "/demo",
+      "destination": "/demo.html"
+    },
+    {
+      "source": "/tutorials",
+      "destination": "/tutorials.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/app.html"
     }
   ]
 }

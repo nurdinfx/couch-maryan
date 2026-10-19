@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /features
+Allow: /demo
+Allow: /tutorials
+Allow: /login
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Allow: /uploads/documents/
+
+# Protect authenticated app, private submissions, and internal APIs
+Disallow: /api/
+Disallow: /app.html
+Disallow: /uploads/submissions/
+
+Sitemap: https://couch-maryan.onrender.com/sitemap.xml

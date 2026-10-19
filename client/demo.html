@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Platform Demo | Guray Sicid Learning Platform</title>
+  <meta name="description" content="Explore the public interactive demonstration of Guray Sicid Learning Platform with fictional sample student and course data. Test video lectures, assignments, and exams.">
+  <link rel="canonical" href="https://couch-maryan.onrender.com/demo">
+  <link rel="icon" type="image/svg+xml" href="/assets/gs-icon.svg">
+  <link rel="stylesheet" href="/css/public.css">
+  <style>
+    /* Demo Page Interactive Sandbox Custom Styles */
+    .demo-header-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-glow);
+    }
+    .demo-user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .demo-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-cyan);
+      object-fit: cover;
+    }
+    .demo-metric-pill {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      text-align: center;
+      min-width: 110px;
+    }
+    .demo-tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .demo-tab-panel.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .demo-video-container {
+      background: #000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .quiz-option-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-option-card:hover {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: var(--accent-cyan);
+    }
+    .quiz-option-card.selected-correct {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      color: #34d399;
+    }
+    .quiz-option-card.selected-wrong {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-grid"></div>
+    <div class="glow-orb orb-top-left"></div>
+    <div class="glow-orb orb-center"></div>
+  </div>
+
+  <!-- Prominent Demo Mode Security Banner -->
+  <aside class="demo-banner-strip" role="region" aria-label="Demo Mode Notice">
+    <span>⚠️ <strong>PUBLIC DEMO MODE</strong> — Sample Student View (Isolated Read-Only Sandbox).</span>
+    <span>No real student records are exposed.</span>
+    <a href="/login" class="btn btn-sm btn-cyan" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">Go to Official Login →</a>
+  </aside>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon-wrap">
+          <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Logo">
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">Guray Sicid</span>
+          <span class="brand-tag">Learning Platform</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link" data-i18n="nav_home">Home</a></li>
+          <li><a href="/features" class="nav-link" data-i18n="nav_features">Features</a></li>
+          <li><a href="/demo" class="nav-link active" data-i18n="nav_demo">Interactive Demo</a></li>
+          <li><a href="/tutorials" class="nav-link" data-i18n="nav_tutorials">Tutorials</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="lang-btn" onclick="PublicI18N.toggleLanguage()">
+          <span id="public-lang-flag">🇬🇧</span>
+          <span id="public-lang-label">English</span>
+        </button>
+
+        <a href="/login" class="btn btn-login btn-login-cta">
+          <span data-i18n="nav_login">Student Login</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Open Mobile Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer -->
+  <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="brand-meta">
+        <span class="brand-name">Guray Sicid</span>
+        <span class="brand-tag">Learning Platform</span>
+      </div>
+      <button class="mobile-toggle" id="mobile-close-btn" aria-label="Close Mobile Menu">✕</button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="/" class="mobile-nav-link" data-i18n="nav_home">Home</a></li>
+      <li><a href="/features" class="mobile-nav-link" data-i18n="nav_features">Features</a></li>
+      <li><a href="/demo" class="mobile-nav-link" data-i18n="nav_demo">Interactive Demo</a></li>
+      <li><a href="/tutorials" class="mobile-nav-link" data-i18n="nav_tutorials">Tutorials</a></li>
+    </ul>
+    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: auto;">
+      <a href="/login" class="btn btn-primary btn-login-cta" style="justify-content: center;">
+        <span data-i18n="nav_login">Student Login</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Demo Content Section -->
+  <main class="section" style="padding-top: 3.5rem;">
+    <div class="container">
+      
+      <!-- Fictional Sample Student Header -->
+      <div class="demo-header-card">
+        <div class="demo-user-profile">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="demo-avatar" alt="Sample Student Khadar">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+              <h2 style="font-size: 1.4rem; font-weight: 800; color: #ffffff;">Khadar Jamac</h2>
+              <span style="background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.15rem 0.55rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 800;">SAMPLE STUDENT</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              ID: <strong>STU-DEMO-2026</strong> • Academic Standing: <strong>Year 2</strong> • Guray Sicid Faculty
+            </p>
+          </div>
+        </div>
+
+        <!-- Metrics Snapshot -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <div class="demo-metric-pill">
+            <div style="font-size: 1.3rem; font-weight: 800; color: #38bdf8;">3</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Enrolled Courses</div>
+          </div>
+          <div class="demo-metric-pill">
+            <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">78%</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Avg. Progress</div>
+          </div>
+          <div class="demo-metric-pill">
+            <div style="font-size: 1.3rem; font-weight: 800; color: #f59e0b;">3.82</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Cumulative GPA</div>
+          </div>
+          <div class="demo-metric-pill">
+            <div style="font-size: 1.3rem; font-weight: 800; color: #a855f7;">4 Badges</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Milestones</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demo Interactive Navigation Tabs -->
+      <div class="demo-tabs-nav" role="tablist">
+        <button class="demo-tab-btn active" onclick="switchDemoTab('courses')" id="tab-btn-courses">📚 Sample Enrolled Courses</button>
+        <button class="demo-tab-btn" onclick="switchDemoTab('video')" id="tab-btn-video">📹 Video Lecture Preview</button>
+        <button class="demo-tab-btn" onclick="switchDemoTab('quiz')" id="tab-btn-quiz">📝 Interactive Exam Simulator</button>
+        <button class="demo-tab-btn" onclick="switchDemoTab('gradebook')" id="tab-btn-gradebook">📊 Sample Gradebook Matrix</button>
+        <button class="demo-tab-btn" onclick="switchDemoTab('documents')" id="tab-btn-documents">📄 Syllabus & PDF Downloads</button>
+      </div>
+
+      <!-- ==========================================
+           TAB 1: SAMPLE ENROLLED COURSES
+           ========================================== -->
+      <div class="demo-tab-panel active" id="panel-courses">
+        <div class="courses-grid">
+          
+          <div class="course-card">
+            <div class="course-thumb-wrap">
+              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Course CS301">
+              <span class="course-code-badge">CS301</span>
+              <span class="course-year-badge">85% Complete</span>
+            </div>
+            <div class="course-body">
+              <h3 class="course-title">Cloud Computing & Distributed Systems</h3>
+              <p class="course-desc">Sample syllabus covering consensus algorithms, virtualization, and container clusters.</p>
+              
+              <!-- Progress Bar -->
+              <div style="margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                  <span>5 of 6 Activities Completed</span>
+                  <span style="font-weight: 700; color: var(--accent-cyan);">85%</span>
+                </div>
+                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
+                  <div style="width: 85%; height: 100%; background: var(--cyan-gradient); border-radius: 9999px;"></div>
+                </div>
+              </div>
+
+              <div class="course-footer">
+                <button class="btn btn-sm btn-cyan" onclick="switchDemoTab('video')">Watch Lecture 1 →</button>
+                <button class="btn btn-sm btn-outline" onclick="switchDemoTab('quiz')">Take Practice Exam</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb-wrap">
+              <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Course CS204">
+              <span class="course-code-badge">CS204</span>
+              <span class="course-year-badge">70% Complete</span>
+            </div>
+            <div class="course-body">
+              <h3 class="course-title">Advanced Data Structures & Algorithms</h3>
+              <p class="course-desc">Red-Black balanced trees, Dijkstra shortest paths, and streaming amortized analysis.</p>
+
+              <div style="margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                  <span>2 of 3 Modules Completed</span>
+                  <span style="font-weight: 700; color: var(--accent-cyan);">70%</span>
+                </div>
+                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
+                  <div style="width: 70%; height: 100%; background: var(--primary-gradient); border-radius: 9999px;"></div>
+                </div>
+              </div>
+
+              <div class="course-footer">
+                <button class="btn btn-sm btn-outline" onclick="switchDemoTab('documents')">Download Slides PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb-wrap">
+              <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Course CS410">
+              <span class="course-code-badge">CS410</span>
+              <span class="course-year-badge">60% Complete</span>
+            </div>
+            <div class="course-body">
+              <h3 class="course-title">Machine Learning & Intelligent Systems</h3>
+              <p class="course-desc">Deep learning computational graphs, automatic differentiation, and transformers.</p>
+
+              <div style="margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                  <span>1 of 2 Projects Submitted</span>
+                  <span style="font-weight: 700; color: var(--accent-cyan);">60%</span>
+                </div>
+                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
+                  <div style="width: 60%; height: 100%; background: var(--primary-gradient); border-radius: 9999px;"></div>
+                </div>
+              </div>
+
+              <div class="course-footer">
+                <button class="btn btn-sm btn-outline" onclick="switchDemoTab('gradebook')">View Sample Grades</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==========================================
+           TAB 2: VIDEO LECTURE STREAMING PREVIEW
+           ========================================== -->
+      <div class="demo-tab-panel" id="panel-video">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span style="font-size: 0.78rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase;">Module 1 • Lecture 1 Video</span>
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: #ffffff;">Principles of Cloud Distributed Systems</h3>
+            </div>
+            <span style="font-size: 0.8rem; background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.3rem 0.8rem; border-radius: 9999px; font-weight: 700;">
+              ✓ Watch Progress: 92% (Complete)
+            </span>
+          </div>
+
+          <!-- HTML5 Video Player with Sample Educational Stream -->
+          <div class="demo-video-container">
+            <video id="demo-video-player" controls preload="metadata" style="width: 100%; max-height: 480px; display: block;" poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <!-- Custom Speed & Controls Simulation -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: rgba(0,0,0,0.3); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Playback Speed:</span>
+              <button class="btn btn-sm btn-outline" onclick="setDemoVideoSpeed(1)" style="padding: 0.25rem 0.6rem;">1.0x</button>
+              <button class="btn btn-sm btn-outline" onclick="setDemoVideoSpeed(1.25)" style="padding: 0.25rem 0.6rem;">1.25x</button>
+              <button class="btn btn-sm btn-outline" onclick="setDemoVideoSpeed(1.5)" style="padding: 0.25rem 0.6rem;">1.5x</button>
+              <button class="btn btn-sm btn-outline" onclick="setDemoVideoSpeed(2)" style="padding: 0.25rem 0.6rem;">2.0x</button>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">
+              ⌨️ Keyboard shortcuts: <kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">Space</kbd> Play/Pause • <kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">F</kbd> Fullscreen • <kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">M</kbd> Mute
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           TAB 3: INTERACTIVE PRACTICE EXAM SIMULATOR
+           ========================================== -->
+      <div class="demo-tab-panel" id="panel-quiz">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+            <div>
+              <span style="font-size: 0.78rem; color: var(--accent-cyan); font-weight: 700;">CS301 • MIDTERM PRACTICE EXAMINATION</span>
+              <h3 style="font-size: 1.3rem; font-weight: 800; color: #ffffff;">Question 1 of 5 (10 Points)</h3>
+            </div>
+            <div style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.4rem 0.9rem; border-radius: var(--radius-full); font-weight: 800; font-family: monospace; font-size: 0.9rem;">
+              ⏱️ 28:45 Remaining
+            </div>
+          </div>
+
+          <p style="font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-bottom: 1.5rem;">
+            According to Brewer's CAP theorem, what is fundamentally guaranteed in an asynchronous network during a network partition (P)?
+          </p>
+
+          <div id="quiz-options-container">
+            <div class="quiz-option-card" onclick="selectDemoQuizOption(this, false, 'Option A is incorrect because CAP states Consistency and Availability cannot both be guaranteed simultaneously across an active partition.')">
+              <span style="font-weight: 800; color: var(--accent-cyan);">A.</span>
+              <span>You can achieve both perfect Consistency (C) and perfect Availability (A) simultaneously.</span>
+            </div>
+
+            <div class="quiz-option-card" onclick="selectDemoQuizOption(this, true, 'Correct! Brewer\'s CAP theorem mathematically proves you must choose between Consistency or Availability when a partition occurs.')">
+              <span style="font-weight: 800; color: var(--accent-cyan);">B.</span>
+              <span>You must choose between Consistency (C) or Availability (A); you cannot guarantee both.</span>
+            </div>
+
+            <div class="quiz-option-card" onclick="selectDemoQuizOption(this, false, 'Option C is incorrect because physical hardware cable cuts and switch failures cannot be mathematically eliminated.')">
+              <span style="font-weight: 800; color: var(--accent-cyan);">C.</span>
+              <span>Partition tolerance can be eliminated entirely by utilizing redundant fiber optic links.</span>
+            </div>
+
+            <div class="quiz-option-card" onclick="selectDemoQuizOption(this, false, 'Option D is incorrect because consistency requires agreement which cannot always be verified across dropped nodes.')">
+              <span style="font-weight: 800; color: var(--accent-cyan);">D.</span>
+              <span>Consistency is always preserved regardless of dropped network packets.</span>
+            </div>
+          </div>
+
+          <!-- Live Explanation Feedback Card -->
+          <div id="quiz-feedback-box" style="display: none; margin-top: 1.5rem; padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.92rem; line-height: 1.6;"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           TAB 4: SAMPLE GRADEBOOK MATRIX
+           ========================================== -->
+      <div class="demo-tab-panel" id="panel-gradebook">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+          <h3 style="font-size: 1.3rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">Academic Gradebook Matrix</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Sample student weighted breakdown for CS301 (Cloud Computing & Distributed Systems).
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.25);">
+                  <th style="padding: 0.75rem 1rem; color: var(--text-muted);">Assessment Item</th>
+                  <th style="padding: 0.75rem 1rem; color: var(--text-muted);">Category Weight</th>
+                  <th style="padding: 0.75rem 1rem; color: var(--text-muted);">Score Earned</th>
+                  <th style="padding: 0.75rem 1rem; color: var(--text-muted);">Percentage</th>
+                  <th style="padding: 0.75rem 1rem; color: var(--text-muted);">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem; font-weight: 600;">Assignment 1: Distributed Object Store</td>
+                  <td style="padding: 0.85rem 1rem;">25%</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 700;">94.0 / 100</td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">94%</td>
+                  <td style="padding: 0.85rem 1rem;"><span style="background: rgba(16,185,129,0.15); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">GRADED</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem; font-weight: 600;">Midterm Examination: Distributed Systems</td>
+                  <td style="padding: 0.85rem 1rem;">25%</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 700;">60.0 / 65</td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">92.3%</td>
+                  <td style="padding: 0.85rem 1rem;"><span style="background: rgba(16,185,129,0.15); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">PASSED</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem; font-weight: 600;">Laboratory Attendance & Seminar</td>
+                  <td style="padding: 0.85rem 1rem;">10%</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 700;">4 / 4 Sessions</td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">100%</td>
+                  <td style="padding: 0.85rem 1rem;"><span style="background: rgba(16,185,129,0.15); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">EXCELLENT</span></td>
+                </tr>
+                <tr style="background: rgba(2,132,199,0.1);">
+                  <td style="padding: 0.85rem 1rem; font-weight: 800; color: #ffffff;">Term Total Standing (Current)</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 800;">60% evaluated</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 800; color: #38bdf8;">Letter Grade: A</td>
+                  <td style="padding: 0.85rem 1rem; font-weight: 800; color: #38bdf8;">94.2%</td>
+                  <td style="padding: 0.85rem 1rem;"><span style="background: #0284c7; color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 800;">HONOR ROLL</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           TAB 5: SYLLABUS & PDF DOWNLOADS
+           ========================================== -->
+      <div class="demo-tab-panel" id="panel-documents">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+          <h3 style="font-size: 1.3rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">Sample Academic PDF Resources</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Preview official course documents, syllabi, and assignment specifications directly.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📄</div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 0.35rem;">CS301 Official Syllabus & Policies</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">PDF Document • 24.5 KB • Faculty Approved</p>
+              </div>
+              <div style="margin-top: 1rem;">
+                <a href="/uploads/documents/CS301_Course_Syllabus.pdf" target="_blank" class="btn btn-sm btn-cyan" style="width: 100%;">Open PDF in Viewer →</a>
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📊</div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 0.35rem;">Lecture 1 Presentation Slides</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">PDF Presentation • 38.4 KB • CAP Theorem</p>
+              </div>
+              <div style="margin-top: 1rem;">
+                <a href="/uploads/documents/Lecture1_Introduction_to_Distributed_Systems.pdf" target="_blank" class="btn btn-sm btn-cyan" style="width: 100%;">Open PDF in Viewer →</a>
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">⚙️</div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 0.35rem;">Assignment 1 Specification Lab</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">PDF Specification • 41.2 KB • Consistent Hashing</p>
+              </div>
+              <div style="margin-top: 1rem;">
+                <a href="/uploads/documents/Assignment1_Specification_Cloud_Storage.pdf" target="_blank" class="btn btn-sm btn-cyan" style="width: 100%;">Open PDF in Viewer →</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Ready to Sign In Banner -->
+  <section class="section" style="padding-top: 1rem;">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-banner-content">
+          <h2 style="font-size: 2.1rem; font-weight: 800; color: white; margin-bottom: 0.75rem;">
+            Ready to Sign In to Your Real Account?
+          </h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Enrolled students and faculty members can log in using their registered university email and password.
+          </p>
+          <a href="/login" class="btn btn-primary btn-login-cta" style="padding: 0.85rem 2.2rem; font-size: 1.05rem;">
+            <span>🔐</span> Go to Official Login Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-brand">
+            <div class="brand-icon-wrap">
+              <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Logo">
+            </div>
+            <div class="brand-meta">
+              <span class="brand-name">Guray Sicid</span>
+              <span class="brand-tag">Learning Platform</span>
+            </div>
+          </a>
+          <p>Public Interactive Demonstration Sandbox. No production credentials or private data exposed.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/" class="footer-link">Home</a></li>
+            <li><a href="/features" class="footer-link">Features</a></li>
+            <li><a href="/demo" class="footer-link">Interactive Demo</a></li>
+            <li><a href="/tutorials" class="footer-link">Tutorials</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform Access</h4>
+          <ul class="footer-links">
+            <li><a href="/login" class="footer-link">Student Login</a></li>
+            <li><a href="/login" class="footer-link">Professor Portal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Disclaimer</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+            This demonstration is isolated for exploration purposes only and does not interact with the production database.
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 Guray Sicid Learning Platform. All rights reserved.</div>
+        <div><a href="/" class="footer-link">Return to Homepage</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/public.js"></script>
+  <script>
+    // Tab Switcher for Demo Page
+    function switchDemoTab(tabName) {
+      document.querySelectorAll('.demo-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.demo-tab-panel').forEach(p => p.classList.remove('active'));
+
+      const btn = document.getElementById('tab-btn-' + tabName);
+      const panel = document.getElementById('panel-' + tabName);
+      if (btn) btn.classList.add('active');
+      if (panel) panel.classList.add('active');
+    }
+
+    // Video Speed Setter
+    function setDemoVideoSpeed(speed) {
+      const v = document.getElementById('demo-video-player');
+      if (v) v.playbackRate = speed;
+    }
+
+    // Interactive Quiz Option Click Simulation
+    function selectDemoQuizOption(el, isCorrect, explanation) {
+      document.querySelectorAll('.quiz-option-card').forEach(c => {
+        c.classList.remove('selected-correct', 'selected-wrong');
+      });
+
+      const feedbackBox = document.getElementById('quiz-feedback-box');
+      if (isCorrect) {
+        el.classList.add('selected-correct');
+        feedbackBox.style.display = 'block';
+        feedbackBox.style.background = 'rgba(16, 185, 129, 0.15)';
+        feedbackBox.style.border = '1px solid #10b981';
+        feedbackBox.style.color = '#34d399';
+        feedbackBox.innerHTML = '<strong>✅ Correct Answer! (+10 Pts)</strong><br>' + explanation;
+      } else {
+        el.classList.add('selected-wrong');
+        feedbackBox.style.display = 'block';
+        feedbackBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedbackBox.style.border = '1px solid #ef4444';
+        feedbackBox.style.color = '#f87171';
+        feedbackBox.innerHTML = '<strong>❌ Incorrect.</strong><br>' + explanation + '<br><em>Try selecting Option B!</em>';
+      }
+    }
+  </script>
+</body>
+</html>

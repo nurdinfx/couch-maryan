@@ -1,186 +1,739 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guray Sicid Learning Platform | Learning without limit</title>
-  <meta name="description" content="Guray Sicid Learning Platform - Learning without limit. Advanced educational management platform.">
-  <link rel="stylesheet" href="/css/moodle-theme.css">
+
+  <!-- SEO Primary Meta Tags -->
+  <title>Guray Sicid Learning Platform | Modern Academic Management & Online Education</title>
+  <meta name="title" content="Guray Sicid Learning Platform | Modern Academic Management & Online Education">
+  <meta name="description" content="Official portal of Guray Sicid Learning Platform. Access accredited courses, stream video lectures, submit assignments, take online exams, and track academic credentials.">
+  <meta name="keywords" content="Guray Sicid Learning Platform, e-learning, Somali education, university portal, LMS, online courses, CS301, academic management">
+  <meta name="author" content="Guray Sicid Learning Platform">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://couch-maryan.onrender.com/">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://couch-maryan.onrender.com/">
+  <meta property="og:title" content="Guray Sicid Learning Platform | Learning Without Limit">
+  <meta property="og:description" content="Next-generation academic platform for higher education. Stream lectures, complete laboratory assignments, and verify credentials.">
+  <meta property="og:image" content="/assets/gs-logo.svg">
+
+  <!-- Twitter Meta -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://couch-maryan.onrender.com/">
+  <meta property="twitter:title" content="Guray Sicid Learning Platform | Learning Without Limit">
+  <meta property="twitter:description" content="Next-generation academic platform for higher education. Stream lectures, complete laboratory assignments, and verify credentials.">
+  <meta property="twitter:image" content="/assets/gs-logo.svg">
+
   <link rel="icon" type="image/svg+xml" href="/assets/gs-icon.svg">
+  <link rel="stylesheet" href="/css/public.css">
+
+  <!-- Structured Data JSON-LD for Google Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Guray Sicid Learning Platform",
+    "url": "https://couch-maryan.onrender.com/",
+    "logo": "https://couch-maryan.onrender.com/assets/gs-icon.svg",
+    "description": "Enterprise academic management and online education platform.",
+    "slogan": "Learning without limit",
+    "knowsLanguage": ["en", "so"]
+  }
+  </script>
+
+  <!-- Backward Compatibility Redirect for Existing LMS Hash Bookmarks -->
+  <script>
+    if (window.location.hash && window.location.hash.startsWith('#/')) {
+      window.location.replace('/app.html' + window.location.hash);
+    }
+  </script>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <header id="top-navbar">
-    <div class="nav-left">
-      <button class="drawer-toggle-btn" onclick="App.toggleDrawer()" title="Toggle Navigation Drawer" aria-label="Toggle Drawer">
-        ☰
-      </button>
+  <!-- Ambient Lights & Grid Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-grid"></div>
+    <div class="glow-orb orb-top-left"></div>
+    <div class="glow-orb orb-top-right"></div>
+    <div class="glow-orb orb-center"></div>
+  </div>
 
-      <a href="#/dashboard" class="brand-container">
-        <img src="/assets/gs-icon.svg" class="brand-logo-icon" style="width: 38px; height: 38px; border-radius: 10px; display: block;" alt="GS Logo">
-        <div class="brand-titles">
-          <span class="brand-title" id="brand-title-text">Guray Sicid Learning Platform</span>
-          <span class="brand-subtitle" id="brand-subtitle-text" style="color: #0284c7; font-weight: 600;">Learning without limit</span>
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="nav-brand">
+        <div class="brand-icon-wrap">
+          <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Guray Sicid Logo">
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">Guray Sicid</span>
+          <span class="brand-tag">Learning Platform</span>
         </div>
       </a>
 
-      <!-- Site-wide Search -->
-      <div class="nav-search-container">
-        <span class="nav-search-icon">🔍</span>
-        <input type="text" id="site-search-input" class="nav-search-input" placeholder="Search courses, lessons, assignments..." autocomplete="off">
-        <div id="search-results-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 1100; max-height: 350px; overflow-y: auto;"></div>
-      </div>
-    </div>
+      <!-- Desktop Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link active" data-i18n="nav_home">Home</a></li>
+          <li><a href="/features" class="nav-link" data-i18n="nav_features">Features</a></li>
+          <li><a href="/demo" class="nav-link" data-i18n="nav_demo">Interactive Demo</a></li>
+          <li><a href="/tutorials" class="nav-link" data-i18n="nav_tutorials">Tutorials</a></li>
+        </ul>
+      </nav>
 
-    <!-- Right Controls: Language, Dark Mode, Messages, Notifications, User -->
-    <div class="nav-right">
+      <!-- Right Actions: Language Switcher & Login CTA -->
+      <div class="nav-actions">
+        <button class="lang-btn" onclick="PublicI18N.toggleLanguage()" id="public-lang-toggle" aria-label="Toggle language between Somali and English">
+          <span id="public-lang-flag">🇬🇧</span>
+          <span id="public-lang-label">English</span>
+        </button>
 
-      <!-- Somali / English Language Switcher Toggle -->
-      <button class="nav-action-btn lang-toggle-btn" onclick="App.toggleLanguage()" id="lang-switcher-btn" title="Toggle Language (Somali / English)" style="width: auto; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); cursor: pointer;">
-        <span id="lang-flag-indicator">🇸🇴</span>
-        <span id="lang-label-indicator">Soomaali</span>
-      </button>
+        <a href="/login" class="btn btn-login btn-login-cta">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
+          </svg>
+          <span data-i18n="nav_login">Student Login</span>
+        </a>
 
-      <!-- Dark / Light Mode Toggle -->
-      <button class="nav-action-btn" onclick="App.toggleTheme()" title="Toggle Light/Dark Theme">
-        🌓
-      </button>
-
-      <!-- Messages Drawer Link -->
-      <a href="#/messages" class="nav-action-btn" title="Direct Messenger">
-        💬
-      </a>
-
-      <!-- Notifications Bell -->
-      <button class="nav-action-btn" onclick="App.showNotifications()" title="Notifications">
-        🔔
-        <span id="notif-badge-count" class="badge-count" style="display: block;">2</span>
-      </button>
-
-      <!-- User Menu -->
-      <div class="user-profile-menu" onclick="App.navigate('/dashboard')">
-        <img id="navbar-user-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="user-avatar" alt="Avatar">
-        <div class="user-info-text">
-          <span id="navbar-user-name" class="user-name">Prof. Maryam Al-Mansoor</span>
-          <span id="navbar-user-role" class="user-role-badge">PROFESSOR</span>
-        </div>
-      <button class="nav-action-btn" onclick="App.logout()" title="Ka bax (Log Out)" style="color:#ef4444;margin-left:0.5rem;display:inline-flex;align-items:center;justify-content:center;padding:0.45rem;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);cursor:pointer;" aria-label="Log Out"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Open Mobile Menu">
+          ☰
+        </button>
       </div>
 
     </div>
   </header>
 
-  <!-- App Body Layout -->
-  <div id="app-layout">
-    <div id="drawer-backdrop" onclick="App.toggleDrawer()" aria-hidden="true"></div>
-    
-    <!-- Left Navigation Drawer -->
-    <aside id="left-drawer">
-      <div class="drawer-section-title" id="drawer-sec-nav">Academic Navigation</div>
-      <ul class="drawer-nav-list">
-        <li class="drawer-nav-item" id="nav-dashboard">
-          <a href="#/dashboard">
-            <span class="drawer-icon">🏠</span>
-            <span id="nav-txt-dashboard">Dashboard</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-courses">
-          <a href="#/courses">
-            <span class="drawer-icon">📚</span>
-            <span id="nav-txt-courses">Course Catalog</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-gradebook">
-          <a href="#/gradebook">
-            <span class="drawer-icon">📊</span>
-            <span id="nav-txt-gradebook">Gradebook Matrix</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-attendance">
-          <a href="#/attendance">
-            <span class="drawer-icon">📅</span>
-            <span id="nav-txt-attendance">Attendance Records</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-badges">
-          <a href="#/badges">
-            <span class="drawer-icon">🏆</span>
-            <span id="nav-txt-badges">Badges & Certificates</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-discussions">
-          <a href="#/discussions">
-            <span class="drawer-icon">💬</span>
-            <span id="nav-txt-discussions">Course Forum</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-calendar">
-          <a href="#/calendar">
-            <span class="drawer-icon">🗓️</span>
-            <span id="nav-txt-calendar">Deadlines & Calendar</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="nav-messages">
-          <a href="#/messages">
-            <span class="drawer-icon">✉️</span>
-            <span id="nav-txt-messages">Direct Messenger</span>
-          </a>
-        </li>
-      </ul>
-
-      <div class="drawer-section-title" id="drawer-sec-mgmt" style="margin-top: 1rem;">Faculty Management</div>
-      <ul class="drawer-nav-list">
-        <li class="drawer-nav-item" id="drawer-nav-students">
-          <a href="#/students">
-            <span class="drawer-icon">👨‍🎓</span>
-            <span id="nav-txt-students">Student Accounts & Access</span>
-          </a>
-        </li>
-        <li class="drawer-nav-item" id="drawer-nav-admin">
-          <a href="#/admin">
-            <span class="drawer-icon">⚙️</span>
-            <span id="nav-txt-admin">System Maintenance</span>
-          </a>
-        </li>
-      </ul>
-
-      <div style="margin-top: auto; padding: 1.25rem; border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted);">
-        <div style="font-weight: 700; color: var(--text-main);">Guray Sicid Learning Platform</div>
-        <div style="color: #0284c7; font-weight: 600;">Learning without limit</div>
-        <div style="margin-top: 0.25rem; font-family: monospace;">v3.0.0 • SQLite Persistent Storage</div>
+  <!-- Mobile Menu Drawer -->
+  <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="brand-meta">
+        <span class="brand-name">Guray Sicid</span>
+        <span class="brand-tag">Learning Platform</span>
       </div>
-    </aside>
+      <button class="mobile-toggle" id="mobile-close-btn" aria-label="Close Mobile Menu">✕</button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="/" class="mobile-nav-link" data-i18n="nav_home">Home</a></li>
+      <li><a href="/features" class="mobile-nav-link" data-i18n="nav_features">Features</a></li>
+      <li><a href="/demo" class="mobile-nav-link" data-i18n="nav_demo">Interactive Demo</a></li>
+      <li><a href="/tutorials" class="mobile-nav-link" data-i18n="nav_tutorials">Tutorials</a></li>
+    </ul>
+    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: auto;">
+      <button class="lang-btn" onclick="PublicI18N.toggleLanguage()" style="justify-content: center; padding: 0.8rem;">
+        <span id="mobile-lang-flag">🇬🇧</span>
+        <span id="mobile-lang-label">Switch Language</span>
+      </button>
+      <a href="/login" class="btn btn-primary btn-login-cta" style="justify-content: center;">
+        <span data-i18n="nav_login">Student Login</span>
+      </a>
+    </div>
+  </aside>
 
-    <!-- Main Dynamic Content Workspace -->
-    <main id="main-content">
-      <div style="padding: 4rem; text-align: center; color: var(--text-muted);">
-        Loading Guray Sicid Learning Platform...
+  <!-- ====================================================================
+       HERO SECTION
+       ==================================================================== -->
+  <section class="hero-section" id="hero">
+    <div class="container">
+      
+      <div class="hero-content">
+        <div class="badge-pill">
+          <span class="badge-pill-pulse"></span>
+          <span data-i18n="hero_badge">Next-Gen Higher Education LMS</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span data-i18n="hero_title_1">Empowering Knowledge &</span><br>
+          <span class="text-gradient" data-i18n="hero_title_2">Academic Excellence</span>
+        </h1>
+
+        <p class="hero-description" data-i18n="hero_desc">
+          Guray Sicid Learning Platform is an enterprise academic platform providing students and faculty with high-speed video streaming, interactive examinations, automated gradebook tracking, and verifiable credentials.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="/demo" class="btn btn-cyan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span data-i18n="hero_btn_demo">Explore Live Demo</span>
+          </a>
+
+          <a href="/login" class="btn btn-outline btn-login-cta">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span data-i18n="hero_btn_login">Student & Faculty Login</span>
+          </a>
+        </div>
+
+        <div class="hero-proof">
+          <span>✓ <strong data-i18n="hero_proof_1">Bilingual (Somali & English)</strong></span>
+          <span>✓ <strong data-i18n="hero_proof_2">Instant Exam Auto-Grading</strong></span>
+          <span>✓ <strong data-i18n="hero_proof_3">Verifiable Digital Badges</strong></span>
+        </div>
       </div>
-    </main>
 
-  </div>
+      <!-- Hero Mockup Display -->
+      <div class="hero-mockup-wrap">
+        <div class="hero-mockup-glow" aria-hidden="true"></div>
+        <div class="mockup-frame">
+          <div class="mockup-header-bar">
+            <div class="mockup-dots">
+              <span class="mockup-dot dot-red"></span>
+              <span class="mockup-dot dot-amber"></span>
+              <span class="mockup-dot dot-green"></span>
+            </div>
+            <div class="mockup-url-bar">
+              🔒 https://guraysicid.edu/portal/dashboard
+            </div>
+            <div style="font-size: 0.75rem; color: #38bdf8; font-weight: 700;">
+              LIVE PORTAL PREVIEW
+            </div>
+          </div>
 
-  <!-- Toast Container -->
-  <div id="toast-container"></div>
+          <div class="mockup-content">
+            <!-- Mockup Sidebar -->
+            <div class="mockup-sidebar">
+              <div class="mockup-sidebar-item active">🏠 Dashboard Overview</div>
+              <div class="mockup-sidebar-item">📚 Course Catalog</div>
+              <div class="mockup-sidebar-item">📊 Gradebook Matrix</div>
+              <div class="mockup-sidebar-item">📅 Attendance Records</div>
+              <div class="mockup-sidebar-item">🏆 Badges & Honors</div>
+              <div class="mockup-sidebar-item">💬 Faculty Messenger</div>
+            </div>
 
-  <!-- Modal Container Root -->
-  <div id="modal-root"></div>
+            <!-- Mockup Main Stage -->
+            <div class="mockup-main">
+              <div class="mockup-course-banner">
+                <div>
+                  <span style="font-size: 0.75rem; background: #0284c7; color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 800;">ACTIVE TERM</span>
+                  <h3 style="font-size: 1.25rem; font-weight: 800; color: white; margin-top: 0.4rem;">CS301: Cloud Computing & Distributed Systems</h3>
+                  <p style="font-size: 0.85rem; color: #94a3b8;">Instructor: Prof. Maryam Al-Mansoor • 4 Modules</p>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: #38bdf8;">85%</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Overall Progress</div>
+                </div>
+              </div>
 
-  <!-- Scripts -->
-  <script src="/js/api.js"></script>
-  <script src="/js/i18n.js"></script>
-  <script src="/js/views/dashboard.js"></script>
-  <script src="/js/views/course-view.js"></script>
-  <script src="/js/views/lesson-view.js"></script>
-  <script src="/js/views/assignment.js"></script>
-  <script src="/js/views/quiz-runner.js"></script>
-  <script src="/js/views/badges.js"></script>
-  <script src="/js/views/discussions.js"></script>
-  <script src="/js/views/messages.js"></script>
-  <script src="/js/views/calendar.js"></script>
-  <script src="/js/views/students.js"></script>
-  <script src="/js/views/admin.js"></script>
-  <script src="/js/app.js"></script>
+              <div class="mockup-stats-row">
+                <div class="mockup-stat-card">
+                  <div class="mockup-stat-val">3.88</div>
+                  <div class="mockup-stat-lbl">Cumulative GPA</div>
+                </div>
+                <div class="mockup-stat-card">
+                  <div class="mockup-stat-val" style="color: #10b981;">100%</div>
+                  <div class="mockup-stat-lbl">Attendance Rate</div>
+                </div>
+                <div class="mockup-stat-card">
+                  <div class="mockup-stat-val" style="color: #f59e0b;">5 Badges</div>
+                  <div class="mockup-stat-lbl">Earned Honors</div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                <a href="/demo" class="btn btn-sm btn-cyan">Explore Interactive Demo →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       FEATURES SECTION
+       ==================================================================== -->
+  <section class="section section-alt" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-pill">
+          <span data-i18n="features_badge">Core Capabilities</span>
+        </div>
+        <h2 class="section-title" data-i18n="features_title">Built for Modern Academic Learning</h2>
+        <p class="section-subtitle" data-i18n="features_subtitle">
+          Designed to deliver an intuitive and reliable digital classroom experience for faculty members and enrolled students.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">📹</div>
+          <h3 class="feature-title" data-i18n="feat_1_title">Video Lecture Streaming</h3>
+          <p class="feature-desc" data-i18n="feat_1_desc">
+            High-definition video streaming with variable playback speeds (0.75x to 2x), wide cinema mode, and millisecond-accurate progress persistence.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ HTML5 byte-range video streaming</li>
+            <li class="feature-point">✓ Keyboard shortcuts (Space, M, F, Arrows)</li>
+            <li class="feature-point">✓ Automatic watch completion thresholds</li>
+          </ul>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">📝</div>
+          <h3 class="feature-title" data-i18n="feat_2_title">Interactive Exam Runner</h3>
+          <p class="feature-desc" data-i18n="feat_2_desc">
+            Timed online assessments with single-choice, multiple-choice, true/false, and short answer question banks with instant automated grading.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ Dynamic countdown exam timers</li>
+            <li class="feature-point">✓ Instant score calculation and answer review</li>
+            <li class="feature-point">✓ Multiple attempts with highest score retention</li>
+          </ul>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">📂</div>
+          <h3 class="feature-title" data-i18n="feat_3_title">Assignment Submissions & Feedback</h3>
+          <p class="feature-desc" data-i18n="feat_3_desc">
+            Seamless document and archive uploads with professor feedback, rubric evaluations, and weighted score calculation.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ PDF and source code attachment support</li>
+            <li class="feature-point">✓ Professor personalized feedback notes</li>
+            <li class="feature-point">✓ Resubmission management workflow</li>
+          </ul>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">📊</div>
+          <h3 class="feature-title" data-i18n="feat_4_title">Comprehensive Gradebook Matrix</h3>
+          <p class="feature-desc" data-i18n="feat_4_desc">
+            Real-time calculation of overall course standing, letter grades, weighted assignment ratios, and academic transcript records.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ Automated weighted grade calculations</li>
+            <li class="feature-point">✓ Academic letter grades (A, B, C, D, F)</li>
+            <li class="feature-point">✓ Student cohort performance distributions</li>
+          </ul>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">📅</div>
+          <h3 class="feature-title" data-i18n="feat_5_title">Attendance & Performance Tracking</h3>
+          <p class="feature-desc" data-i18n="feat_5_desc">
+            Faculty attendance session logs with present, late, excused, and absent statuses paired with early risk alert notifications.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ Multi-status attendance management</li>
+            <li class="feature-point">✓ At-risk student automated flagging</li>
+            <li class="feature-point">✓ Full semester attendance percentages</li>
+          </ul>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="feature-card">
+          <div class="feature-icon-box">🏅</div>
+          <h3 class="feature-title" data-i18n="feat_6_title">Verifiable Badges & Certificates</h3>
+          <p class="feature-desc" data-i18n="feat_6_desc">
+            Milestone achievements and cryptographic course completion certificates with unique verification UUIDs.
+          </p>
+          <ul class="feature-points">
+            <li class="feature-point">✓ Six distinct academic badge categories</li>
+            <li class="feature-point">✓ Publicly verifiable certificate links</li>
+            <li class="feature-point">✓ Downloadable PDF achievement summaries</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SAMPLE COURSES SHOWCASE
+       ==================================================================== -->
+  <section class="section" id="courses">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-pill">
+          <span data-i18n="courses_badge">Academic Curriculum</span>
+        </div>
+        <h2 class="section-title" data-i18n="courses_title">Featured Faculty Courses</h2>
+        <p class="section-subtitle" data-i18n="courses_subtitle">
+          Sample comprehensive curriculums taught by faculty members with rich multimedia learning modules.
+        </p>
+      </div>
+
+      <div class="courses-grid">
+        
+        <!-- Course 1 -->
+        <div class="course-card">
+          <div class="course-thumb-wrap">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Cloud Computing">
+            <span class="course-code-badge">CS301</span>
+            <span class="course-year-badge">All Years</span>
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">Cloud Computing & Distributed Systems</h3>
+            <p class="course-desc">
+              Study of distributed architectures, consensus algorithms (Raft/Paxos), cloud primitives, container orchestration, and serverless compute.
+            </p>
+
+            <div class="course-lessons-preview">
+              <div class="lesson-preview-item">
+                <span>📄 Course Syllabus & Policy</span>
+                <span style="color: var(--accent-cyan);">PDF</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>📹 Lec 1: Distributed Foundations</span>
+                <span style="color: #10b981;">10 mins</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>📝 Midterm Examination</span>
+                <span style="color: #f59e0b;">5 Questions</span>
+              </div>
+            </div>
+
+            <div class="course-footer">
+              <div class="course-prof">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="course-prof-img" alt="Prof Maryam">
+                <span>Prof. Maryam Al-Mansoor</span>
+              </div>
+              <a href="/demo" class="btn btn-sm btn-outline">Preview Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="course-card">
+          <div class="course-thumb-wrap">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Data Structures">
+            <span class="course-code-badge">CS204</span>
+            <span class="course-year-badge">Year 2</span>
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">Advanced Data Structures & Algorithms</h3>
+            <p class="course-desc">
+              Mastery of balanced search trees, graph algorithms, amortized analysis, dynamic programming, and streaming designs for high throughput.
+            </p>
+
+            <div class="course-lessons-preview">
+              <div class="lesson-preview-item">
+                <span>📄 Red-Black Trees & Invariants</span>
+                <span style="color: var(--accent-cyan);">PDF</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>📹 Lec 2: Dijkstra & Fibonacci Heaps</span>
+                <span style="color: #10b981;">8 mins</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>💻 Lab 1: Tree Benchmark Lab</span>
+                <span style="color: #a855f7;">Assignment</span>
+              </div>
+            </div>
+
+            <div class="course-footer">
+              <div class="course-prof">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="course-prof-img" alt="Prof Maryam">
+                <span>Prof. Maryam Al-Mansoor</span>
+              </div>
+              <a href="/demo" class="btn btn-sm btn-outline">Preview Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="course-card">
+          <div class="course-thumb-wrap">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80" class="course-thumb" alt="Machine Learning">
+            <span class="course-code-badge">CS410</span>
+            <span class="course-year-badge">Year 4</span>
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">Machine Learning & Intelligent Systems</h3>
+            <p class="course-desc">
+              Practical and theoretical treatment of neural networks, backpropagation calculus, transformer architectures, and distributed pipelines.
+            </p>
+
+            <div class="course-lessons-preview">
+              <div class="lesson-preview-item">
+                <span>📄 Autodiff Engine Calculus</span>
+                <span style="color: var(--accent-cyan);">PDF</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>📹 Lec 2: Self-Attention Mechanics</span>
+                <span style="color: #10b981;">9 mins</span>
+              </div>
+              <div class="lesson-preview-item">
+                <span>💻 Lab 1: PyTorch/NumPy Autodiff</span>
+                <span style="color: #a855f7;">Assignment</span>
+              </div>
+            </div>
+
+            <div class="course-footer">
+              <div class="course-prof">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="course-prof-img" alt="Prof Maryam">
+                <span>Prof. Maryam Al-Mansoor</span>
+              </div>
+              <a href="/demo" class="btn btn-sm btn-outline">Preview Demo</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       HOW IT WORKS SECTION
+       ==================================================================== -->
+  <section class="section section-alt" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-pill">
+          <span data-i18n="how_badge">Step-by-Step</span>
+        </div>
+        <h2 class="section-title" data-i18n="how_title">How Guray Sicid Platform Works</h2>
+        <p class="section-subtitle">
+          From enrollment to course graduation in four streamlined, accessible steps.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title" data-i18n="step_1_title">1. Secure Portal Sign In</h3>
+          <p class="step-desc" data-i18n="step_1_desc">
+            Students access their university portal using institutional credentials and multi-factor safety.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title" data-i18n="step_2_title">2. Access Enrolled Courses</h3>
+          <p class="step-desc" data-i18n="step_2_desc">
+            Browse academic syllabi, weekly lecture slides, code repositories, and reading materials.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title" data-i18n="step_3_title">3. Stream Lectures & Labs</h3>
+          <p class="step-desc" data-i18n="step_3_desc">
+            Watch high-speed video lectures, submit programming assignments, and take midterm exams.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3 class="step-title" data-i18n="step_4_title">4. Track Grades & Honors</h3>
+          <p class="step-desc" data-i18n="step_4_desc">
+            View your real-time GPA matrix, earn milestone badges, and graduate with certified diplomas.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       TUTORIALS CALLOUT SECTION
+       ==================================================================== -->
+  <section class="section" id="tutorials-preview">
+    <div class="container">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: var(--radius-lg); padding: 3rem 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+        <div style="max-width: 600px;">
+          <div class="badge-pill">
+            <span data-i18n="tut_badge">Video Tutorials</span>
+          </div>
+          <h2 style="font-size: 1.85rem; font-weight: 800; color: #ffffff; margin-bottom: 0.75rem;" data-i18n="tut_title">
+            Learn How to Use the Platform
+          </h2>
+          <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6;" data-i18n="tut_subtitle">
+            Step-by-step video walkthroughs available in both English and Somali to help students and instructors get started easily.
+          </p>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="/tutorials" class="btn btn-cyan">
+            <span>🎥</span> <span data-i18n="tut_btn_view_all">View All Tutorials</span>
+          </a>
+          <a href="/demo" class="btn btn-outline">
+            <span data-i18n="hero_btn_demo">Explore Live Demo</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       FAQ SECTION
+       ==================================================================== -->
+  <section class="section section-alt" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-pill">
+          <span data-i18n="faq_badge">Questions & Answers</span>
+        </div>
+        <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">
+          Find answers to common inquiries regarding platform accessibility, logins, and devices.
+        </p>
+      </div>
+
+      <div class="faq-wrap">
+        
+        <div class="faq-item open">
+          <button class="faq-question">
+            <span data-i18n="faq_q1">Who can access the Guray Sicid Learning Platform?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p data-i18n="faq_a1">
+              The platform is built for enrolled students, faculty professors, and academic administrators. Public visitors can freely explore features and the interactive demo.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span data-i18n="faq_q2">How do students and professors log in?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p data-i18n="faq_a2">
+              Click the "Student Login" button in the navigation bar to go to the official login portal, where you can enter your registered institutional credentials.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span data-i18n="faq_q3">Can I access the platform on mobile devices and tablets?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p data-i18n="faq_a3">
+              Yes. The entire platform, video player, and examination runner are 100% responsive and optimized for smartphones, tablets, and desktops.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span data-i18n="faq_q4">Is the platform available in Somali?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p data-i18n="faq_a4">
+              Yes! Guray Sicid Learning Platform features full bilingual support for both Somali (Af-Soomaali) and English with instant one-click switching.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       CALL TO ACTION BANNER
+       ==================================================================== -->
+  <section class="section" id="cta">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-banner-content">
+          <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; color: #ffffff; margin-bottom: 1rem;" data-i18n="cta_title">
+            Ready to Experience Modern Academic Education?
+          </h2>
+          <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 2rem; line-height: 1.6;" data-i18n="cta_subtitle">
+            Explore our interactive demo today or log in to your official university learning account.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/demo" class="btn btn-cyan">
+              <span data-i18n="cta_btn_demo">Explore Public Demo</span>
+            </a>
+            <a href="/login" class="btn btn-outline btn-login-cta">
+              <span data-i18n="cta_btn_login">Student Login Portal</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <a href="/" class="nav-brand">
+            <div class="brand-icon-wrap">
+              <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Logo">
+            </div>
+            <div class="brand-meta">
+              <span class="brand-name">Guray Sicid</span>
+              <span class="brand-tag">Learning Platform</span>
+            </div>
+          </a>
+          <p data-i18n="footer_tagline">
+            Learning without limit. Modern, reliable academic learning management system.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="footer_nav">Quick Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/" class="footer-link" data-i18n="nav_home">Home</a></li>
+            <li><a href="/features" class="footer-link" data-i18n="nav_features">Features</a></li>
+            <li><a href="/demo" class="footer-link" data-i18n="nav_demo">Interactive Demo</a></li>
+            <li><a href="/tutorials" class="footer-link" data-i18n="nav_tutorials">Video Tutorials</a></li>
+            <li><a href="/login" class="footer-link" data-i18n="nav_login">Student Login</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="footer_academic">Academic System</h4>
+          <ul class="footer-links">
+            <li><a href="/demo" class="footer-link">CS301 Distributed Systems</a></li>
+            <li><a href="/demo" class="footer-link">CS204 Data Structures</a></li>
+            <li><a href="/demo" class="footer-link">CS410 Machine Learning</a></li>
+            <li><a href="/login" class="footer-link">Faculty Portal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="footer_contact">Platform Access</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+            Institutional portal for students, instructors, and faculty administrators.
+          </p>
+          <a href="/login" class="btn btn-sm btn-primary btn-login-cta">
+            <span>🔐</span> <span data-i18n="nav_login">Student Login</span>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 <span data-i18n="footer_rights">Guray Sicid Learning Platform. All rights reserved.</span>
+        </div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="/sitemap.xml" class="footer-link">XML Sitemap</a>
+          <a href="/robots.txt" class="footer-link">Robots.txt</a>
+          <a href="/tutorials" class="footer-link">Tutorials</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/public.js"></script>
 </body>
 </html>

@@ -21,6 +21,14 @@
   <div class="orb orb-3"></div>
   <div class="particles" id="particles"></div>
 
+  <!-- Return to Public Website at Top Left -->
+  <div style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 100;">
+    <a href="/" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s ease;">
+      <span>←</span>
+      <span>Home</span>
+    </a>
+  </div>
+
   <!-- Language Switcher Bar at Top Right -->
   <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
     <button type="button" onclick="toggleLoginLanguage()" id="login-lang-btn" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s ease;">
@@ -201,7 +209,7 @@
     (function checkExistingSession() {
       const token = localStorage.getItem('faculty_lms_token');
       if (token) {
-        window.location.replace('index.html');
+        window.location.replace('app.html');
       }
     })();
 
@@ -270,7 +278,7 @@
         overlay.classList.add('show');
 
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'app.html';
         }, 1100);
 
       } catch (err) {
