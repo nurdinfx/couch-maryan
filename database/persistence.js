@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { scheduleSyncToGitHub } = require('./github-sync');
 
 const PERSISTENCE_FILE = process.env.DATA_DIR
   ? path.join(process.env.DATA_DIR, 'persistent_data.json')
@@ -60,6 +61,10 @@ function savePersistence(db) {
     }
 
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
+
+    // ── Auto-sync to GitHub so Render re-deploys keep the latest data ──
+    scheduleSyncToGitHub(PERSISTENCE_FILE);
+
     return true;
   } catch (err) {
     console.error('Failed to save persistence JSON:', err.message);
