@@ -12,3 +12,4 @@ uploads/*
 !uploads/documents/*.pdf
 !uploads/submissions/*.pdf
 scratch/
+*.backup.json
