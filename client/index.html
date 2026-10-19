@@ -144,26 +144,30 @@
     <div class="container">
       
       <div class="hero-content">
-        <div class="badge-pill">
+        <div class="badge-pill hero-badge-anim">
           <span class="badge-pill-pulse"></span>
-          <span data-i18n="hero_badge">Next-Gen Higher Education LMS</span>
+          <span class="badge-sparkle">✨</span>
+          <span data-i18n="hero_badge">Next-Gen Higher Education Ecosystem</span>
         </div>
 
         <h1 class="hero-title">
-          <span data-i18n="hero_title_1">Empowering Knowledge &</span><br>
-          <span class="text-gradient" data-i18n="hero_title_2">Academic Excellence</span>
+          <span class="hero-title-prefix" data-i18n="hero_title_1">Empowering Knowledge &</span><br>
+          <span class="hero-rotator-wrapper">
+            <span class="text-gradient-shimmer hero-rotating-word" id="hero-rotating-word" data-i18n="hero_title_2">Academic Excellence</span>
+          </span>
         </h1>
 
         <p class="hero-description" data-i18n="hero_desc">
-          Guray Sicid Learning Platform is an enterprise academic platform providing students and faculty with high-speed video streaming, interactive examinations, automated gradebook tracking, and verifiable credentials.
+          Step into the future of higher learning. Guray Sicid LMS unites ultra-fast HD video streaming, instant automated exam grading, real-time GPA matrix analytics, and verifiable academic honors — engineered for ambitious students and visionary faculty in both Somali and English.
         </p>
 
         <div class="hero-ctas">
-          <a href="/demo" class="btn btn-cyan">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <a href="/demo" class="btn btn-cyan btn-glow-pulse">
+            <svg class="cta-play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
             <span data-i18n="hero_btn_demo">Explore Live Demo</span>
+            <span class="btn-arrow">→</span>
           </a>
 
           <a href="/login" class="btn btn-outline btn-login-cta">
@@ -176,15 +180,46 @@
         </div>
 
         <div class="hero-proof">
-          <span>✓ <strong data-i18n="hero_proof_1">Bilingual (Somali & English)</strong></span>
-          <span>✓ <strong data-i18n="hero_proof_2">Instant Exam Auto-Grading</strong></span>
-          <span>✓ <strong data-i18n="hero_proof_3">Verifiable Digital Badges</strong></span>
+          <div class="proof-pill">
+            <span class="proof-dot"></span>
+            <span data-i18n="hero_proof_1">100% Bilingual (Somali & English)</span>
+          </div>
+          <div class="proof-pill">
+            <span class="proof-dot"></span>
+            <span data-i18n="hero_proof_2">Instant Exam Auto-Grading & Review</span>
+          </div>
+          <div class="proof-pill">
+            <span class="proof-dot"></span>
+            <span data-i18n="hero_proof_3">Verifiable Digital Honors & Badges</span>
+          </div>
+          <div class="proof-pill">
+            <span class="proof-dot"></span>
+            <span data-i18n="hero_proof_4">Seamless Mobile & Desktop Sync</span>
+          </div>
         </div>
       </div>
 
-      <!-- Hero Mockup Display -->
+      <!-- Hero Mockup Display with Floating Badges -->
       <div class="hero-mockup-wrap">
         <div class="hero-mockup-glow" aria-hidden="true"></div>
+        
+        <!-- Floating highlight badges -->
+        <div class="floating-mockup-badge badge-top-left" aria-hidden="true">
+          <span class="float-icon">📹</span>
+          <div class="float-meta">
+            <strong>Ultra-HD 4K</strong>
+            <small>Adaptive Lecture Player</small>
+          </div>
+        </div>
+
+        <div class="floating-mockup-badge badge-bottom-right" aria-hidden="true">
+          <span class="float-icon">⚡</span>
+          <div class="float-meta">
+            <strong>0.4s Auto-Grading</strong>
+            <small>Instant Exam Analytics</small>
+          </div>
+        </div>
+
         <div class="mockup-frame">
           <div class="mockup-header-bar">
             <div class="mockup-dots">
@@ -195,7 +230,8 @@
             <div class="mockup-url-bar">
               🔒 https://guraysicid.edu/portal/dashboard
             </div>
-            <div style="font-size: 0.75rem; color: #38bdf8; font-weight: 700;">
+            <div class="mockup-live-badge">
+              <span class="live-dot"></span>
               LIVE PORTAL PREVIEW
             </div>
           </div>
@@ -241,7 +277,10 @@
               </div>
 
               <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                <a href="/demo" class="btn btn-sm btn-cyan">Explore Interactive Demo →</a>
+                <a href="/demo" class="btn btn-sm btn-cyan">
+                  <span>Explore Interactive Demo</span>
+                  <span>→</span>
+                </a>
               </div>
             </div>
           </div>

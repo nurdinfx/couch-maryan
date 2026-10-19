@@ -16,15 +16,16 @@ const PublicI18N = {
       nav_login: 'Student Login',
       nav_portal: 'Open LMS Portal',
       
-      hero_badge: 'Next-Gen Higher Education LMS',
+      hero_badge: 'Next-Gen Higher Education Ecosystem',
       hero_title_1: 'Empowering Knowledge &',
       hero_title_2: 'Academic Excellence',
-      hero_desc: 'Guray Sicid Learning Platform is an enterprise academic platform providing students and faculty with high-speed video streaming, interactive examinations, automated gradebook tracking, and verifiable credentials.',
+      hero_desc: 'Step into the future of higher learning. Guray Sicid LMS unites ultra-fast HD video streaming, instant automated exam grading, real-time GPA matrix analytics, and verifiable academic honors — engineered for ambitious students and visionary faculty in both Somali and English.',
       hero_btn_demo: 'Explore Live Demo',
       hero_btn_login: 'Student & Faculty Login',
-      hero_proof_1: 'Bilingual (Somali & English)',
-      hero_proof_2: 'Instant Exam Auto-Grading',
-      hero_proof_3: 'Verifiable Digital Badges',
+      hero_proof_1: '100% Bilingual (Somali & English)',
+      hero_proof_2: 'Instant Exam Auto-Grading & Review',
+      hero_proof_3: 'Verifiable Digital Honors & Badges',
+      hero_proof_4: 'Seamless Mobile & Desktop Sync',
 
       features_badge: 'Core Capabilities',
       features_title: 'Built for Modern Academic Learning',
@@ -104,15 +105,16 @@ const PublicI18N = {
       nav_login: 'Galitaanka Ardayda',
       nav_portal: 'Fur Nidaamka LMS',
 
-      hero_badge: 'Nidaamka Casriga ah ee Waxbarashada Sare',
+      hero_badge: 'Barxadda Tacliinta Sare ee Casriga ah',
       hero_title_1: 'Awood Siinta Aqoonta &',
       hero_title_2: 'Guusha Waxbarashada',
-      hero_desc: 'Guray Sicid Learning Platform waa barxad tacliimeed heer sare ah oo ardayda iyo macallimiinta u saamaxaysa daawashada casharrada fiidyowga ah, qaadashada imtixaanaadka tooska ah, la socodka dhibcaha, iyo helista shahaadooyinka rasmiga ah.',
+      hero_desc: 'U gudub mustaqbalka waxbarashada heerka sare. Barxadda Guray Sicid waxay isku xirtaa daawashada casharrada HD-ga ah, sixitaanka tooska ah ee imtixaanaadka, la socodka darajooyinka waqtiga dhabta ah, iyo shahaadooyinka rasmiga ah ee la xaqiijin karo — labada luqadood ee Soomaali iyo Ingiriis.',
       hero_btn_demo: 'Tijaabi Nidaamka Hadda',
       hero_btn_login: 'Galitaanka Ardayda & Macallimiinta',
-      hero_proof_1: 'Laba Luuqadood (Soomaali & Ingiriis)',
+      hero_proof_1: '100% Laba Luuqadood (Soomaali & English)',
       hero_proof_2: 'Sixitaanka Tooska ah ee Imtixaanaadka',
-      hero_proof_3: 'Billado & Shahaadooyin La Xaqiijin Karo',
+      hero_proof_3: 'Shahaadooyin & Billado La Xaqiijin Karo',
+      hero_proof_4: 'Isku Xirka Taleefanka & Kumbuyuutarka',
 
       features_badge: 'Awoodaha Nidaamka',
       features_title: 'Loo Dhisay Waxbarashada Casriga ah',
@@ -216,16 +218,131 @@ const PublicI18N = {
     const labelEl = document.getElementById('public-lang-label');
     if (flagEl) flagEl.textContent = lang === 'so' ? '🇸🇴' : '🇬🇧';
     if (labelEl) labelEl.textContent = lang === 'so' ? 'Soomaali' : 'English';
+
+    // Synchronize rotator word immediately on language switch
+    if (window.PublicApp && typeof window.PublicApp.syncRotatorLanguage === 'function') {
+      window.PublicApp.syncRotatorLanguage();
+    }
   }
 };
 
 const PublicApp = {
+  rotatorIndex: 0,
+  rotatorTimer: null,
+  rotatorWords: {
+    en: [
+      'Academic Excellence',
+      'Future Innovators',
+      'World-Class Learning',
+      'Certified Success',
+      'Limitless Potential'
+    ],
+    so: [
+      'Guusha Waxbarashada',
+      'Hal-abuurka Berri',
+      'Hogaamiyayaasha Casriga',
+      'Aqoonta Heerka Caalami',
+      'Awoodda Mustaqbalka'
+    ]
+  },
+
   init() {
     PublicI18N.applyLanguage();
     this.setupAuthIndicator();
+    this.setupHeroRotator();
+    this.setupScrollReveal();
+    this.setupMockupInteractiveTilt();
     this.setupFaqAccordion();
     this.setupMobileMenu();
     this.setupSmoothScroll();
+  },
+
+  setupHeroRotator() {
+    const el = document.getElementById('hero-rotating-word');
+    if (!el) return;
+
+    if (this.rotatorTimer) clearInterval(this.rotatorTimer);
+
+    this.rotatorTimer = setInterval(() => {
+      const lang = PublicI18N.currentLang;
+      const list = this.rotatorWords[lang] || this.rotatorWords.en;
+      
+      el.classList.add('rotator-flip-out');
+      
+      setTimeout(() => {
+        this.rotatorIndex = (this.rotatorIndex + 1) % list.length;
+        el.textContent = list[this.rotatorIndex];
+        el.classList.remove('rotator-flip-out');
+        el.classList.add('rotator-flip-in');
+        
+        setTimeout(() => {
+          el.classList.remove('rotator-flip-in');
+        }, 320);
+      }, 260);
+    }, 2800);
+  },
+
+  syncRotatorLanguage() {
+    const el = document.getElementById('hero-rotating-word');
+    if (!el) return;
+    const lang = PublicI18N.currentLang;
+    const list = this.rotatorWords[lang] || this.rotatorWords.en;
+    this.rotatorIndex = 0;
+    el.textContent = list[0];
+  },
+
+  setupScrollReveal() {
+    const revealEls = document.querySelectorAll(
+      '.feature-card, .course-preview-card, .step-card, .faq-item, .cta-banner, .mockup-frame, .section-header'
+    );
+    revealEls.forEach((el, index) => {
+      el.classList.add('reveal-item');
+      // Subtle stagger delay for sibling cards in same container
+      const colIndex = index % 3;
+      el.style.setProperty('--reveal-stagger', `${colIndex * 0.12}s`);
+    });
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      revealEls.forEach(el => observer.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('is-revealed'));
+    }
+  },
+
+  setupMockupInteractiveTilt() {
+    const mockupWrap = document.querySelector('.hero-mockup-wrap');
+    if (!mockupWrap) return;
+
+    mockupWrap.addEventListener('mousemove', (e) => {
+      const rect = mockupWrap.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const rotateX = -(y / rect.height) * 8; // subtle tilt max 8deg
+      const rotateY = (x / rect.width) * 8;
+
+      const frame = mockupWrap.querySelector('.mockup-frame');
+      if (frame) {
+        frame.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+        frame.style.transition = 'transform 0.1s ease-out';
+      }
+    });
+
+    mockupWrap.addEventListener('mouseleave', () => {
+      const frame = mockupWrap.querySelector('.mockup-frame');
+      if (frame) {
+        frame.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        frame.style.transition = 'transform 0.5s ease-out';
+      }
+    });
   },
 
   setupAuthIndicator() {
