@@ -60,6 +60,30 @@ function savePersistence(db) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
+    // Safety guard: If an existing persistent snapshot has real courses (e.g. BMW2026),
+    // and current DB has 0 real courses and only mock courses, DO NOT wipe persistent_data.json!
+    if (fs.existsSync(PERSISTENCE_FILE)) {
+      try {
+        const rawExisting = fs.readFileSync(PERSISTENCE_FILE, 'utf8');
+        if (rawExisting.trim()) {
+          const existing = JSON.parse(rawExisting);
+          const existingRealCourses = (existing.courses || []).filter(c => !['CS301', 'CS204', 'CS410'].includes(c.code));
+          const currentRealCourses = (snapshot.courses || []).filter(c => !['CS301', 'CS204', 'CS410'].includes(c.code));
+
+          if (existingRealCourses.length > 0 && currentRealCourses.length === 0) {
+            console.warn('[Persistence] Safety Guard: Prevented overwriting real persistent data with mock/empty courses.');
+            return false;
+          }
+
+          // Create an automatic rolling backup before writing
+          const backupFile = PERSISTENCE_FILE.replace('.json', '.backup.json');
+          fs.writeFileSync(backupFile, rawExisting, 'utf8');
+        }
+      } catch (e) {
+        console.error('[Persistence] Backup check notice:', e.message);
+      }
+    }
+
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
 
     // ── Auto-sync to GitHub so Render re-deploys keep the latest data ──
@@ -100,12 +124,33 @@ function restorePersistence(db, customSnapshot = null, force = false) {
   try {
     const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
     const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
+    const mockCoursesCount = db.prepare("SELECT COUNT(*) as c FROM courses WHERE code IN ('CS301', 'CS204', 'CS410')").get().c;
 
-    // Only restore if database is empty or has 0 courses/users, or if explicitly forced
-    if (force || usersCount === 0 || coursesCount === 0) {
-      console.log(`Restoring database from snapshot (users: ${usersCount}, courses: ${coursesCount}, forced: ${force})...`);
+    const snapshotCourses = Array.isArray(snapshot.courses) ? snapshot.courses : [];
+    const realCoursesInSnapshot = snapshotCourses.filter(c => !['CS301', 'CS204', 'CS410'].includes(c.code));
+
+    // Check if any course from snapshot is missing from DB
+    const missingSnapshotCourse = snapshotCourses.length > 0 && snapshotCourses.some(c => !db.prepare('SELECT id FROM courses WHERE code = ?').get(c.code));
+
+    // Check if any student from snapshot is missing from DB
+    const snapshotStudents = Array.isArray(snapshot.users) ? snapshot.users.filter(u => u.role === 'student') : [];
+    const missingSnapshotStudent = snapshotStudents.length > 0 && snapshotStudents.some(u => !db.prepare('SELECT id FROM users WHERE email = ?').get(u.email));
+
+    // Stale mock data detected if DB has mock courses while snapshot has real courses
+    const hasStaleMockData = mockCoursesCount > 0 && realCoursesInSnapshot.length > 0;
+
+    const shouldRestore = force ||
+      usersCount === 0 ||
+      coursesCount === 0 ||
+      hasStaleMockData ||
+      missingSnapshotCourse ||
+      missingSnapshotStudent;
+
+    if (shouldRestore) {
+      console.log(`[Persistence] Hydrating database from snapshot (users: ${usersCount}, courses: ${coursesCount}, mockInDb: ${mockCoursesCount}, force: ${force}, missingCourse: ${missingSnapshotCourse}, missingStudent: ${missingSnapshotStudent})...`);
       const tx = db.transaction(() => {
-        if (force) {
+        // Clear all tables if forced, or if database had mock data or missing courses to avoid conflict
+        if (force || hasStaleMockData || missingSnapshotCourse) {
           for (let i = TABLES.length - 1; i >= 0; i--) {
             try { db.prepare(`DELETE FROM ${TABLES[i]}`).run(); } catch (e) {}
           }
@@ -128,11 +173,12 @@ function restorePersistence(db, customSnapshot = null, force = false) {
         }
       });
       tx();
-      // Checkpoint WAL to flush all restored tables to disk
+
+      // Checkpoint WAL to flush all restored tables to disk immediately
       try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch (e) {}
-      console.log('Database successfully hydrated and synced from persistent snapshot.');
+      console.log('[Persistence] ✅ Database successfully hydrated and synced from persistent snapshot.');
     } else {
-      console.log(`Database already has active data (${usersCount} users, ${coursesCount} courses). Skipping auto-restore.`);
+      console.log(`[Persistence] Database active and in sync (${usersCount} users, ${coursesCount} courses).`);
     }
   } catch (err) {
     console.error('Failed to restore persistence:', err.message);

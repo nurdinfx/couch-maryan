@@ -78,8 +78,8 @@ const AdminView = {
           <a href="/api/admin/backup-db" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
             <span>💾</span> ${I18N.t('admin.download_backup', 'Download SQLite Backup')}
           </a>
-          <button class="btn btn-outline" onclick="AdminView.restoreDefaultData()" style="display: flex; align-items: center; gap: 0.5rem; color: #b45309; border-color: #fde68a;">
-            <span>🔄</span> Restore Default Courses
+          <button class="btn" onclick="AdminView.restorePersistentData()" style="display: flex; align-items: center; gap: 0.5rem; background: #0284c7; color: white; border: none; font-weight: 600;">
+            <span>🔄</span> Soo Celi Xogta Rasmiga ah (Restore Real Data)
           </button>
         </div>
       </div>
@@ -677,12 +677,24 @@ const AdminView = {
     }
   },
 
-  async restoreDefaultData() {
-    if (!confirm('Ma hubtaa inaad rabto inaad dib u soo celiso dhammaan koorsooyinkii iyo xogtii rasmiga ahayd ee platform-ka? Tani waxay meesha ka saaraysaa xogtii tijaabada ahayd.')) return;
+  async restorePersistentData() {
+    if (!confirm('Ma hubtaa inaad rabto inaad dib u soo celiso dhammaan xogtii rasmiga ahayd ee platform-ka ee keydsanayd?')) return;
     try {
-      App.showToast('Dib u soo celinta xogta waa la bilaabay...', 'info');
+      App.showToast('Dib u soo celinta xogta rasmiga ah waa la bilaabay...', 'info');
+      const res = await API.request('/admin/restore-persistent', { method: 'POST' });
+      App.showToast(res.message || 'Xogtii rasmiga ahayd si guul leh ayaa loo soo celiyay! 🎉');
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
+
+  async restoreDefaultData() {
+    if (!confirm('DIGNIIN: Tani waxay soo celinaysaa koorsooyinka tijaabada ah (Mock Demo Data). Ma hubtaa inaad sii wadato?')) return;
+    try {
+      App.showToast('Dib u soo celinta xogta demo waa la bilaabay...', 'info');
       await API.request('/admin/seed-default', { method: 'POST' });
-      App.showToast('Dhammaan koorsooyinkii iyo xogtii rasmiga ahayd si guul leh ayaa loo soo celiyay! 🎉');
+      App.showToast('Koorsooyinkii demo si guul leh ayaa loo soo celiyay! 🎉');
       setTimeout(() => window.location.reload(), 1200);
     } catch (err) {
       App.showToast(err.message, 'error');

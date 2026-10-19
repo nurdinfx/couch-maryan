@@ -11,3 +11,4 @@ uploads/*
 !uploads/*/.gitkeep
 !uploads/documents/*.pdf
 !uploads/submissions/*.pdf
+scratch/

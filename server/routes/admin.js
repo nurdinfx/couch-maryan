@@ -60,13 +60,31 @@ router.post('/restore-json', requireAdmin, (req, res) => {
   }
 });
 
-// Seed/Restore Default Platform Academic Data (Admin only)
+// Restore from official persistent_data.json snapshot (Admin only)
+router.post('/restore-persistent', requireAdmin, (req, res) => {
+  try {
+    const { restorePersistence } = require('../../database/persistence');
+    restorePersistence(db, null, true);
+    logAudit(req.user.id, 'DATABASE_RESTORE_PERSISTENT', 'Restored platform data from official persistent_data.json', req);
+    res.json({ success: true, message: 'Dhammaan xogtii rasmiga ahayd ee user-ku galiyeen si buuxda ayaa looga soo celiyay kaydka joogtada ah!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Seed Demo Mock Data (Protected to prevent wiping real data)
 router.post('/seed-default', requireAdmin, (req, res) => {
   try {
+    const realCourses = db.prepare("SELECT COUNT(*) as c FROM courses WHERE code NOT IN ('CS301', 'CS204', 'CS410')").get().c;
+    if (realCourses > 0 && req.query.force !== 'true') {
+      return res.status(400).json({
+        error: 'Lama tirtiri karo xogta rasmiga ah ee ardayda iyo koorsooyinka. Haddii aad doonayso inaad xogta soo celiso, isticmaal "Dib u soo celi Kaydka Rasmiga ah (Restore Persistent Data)".'
+      });
+    }
     const { seed } = require('../../database/seed-data');
     seed();
-    logAudit(req.user.id, 'DATABASE_RESTORE_DEFAULT', 'Admin restored complete official default academic data', req);
-    res.json({ success: true, message: 'All default official courses, lessons, and students restored successfully!' });
+    logAudit(req.user.id, 'DATABASE_RESTORE_DEFAULT', 'Admin restored demo courses and mock data', req);
+    res.json({ success: true, message: 'Demo mock data seeded.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

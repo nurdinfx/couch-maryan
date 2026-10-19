@@ -4,20 +4,33 @@ const bcrypt = require('bcryptjs');
 function clearMockData() {
   initSchema();
 
-  const tables = [
-    'audit_logs', 'notifications', 'messages', 'forum_replies', 'forum_topics',
-    'announcements', 'certificates', 'awarded_badges', 'attendance_records',
-    'attendance_sessions', 'quiz_attempt_answers', 'quiz_attempts', 'quiz_questions',
-    'quizzes', 'assignment_submissions', 'assignments', 'lesson_progress', 'lessons',
-    'modules', 'enrollments', 'courses'
+  const mockCourseCodes = ['CS301', 'CS204', 'CS410'];
+  const mockStudentEmails = [
+    'alex.chen@student.faculty.edu',
+    'fatima.z@student.faculty.edu',
+    'marcus.v@student.faculty.edu',
+    'layla.k@student.faculty.edu'
   ];
 
   db.transaction(() => {
-    for (const table of tables) {
-      db.prepare(`DELETE FROM ${table}`).run();
+    // Find mock course IDs
+    const mockCourses = db.prepare(`SELECT id FROM courses WHERE code IN (${mockCourseCodes.map(() => '?').join(',')})`).all(...mockCourseCodes);
+    const mockCourseIds = mockCourses.map(c => c.id);
+
+    if (mockCourseIds.length > 0) {
+      const placeholders = mockCourseIds.map(() => '?').join(',');
+      // Delete related records for mock courses only
+      try { db.prepare(`DELETE FROM enrollments WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM lesson_progress WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM lessons WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM modules WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM assignments WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM quizzes WHERE course_id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
+      try { db.prepare(`DELETE FROM courses WHERE id IN (${placeholders})`).run(...mockCourseIds); } catch (e) {}
     }
-    // Delete all mock students
-    db.prepare("DELETE FROM users WHERE role = 'student'").run();
+
+    // Delete only mock students
+    db.prepare(`DELETE FROM users WHERE email IN (${mockStudentEmails.map(() => '?').join(',')})`).run(...mockStudentEmails);
 
     // Ensure professor account exists
     let prof = db.prepare('SELECT id FROM users WHERE id = 1').get();
@@ -25,7 +38,7 @@ function clearMockData() {
       const hash = bcrypt.hashSync('password123', 10);
       db.prepare(`
         INSERT INTO users (id, email, password_hash, full_name, role, department)
-        VALUES (1, 'professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'Faculty of Midwifery')
+        VALUES (1, 'professor@faculty.edu', ?, 'Prof. Maryam Al-Mansoor', 'professor', 'Guray Sicid Learning Platform')
       `).run(hash);
     }
 
@@ -35,12 +48,14 @@ function clearMockData() {
       const hash = bcrypt.hashSync('admin123', 10);
       db.prepare(`
         INSERT INTO users (id, email, password_hash, full_name, role, department)
-        VALUES (6, 'admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'Faculty of Midwifery')
+        VALUES (6, 'admin@faculty.edu', ?, 'Faculty System Admin', 'admin', 'Guray Sicid Learning Platform Operations')
       `).run(hash);
     }
   })();
 
-  console.log('All mock courses, students, and records cleared. System ready for production.');
+  const { savePersistence } = require('./persistence');
+  savePersistence(db);
+  console.log('Mock demo courses and students cleared without touching real data.');
 }
 
 module.exports = { clearMockData };
