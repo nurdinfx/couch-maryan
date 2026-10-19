@@ -48,6 +48,23 @@ app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Auto-persistence middleware: sync database snapshot to JSON whenever data is modified
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) && req.path.startsWith('/api')) {
+    res.on('finish', () => {
+      if (res.statusCode >= 200 && res.statusCode < 400) {
+        try {
+          const { savePersistence } = require('../database/persistence');
+          savePersistence(db);
+        } catch (err) {
+          console.error('Auto-persistence sync notice:', err.message);
+        }
+      }
+    });
+  }
+  next();
+});
+
 // Static file hosting for uploaded educational media (videos, PDFs, submissions)
 const uploadsDir = process.env.UPLOADS_DIR || (process.env.DATA_DIR ? path.join(process.env.DATA_DIR, 'uploads') : path.join(__dirname, '..', 'uploads'));
 if (!fs.existsSync(uploadsDir)) {
@@ -145,5 +162,15 @@ if (require.main === module) {
     console.log(`=======================================================`);
   });
 }
+
+function gracefulExit() {
+  try {
+    const { savePersistence } = require('../database/persistence');
+    savePersistence(db);
+  } catch (e) {}
+  process.exit(0);
+}
+process.on('SIGINT', gracefulExit);
+process.on('SIGTERM', gracefulExit);
 
 module.exports = app;

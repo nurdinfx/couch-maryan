@@ -44,9 +44,15 @@ const AdminView = {
           </p>
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="/api/admin/backup-json" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
+            <span>📦</span> Export Snapshot (JSON)
+          </a>
           <a href="/api/admin/backup-db" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
             <span>💾</span> ${I18N.t('admin.download_backup', 'Download SQLite Backup')}
           </a>
+          <button class="btn btn-outline" onclick="AdminView.restoreDefaultData()" style="display: flex; align-items: center; gap: 0.5rem; color: #b45309; border-color: #fde68a;">
+            <span>🔄</span> Restore Default Courses
+          </button>
           <button class="btn btn-primary" onclick="AdminView.openCreateAdminModal()" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600;">
             <span>+</span> ${I18N.t('admin.register_admin_btn', 'Register New Administrator')}
           </button>
@@ -308,6 +314,18 @@ const AdminView = {
     try {
       const res = await API.resetPassword(form.user_id.value, form.new_password.value);
       App.showToast(res.message);
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
+
+  async restoreDefaultData() {
+    if (!confirm('Ma hubtaa inaad rabto inaad dib u soo celiso dhammaan koorsooyinkii iyo xogtii rasmiga ahayd ee platform-ka? Tani waxay meesha ka saaraysaa xogtii tijaabada ahayd.')) return;
+    try {
+      App.showToast('Dib u soo celinta xogta waa la bilaabay...', 'info');
+      await API.request('/admin/seed-default', { method: 'POST' });
+      App.showToast('Dhammaan koorsooyinkii iyo xogtii rasmiga ahayd si guul leh ayaa loo soo celiyay! 🎉');
+      setTimeout(() => window.location.reload(), 1200);
     } catch (err) {
       App.showToast(err.message, 'error');
     }

@@ -1,10 +1,13 @@
 node_modules/
 .env
 .DS_Store
-*.db
 *.db-wal
 *.db-shm
 *.sqlite
+*.db
+!database/faculty_lms.db
 uploads/*
 !uploads/.gitkeep
 !uploads/*/.gitkeep
+!uploads/documents/*.pdf
+!uploads/submissions/*.pdf

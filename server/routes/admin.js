@@ -31,6 +31,47 @@ router.get(['/backup', '/backup-db'], requireAdmin, (req, res) => {
   res.download(dbPath, downloadName);
 });
 
+// JSON Persistence Backup Endpoint (Admin only)
+router.get(['/backup-json', '/export-data'], requireAdmin, (req, res) => {
+  const { PERSISTENCE_FILE, savePersistence } = require('../../database/persistence');
+  savePersistence(db);
+  if (!fs.existsSync(PERSISTENCE_FILE)) {
+    return res.status(404).json({ error: 'Persistence file not found' });
+  }
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const downloadName = `guray_sicid_lms_snapshot_${dateStr}.json`;
+  logAudit(req.user.id, 'PERSISTENCE_EXPORT_DOWNLOAD', `Downloaded JSON snapshot: ${downloadName}`, req);
+  res.download(PERSISTENCE_FILE, downloadName);
+});
+
+// Restore from JSON snapshot (Admin only)
+router.post('/restore-json', requireAdmin, (req, res) => {
+  try {
+    const { restorePersistence } = require('../../database/persistence');
+    const snapshot = req.body;
+    if (!snapshot || typeof snapshot !== 'object') {
+      return res.status(400).json({ error: 'Invalid JSON snapshot provided.' });
+    }
+    restorePersistence(db, snapshot, true);
+    logAudit(req.user.id, 'DATABASE_RESTORE_JSON', 'Restored platform data from uploaded JSON snapshot', req);
+    res.json({ success: true, message: 'Platform data restored successfully from snapshot!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Seed/Restore Default Platform Academic Data (Admin only)
+router.post('/seed-default', requireAdmin, (req, res) => {
+  try {
+    const { seed } = require('../../database/seed-data');
+    seed();
+    logAudit(req.user.id, 'DATABASE_RESTORE_DEFAULT', 'Admin restored complete official default academic data', req);
+    res.json({ success: true, message: 'All default official courses, lessons, and students restored successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/health', requireAdmin, (req, res) => {
   const { dbPath } = require('../../database/db');
   let dbSizeBytes = 0;
