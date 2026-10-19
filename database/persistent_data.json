@@ -65,10 +65,10 @@
   ],
   "enrollments": [
     {
-      "id": 43,
+      "id": 44,
       "user_id": 7,
       "course_id": 8,
-      "enrolled_at": "2026-10-19 07:47:03"
+      "enrolled_at": "2026-10-19 07:52:18"
     }
   ],
   "modules": [
