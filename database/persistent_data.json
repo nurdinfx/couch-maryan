@@ -61,21 +61,6 @@
       "faculty": "General"
     },
     {
-      "id": 5,
-      "email": "layla.k@student.faculty.edu",
-      "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
-      "full_name": "Layla Karim",
-      "role": "student",
-      "avatar_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
-      "student_id_number": "STU-2026-084",
-      "department": "Guray Sicid Learning Platform",
-      "bio": "Dean's list senior focusing on cloud-native security, microservice architectures, and distributed databases.",
-      "created_at": "2026-10-19 04:22:27",
-      "is_active": 1,
-      "academic_year": "Year 4",
-      "faculty": "General"
-    },
-    {
       "id": 6,
       "email": "admin@faculty.edu",
       "password_hash": "$2b$10$TA62X6DuQgAOCPseFGcm2uFl25GvRWU2iTp4WBJ2tAQnlfHkMFTsS",
@@ -173,12 +158,6 @@
       "enrolled_at": "2026-10-19 04:22:27"
     },
     {
-      "id": 36,
-      "user_id": 5,
-      "course_id": 1,
-      "enrolled_at": "2026-10-19 04:22:27"
-    },
-    {
       "id": 37,
       "user_id": 2,
       "course_id": 2,
@@ -191,12 +170,6 @@
       "enrolled_at": "2026-10-19 04:22:27"
     },
     {
-      "id": 39,
-      "user_id": 5,
-      "course_id": 2,
-      "enrolled_at": "2026-10-19 04:22:27"
-    },
-    {
       "id": 40,
       "user_id": 3,
       "course_id": 3,
@@ -205,12 +178,6 @@
     {
       "id": 41,
       "user_id": 4,
-      "course_id": 3,
-      "enrolled_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 42,
-      "user_id": 5,
       "course_id": 3,
       "enrolled_at": "2026-10-19 04:22:27"
     }
@@ -473,72 +440,6 @@
   ],
   "lesson_progress": [
     {
-      "id": 53,
-      "user_id": 5,
-      "lesson_id": 1,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 54,
-      "user_id": 5,
-      "lesson_id": 2,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 55,
-      "user_id": 5,
-      "lesson_id": 3,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 56,
-      "user_id": 5,
-      "lesson_id": 4,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 57,
-      "user_id": 5,
-      "lesson_id": 5,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 58,
-      "user_id": 5,
-      "lesson_id": 6,
-      "course_id": 1,
-      "is_completed": 1,
-      "video_watched_seconds": 600,
-      "video_watch_percentage": 100,
-      "completed_at": "2026-10-10 15:00:00",
-      "last_accessed_at": "2026-10-19 04:22:27"
-    },
-    {
       "id": 59,
       "user_id": 2,
       "lesson_id": 1,
@@ -766,22 +667,6 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 0
-    },
-    {
-      "id": 16,
-      "assignment_id": 1,
-      "user_id": 5,
-      "submission_text": "Complete Raft-coordinated metadata tier coupled with gossip-based chunk health heartbeats. Included comprehensive fuzz testing suite.",
-      "file_url": "/uploads/submissions/Alex_Chen_CS301_Assignment1_Storage.pdf",
-      "file_name": "Layla_Karim_CS301_Storage_Cluster.pdf",
-      "file_size_bytes": 52300,
-      "status": "graded",
-      "submitted_at": "2026-10-09 14:20:00",
-      "grade": 98,
-      "feedback": "Remarkable mastery of consensus and partition tolerance, Layla. This is publication-quality systems programming.",
-      "graded_by": 1,
-      "graded_at": "2026-10-11 09:40:00",
-      "is_grades_released": 1
     }
   ],
   "quizzes": [
@@ -869,20 +754,6 @@
       "feedback": "Well done Alex! Comprehensive answers on CAP and virtual nodes."
     },
     {
-      "id": 2,
-      "quiz_id": 1,
-      "user_id": 5,
-      "attempt_number": 1,
-      "started_at": "2026-10-10 10:00:00",
-      "submitted_at": "2026-10-10 10:21:00",
-      "score": 65,
-      "max_score": 65,
-      "percentage": 100,
-      "is_passed": 1,
-      "status": "graded",
-      "feedback": "Flawless exam performance."
-    },
-    {
       "id": 5,
       "quiz_id": 1,
       "user_id": 3,
@@ -947,56 +818,6 @@
       "is_auto_graded": 0,
       "graded_manually": 1,
       "feedback": "Clear explanation."
-    },
-    {
-      "id": 51,
-      "attempt_id": 2,
-      "question_id": 1,
-      "user_answer_json": "\"b\"",
-      "awarded_points": 10,
-      "is_auto_graded": 1,
-      "graded_manually": 0,
-      "feedback": "Correct."
-    },
-    {
-      "id": 52,
-      "attempt_id": 2,
-      "question_id": 2,
-      "user_answer_json": "\"false\"",
-      "awarded_points": 10,
-      "is_auto_graded": 1,
-      "graded_manually": 0,
-      "feedback": "Correct."
-    },
-    {
-      "id": 53,
-      "attempt_id": 2,
-      "question_id": 3,
-      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
-      "awarded_points": 15,
-      "is_auto_graded": 1,
-      "graded_manually": 0,
-      "feedback": "All correct."
-    },
-    {
-      "id": 54,
-      "attempt_id": 2,
-      "question_id": 4,
-      "user_answer_json": "\"4\"",
-      "awarded_points": 10,
-      "is_auto_graded": 1,
-      "graded_manually": 0,
-      "feedback": "Correct."
-    },
-    {
-      "id": 55,
-      "attempt_id": 2,
-      "question_id": 5,
-      "user_answer_json": "\"Virtual nodes decouple the number of physical nodes from hash space partitions, enabling uniform variance reduction and dynamic proportional weighting according to hardware capabilities.\"",
-      "awarded_points": 20,
-      "is_auto_graded": 0,
-      "graded_manually": 1,
-      "feedback": "Exceptional technical depth."
     },
     {
       "id": 56,
@@ -1285,38 +1106,6 @@
   ],
   "attendance_records": [
     {
-      "id": 61,
-      "session_id": 1,
-      "user_id": 5,
-      "status": "present",
-      "notes": "Lab leader",
-      "recorded_at": "2026-10-19 04:54:22"
-    },
-    {
-      "id": 62,
-      "session_id": 2,
-      "user_id": 5,
-      "status": "present",
-      "notes": "Active participation",
-      "recorded_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 63,
-      "session_id": 3,
-      "user_id": 5,
-      "status": "present",
-      "notes": "Active participation",
-      "recorded_at": "2026-10-19 04:22:27"
-    },
-    {
-      "id": 64,
-      "session_id": 4,
-      "user_id": 5,
-      "status": "present",
-      "notes": "Active participation",
-      "recorded_at": "2026-10-19 04:22:27"
-    },
-    {
       "id": 65,
       "session_id": 1,
       "user_id": 2,
@@ -1471,41 +1260,6 @@
   ],
   "awarded_badges": [
     {
-      "id": 46,
-      "badge_id": 1,
-      "user_id": 5,
-      "course_id": 1,
-      "awarded_at": "2026-09-02 10:00:00"
-    },
-    {
-      "id": 47,
-      "badge_id": 2,
-      "user_id": 5,
-      "course_id": 1,
-      "awarded_at": "2026-10-10 10:25:00"
-    },
-    {
-      "id": 48,
-      "badge_id": 3,
-      "user_id": 5,
-      "course_id": 1,
-      "awarded_at": "2026-10-11 09:45:00"
-    },
-    {
-      "id": 49,
-      "badge_id": 4,
-      "user_id": 5,
-      "course_id": 1,
-      "awarded_at": "2026-09-30 18:00:00"
-    },
-    {
-      "id": 50,
-      "badge_id": 5,
-      "user_id": 5,
-      "course_id": 1,
-      "awarded_at": "2026-10-12 16:00:00"
-    },
-    {
       "id": 51,
       "badge_id": 1,
       "user_id": 2,
@@ -1548,16 +1302,7 @@
       "awarded_at": "2026-10-19 04:29:38"
     }
   ],
-  "certificates": [
-    {
-      "id": 4,
-      "uuid": "CERT-2026-CS301-8849-AK",
-      "user_id": 5,
-      "course_id": 1,
-      "final_grade": 98.5,
-      "issued_at": "2026-10-12 16:30:00"
-    }
-  ],
+  "certificates": [],
   "announcements": [
     {
       "id": 7,
@@ -1597,13 +1342,6 @@
       "author_id": 2,
       "content": "Dynamo chooses high availability for shopping cart writes (using vector clocks and client-side reconciliation) because dropping a user checkout order costs real revenue.",
       "created_at": "2026-09-10 14:32:00"
-    },
-    {
-      "id": 15,
-      "topic_id": 1,
-      "author_id": 5,
-      "content": "In contrast, financial ledger databases and distributed lock managers like Chubby or etcd strictly prioritize Consistency—returning an error or waiting on leader election rather than serving stale state.",
-      "created_at": "2026-09-10 15:45:00"
     },
     {
       "id": 16,
