@@ -71,6 +71,10 @@ const AdminView = {
           <a href="/api/admin/backup-json" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
             <span>📦</span> Export Snapshot (JSON)
           </a>
+          <label class="btn btn-outline" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0;">
+            <span>📥</span> Import Snapshot (JSON)
+            <input type="file" id="import-snapshot-input" accept=".json" style="display: none;" onchange="AdminView.handleImportSnapshot(event)">
+          </label>
           <a href="/api/admin/backup-db" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
             <span>💾</span> ${I18N.t('admin.download_backup', 'Download SQLite Backup')}
           </a>
@@ -645,6 +649,31 @@ const AdminView = {
       App.showToast(res.message);
     } catch (err) {
       App.showToast(err.message, 'error');
+    }
+  },
+
+  async handleImportSnapshot(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!confirm(`Ma hubtaa inaad rabto inaad dib u soo celiso dhammaan xogta laga helayo faylka "${file.name}"? Tani waxay dib u qori doontaa xogta platform-ka.`)) {
+      e.target.value = '';
+      return;
+    }
+    try {
+      App.showToast('Akhrinta snapshot JSON...', 'info');
+      const text = await file.text();
+      const snapshot = JSON.parse(text);
+      App.showToast('Soo celinta xogta waa socotaa...', 'info');
+      const res = await API.request('/admin/restore-json', {
+        method: 'POST',
+        body: JSON.stringify(snapshot)
+      });
+      App.showToast(res.message || 'Xogta si guul leh ayaa loo soo celiyay! 🎉');
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (err) {
+      App.showToast('Qalad: ' + err.message, 'error');
+    } finally {
+      e.target.value = '';
     }
   },
 

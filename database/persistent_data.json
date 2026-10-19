@@ -12,7 +12,8 @@
       "bio": "Associate Professor of Distributed Systems & Cloud Infrastructure. Head of Systems Lab.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 1"
+      "academic_year": "Year 1",
+      "faculty": "General"
     },
     {
       "id": 2,
@@ -26,7 +27,8 @@
       "bio": "Student studying Computer Science with interests in Cloud Architecture and High-Performance Computing.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 2"
+      "academic_year": "Year 2",
+      "faculty": "General"
     },
     {
       "id": 3,
@@ -40,7 +42,8 @@
       "bio": "Undergraduate passionate about distributed systems and site reliability engineering.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 3"
+      "academic_year": "Year 3",
+      "faculty": "General"
     },
     {
       "id": 4,
@@ -54,7 +57,8 @@
       "bio": "Software Engineering student balancing coursework with faculty competitive programming team.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 2"
+      "academic_year": "Year 2",
+      "faculty": "General"
     },
     {
       "id": 5,
@@ -68,7 +72,8 @@
       "bio": "Dean's list senior focusing on cloud-native security, microservice architectures, and distributed databases.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 4"
+      "academic_year": "Year 4",
+      "faculty": "General"
     },
     {
       "id": 6,
@@ -82,7 +87,8 @@
       "bio": "Technical administrator managing LMS infrastructure, security tokens, and persistent backups.",
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
-      "academic_year": "Year 1"
+      "academic_year": "Year 1",
+      "faculty": "General"
     }
   ],
   "courses": [
@@ -98,7 +104,8 @@
       "is_published": 1,
       "pass_percentage": 60,
       "created_at": "2026-10-19 04:22:27",
-      "target_year": "All Years"
+      "target_year": "All Years",
+      "faculty": "General"
     },
     {
       "id": 2,
@@ -112,7 +119,8 @@
       "is_published": 1,
       "pass_percentage": 60,
       "created_at": "2026-10-19 04:22:27",
-      "target_year": "Year 2"
+      "target_year": "Year 2",
+      "faculty": "General"
     },
     {
       "id": 3,
@@ -126,7 +134,8 @@
       "is_published": 1,
       "pass_percentage": 65,
       "created_at": "2026-10-19 04:22:27",
-      "target_year": "Year 4"
+      "target_year": "Year 4",
+      "faculty": "General"
     }
   ],
   "enrollments": [
