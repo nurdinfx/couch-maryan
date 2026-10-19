@@ -16,6 +16,66 @@
       "faculty": "General"
     },
     {
+      "id": 2,
+      "email": "alex.chen@student.faculty.edu",
+      "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
+      "full_name": "Alex Chen",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-081",
+      "department": "Guray Sicid Learning Platform",
+      "bio": "Student studying Computer Science with interests in Cloud Architecture and High-Performance Computing.",
+      "created_at": "2026-10-19 04:22:27",
+      "is_active": 1,
+      "academic_year": "Year 2",
+      "faculty": "General"
+    },
+    {
+      "id": 3,
+      "email": "fatima.z@student.faculty.edu",
+      "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
+      "full_name": "Fatima Zahra",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-082",
+      "department": "Guray Sicid Learning Platform",
+      "bio": "Undergraduate passionate about distributed systems and site reliability engineering.",
+      "created_at": "2026-10-19 04:22:27",
+      "is_active": 1,
+      "academic_year": "Year 3",
+      "faculty": "General"
+    },
+    {
+      "id": 4,
+      "email": "marcus.v@student.faculty.edu",
+      "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
+      "full_name": "Marcus Vance",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-083",
+      "department": "Guray Sicid Learning Platform",
+      "bio": "Software Engineering student balancing coursework with faculty competitive programming team.",
+      "created_at": "2026-10-19 04:22:27",
+      "is_active": 1,
+      "academic_year": "Year 2",
+      "faculty": "General"
+    },
+    {
+      "id": 5,
+      "email": "layla.k@student.faculty.edu",
+      "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
+      "full_name": "Layla Karim",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-084",
+      "department": "Guray Sicid Learning Platform",
+      "bio": "Dean's list senior focusing on cloud-native security, microservice architectures, and distributed databases.",
+      "created_at": "2026-10-19 04:22:27",
+      "is_active": 1,
+      "academic_year": "Year 4",
+      "faculty": "General"
+    },
+    {
       "id": 6,
       "email": "admin@faculty.edu",
       "password_hash": "$2b$10$TA62X6DuQgAOCPseFGcm2uFl25GvRWU2iTp4WBJ2tAQnlfHkMFTsS",
@@ -31,19 +91,1328 @@
       "faculty": "General"
     }
   ],
-  "courses": [],
-  "enrollments": [],
-  "modules": [],
-  "lessons": [],
-  "lesson_progress": [],
-  "assignments": [],
-  "assignment_submissions": [],
-  "quizzes": [],
-  "quiz_questions": [],
-  "quiz_attempts": [],
-  "quiz_attempt_answers": [],
-  "attendance_sessions": [],
-  "attendance_records": [],
+  "courses": [
+    {
+      "id": 1,
+      "code": "CS301",
+      "title": "Cloud Computing & Distributed Systems",
+      "description": "In-depth study of distributed system architecture, consensus algorithms (Raft/Paxos), cloud storage primitives, virtualization, container orchestration, and serverless compute.",
+      "cover_image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
+      "professor_id": 1,
+      "start_date": "2026-09-01",
+      "end_date": "2026-12-20",
+      "is_published": 1,
+      "pass_percentage": 60,
+      "created_at": "2026-10-19 04:22:27",
+      "target_year": "All Years",
+      "faculty": "General"
+    },
+    {
+      "id": 2,
+      "code": "CS204",
+      "title": "Advanced Data Structures & Algorithms",
+      "description": "Mastery of balanced search trees, graph algorithms, amortized analysis, dynamic programming, and streaming algorithm designs for high-throughput computing.",
+      "cover_image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+      "professor_id": 1,
+      "start_date": "2026-09-01",
+      "end_date": "2026-12-20",
+      "is_published": 1,
+      "pass_percentage": 60,
+      "created_at": "2026-10-19 04:22:27",
+      "target_year": "Year 2",
+      "faculty": "General"
+    },
+    {
+      "id": 3,
+      "code": "CS410",
+      "title": "Machine Learning & Intelligent Systems",
+      "description": "Practical and theoretical treatment of neural networks, reinforcement learning, distributed model training, and AI pipeline deployment.",
+      "cover_image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80",
+      "professor_id": 1,
+      "start_date": "2026-09-01",
+      "end_date": "2026-12-20",
+      "is_published": 1,
+      "pass_percentage": 65,
+      "created_at": "2026-10-19 04:22:27",
+      "target_year": "Year 4",
+      "faculty": "General"
+    },
+    {
+      "id": 8,
+      "code": "BMW2026",
+      "title": "Introduction to Midwifery",
+      "description": "",
+      "cover_image": "/uploads/covers/1792395789544_IMG_9221.jpeg",
+      "professor_id": 1,
+      "start_date": "2026-09-01",
+      "end_date": "2026-12-31",
+      "is_published": 1,
+      "pass_percentage": 60,
+      "created_at": "2026-10-19 07:43:09",
+      "target_year": "Year 1",
+      "faculty": "General"
+    }
+  ],
+  "enrollments": [
+    {
+      "id": 33,
+      "user_id": 2,
+      "course_id": 1,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 34,
+      "user_id": 3,
+      "course_id": 1,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 35,
+      "user_id": 4,
+      "course_id": 1,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 36,
+      "user_id": 5,
+      "course_id": 1,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 37,
+      "user_id": 2,
+      "course_id": 2,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 38,
+      "user_id": 3,
+      "course_id": 2,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 39,
+      "user_id": 5,
+      "course_id": 2,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 40,
+      "user_id": 3,
+      "course_id": 3,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 41,
+      "user_id": 4,
+      "course_id": 3,
+      "enrolled_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 42,
+      "user_id": 5,
+      "course_id": 3,
+      "enrolled_at": "2026-10-19 04:22:27"
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "title": "Module 1: Cloud Architecture & Foundations",
+      "description": "Core principles of distributed architectures, virtualization, and the CAP theorem.",
+      "sort_order": 1,
+      "is_published": 1
+    },
+    {
+      "id": 2,
+      "course_id": 1,
+      "title": "Module 2: Containerization & Microservice Orchestration",
+      "description": "Container runtimes, Docker internals, Kubernetes cluster orchestration, and service meshes.",
+      "sort_order": 2,
+      "is_published": 1
+    },
+    {
+      "id": 3,
+      "course_id": 1,
+      "title": "Module 3: Distributed Storage & Consistent Hashing",
+      "description": "Partitioning strategies, replication models, quorum consensus, and object store implementations.",
+      "sort_order": 3,
+      "is_published": 1
+    },
+    {
+      "id": 4,
+      "course_id": 1,
+      "title": "Module 4: Midterm Assessment & Exam Review",
+      "description": "Midterm evaluation covering system architecture, fault tolerance, and consensus protocols.",
+      "sort_order": 4,
+      "is_published": 1
+    },
+    {
+      "id": 5,
+      "course_id": 2,
+      "title": "Module 1: Balanced Search Trees & Amortized Analysis",
+      "description": "Red-black trees, AVL trees, and splay trees in production databases.",
+      "sort_order": 1,
+      "is_published": 1
+    },
+    {
+      "id": 6,
+      "course_id": 2,
+      "title": "Module 2: Advanced Graph Algorithms & Flow Networks",
+      "description": "Shortest path optimizations, Ford-Fulkerson max flow, and bipartite matching.",
+      "sort_order": 2,
+      "is_published": 1
+    },
+    {
+      "id": 7,
+      "course_id": 3,
+      "title": "Module 1: Deep Learning Foundations & Backpropagation",
+      "description": "Gradient descent variants, computational graphs, and vector calculus.",
+      "sort_order": 1,
+      "is_published": 1
+    },
+    {
+      "id": 8,
+      "course_id": 3,
+      "title": "Module 2: Transformers & Self-Attention Architectures",
+      "description": "Modern NLP pipelines, multi-head self-attention, and LLM scaling laws.",
+      "sort_order": 2,
+      "is_published": 1
+    },
+    {
+      "id": 9,
+      "course_id": 8,
+      "title": "General & Course Orientation",
+      "description": "Course announcements, syllabus, and introductory resources.",
+      "sort_order": 1,
+      "is_published": 1
+    }
+  ],
+  "lessons": [
+    {
+      "id": 1,
+      "module_id": 1,
+      "course_id": 1,
+      "title": "CS301 Official Syllabus & Course Policy",
+      "content_type": "document",
+      "description": "Download and review semester policies, grading rubrics, exam dates, and academic conduct standards.",
+      "content_body": "Please review the official course syllabus thoroughly. It outlines all expectations, weekly milestones, and academic integrity policies.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/CS301_Course_Syllabus.pdf",
+      "file_name": "CS301_Course_Syllabus.pdf",
+      "file_size_bytes": 24500,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 2,
+      "module_id": 1,
+      "course_id": 1,
+      "title": "Lecture 1: Principles of Cloud Distributed Systems",
+      "content_type": "video",
+      "description": "Prof. Maryam breaks down modern distributed systems, scale-out versus scale-up models, and latency numbers every engineer should know.",
+      "content_body": "### Lecture Summary\n\nIn this session, we investigate fundamental tradeoffs in distributed computing.\n\nKey Concepts:\n- Single point of failure vs high availability\n- Network partitions and fail-stop vs Byzantine failure modes\n- The Eight Fallacies of Distributed Computing",
+      "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      "video_duration_seconds": 596,
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "is_required_for_completion": 1,
+      "sort_order": 2,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 3,
+      "module_id": 1,
+      "course_id": 1,
+      "title": "Lecture 1 Slides: Distributed Foundations & CAP Theorem",
+      "content_type": "document",
+      "description": "Full lecture presentation slides covering CAP theorem trade-offs and consensus models.",
+      "content_body": "Presentation slides from Week 1. Review slides 12 through 28 before attempting the module quiz.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/Lecture1_Introduction_to_Distributed_Systems.pdf",
+      "file_name": "Lecture1_Introduction_to_Distributed_Systems.pdf",
+      "file_size_bytes": 38400,
+      "is_required_for_completion": 1,
+      "sort_order": 3,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 4,
+      "module_id": 2,
+      "course_id": 1,
+      "title": "Lecture 2: Container Internals (Namespaces & Cgroups)",
+      "content_type": "video",
+      "description": "Deep architectural dive into Linux namespaces (PID, Mount, Net), cgroups resource throttling, and union overlay filesystems.",
+      "content_body": "### Deep Dive: Container Mechanics\n\nContainers are isolated processes, not lightweight virtual machines. In this lecture, we construct a mini-container using chroot, unshare, and cgroups v2.",
+      "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+      "video_duration_seconds": 653,
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 5,
+      "module_id": 2,
+      "course_id": 1,
+      "title": "Architecture Notes: Kubernetes Control Plane & Etcd Consensus",
+      "content_type": "text",
+      "description": "Comprehensive reference guide to kube-apiserver, kube-controller-manager, kube-scheduler, and etcd.",
+      "content_body": "# Kubernetes Control Plane Deep Dive\n\nThe Kubernetes control plane makes global decisions about the cluster (for example, scheduling), as well as detecting and responding to cluster events.\n\n## 1. kube-apiserver\nThe API server is the front end for the Kubernetes control plane. It exposes the Kubernetes API and is designed to scale horizontally.\n\n## 2. etcd\nConsistent and highly-available key value store used as Kubernetes backing store for all cluster data.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "is_required_for_completion": 1,
+      "sort_order": 2,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 6,
+      "module_id": 3,
+      "course_id": 1,
+      "title": "Assignment 1 Specification: Distributed Object Store",
+      "content_type": "document",
+      "description": "Detailed technical specification, test harness requirements, and grading rubric for Assignment 1.",
+      "content_body": "Review this specification document carefully before starting your code implementation.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/Assignment1_Specification_Cloud_Storage.pdf",
+      "file_name": "Assignment1_Specification_Cloud_Storage.pdf",
+      "file_size_bytes": 41200,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 7,
+      "module_id": 5,
+      "course_id": 2,
+      "title": "Lecture 1: Red-Black Trees & Binary Balance Invariants",
+      "content_type": "document",
+      "description": "Mathematical proofs of maximum height O(log N) and rotation invariants in red-black trees.",
+      "content_body": "Study the recoloring and rotation algorithms in chapter 13 of CLRS before class.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/Lecture1_Introduction_to_Distributed_Systems.pdf",
+      "file_name": "RedBlack_Tree_Foundations.pdf",
+      "file_size_bytes": 28900,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 8,
+      "module_id": 6,
+      "course_id": 2,
+      "title": "Lecture 2: Shortest Path Algorithms & Fib Heaps",
+      "content_type": "video",
+      "description": "Implementation of Dijkstra with Fibonacci heap priority queue for O(E + V log V) optimal runtime.",
+      "content_body": "Visual walkthrough of shortest path relaxation.",
+      "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      "video_duration_seconds": 480,
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 9,
+      "module_id": 7,
+      "course_id": 3,
+      "title": "Lecture 1: Automatic Differentiation & Computational Graphs",
+      "content_type": "document",
+      "description": "Reverse-mode automatic differentiation calculus and tape implementations.",
+      "content_body": "Detailed mathematical derivations for vector-Jacobian products.",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/CS301_Course_Syllabus.pdf",
+      "file_name": "Autodiff_Deep_Dive.pdf",
+      "file_size_bytes": 31500,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 10,
+      "module_id": 8,
+      "course_id": 3,
+      "title": "Lecture 2: Self-Attention & Transformer Blocks",
+      "content_type": "video",
+      "description": "Query, Key, and Value projections, scaled dot-product attention, and causal masking.",
+      "content_body": "Comprehensive overview of multi-head attention mechanisms.",
+      "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "video_duration_seconds": 540,
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-19 04:22:27"
+    }
+  ],
+  "lesson_progress": [
+    {
+      "id": 53,
+      "user_id": 5,
+      "lesson_id": 1,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 54,
+      "user_id": 5,
+      "lesson_id": 2,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 55,
+      "user_id": 5,
+      "lesson_id": 3,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 56,
+      "user_id": 5,
+      "lesson_id": 4,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 57,
+      "user_id": 5,
+      "lesson_id": 5,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 58,
+      "user_id": 5,
+      "lesson_id": 6,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 600,
+      "video_watch_percentage": 100,
+      "completed_at": "2026-10-10 15:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 59,
+      "user_id": 2,
+      "lesson_id": 1,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 580,
+      "video_watch_percentage": 97.3,
+      "completed_at": "2026-10-11 16:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 60,
+      "user_id": 2,
+      "lesson_id": 2,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 580,
+      "video_watch_percentage": 97.3,
+      "completed_at": "2026-10-11 16:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 61,
+      "user_id": 2,
+      "lesson_id": 3,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 580,
+      "video_watch_percentage": 97.3,
+      "completed_at": "2026-10-11 16:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 62,
+      "user_id": 2,
+      "lesson_id": 4,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 580,
+      "video_watch_percentage": 97.3,
+      "completed_at": "2026-10-11 16:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 63,
+      "user_id": 2,
+      "lesson_id": 5,
+      "course_id": 1,
+      "is_completed": 0,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": null,
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 64,
+      "user_id": 2,
+      "lesson_id": 6,
+      "course_id": 1,
+      "is_completed": 0,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": null,
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 65,
+      "user_id": 3,
+      "lesson_id": 1,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 550,
+      "video_watch_percentage": 92.2,
+      "completed_at": "2026-10-12 12:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 66,
+      "user_id": 3,
+      "lesson_id": 2,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 550,
+      "video_watch_percentage": 92.2,
+      "completed_at": "2026-10-12 12:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 67,
+      "user_id": 3,
+      "lesson_id": 3,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 550,
+      "video_watch_percentage": 92.2,
+      "completed_at": "2026-10-12 12:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 68,
+      "user_id": 4,
+      "lesson_id": 1,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-10-05 09:00:00",
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 69,
+      "user_id": 4,
+      "lesson_id": 2,
+      "course_id": 1,
+      "is_completed": 0,
+      "video_watched_seconds": 65,
+      "video_watch_percentage": 10.9,
+      "completed_at": null,
+      "last_accessed_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 73,
+      "user_id": 3,
+      "lesson_id": 4,
+      "course_id": 1,
+      "is_completed": 1,
+      "video_watched_seconds": 590,
+      "video_watch_percentage": 90,
+      "completed_at": "2026-10-19 04:54:21",
+      "last_accessed_at": "2026-10-19 04:54:21"
+    }
+  ],
+  "assignments": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "module_id": 3,
+      "title": "Assignment 1: Distributed Object Storage Ring Implementation",
+      "instructions": "Build a robust, distributed key-value chunk store implementing Consistent Hashing with virtual nodes (128 per physical node). Include replication factor R=3 with quorum read/write consistency (W=2, R=2). Submit your source code archive (.zip) and an executive performance report (.pdf).",
+      "attachment_url": "/uploads/documents/Assignment1_Specification_Cloud_Storage.pdf",
+      "attachment_name": "Assignment1_Specification_Cloud_Storage.pdf",
+      "due_date": "2026-11-15 23:59:00",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 100,
+      "weight_percentage": 25,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 2,
+      "course_id": 2,
+      "module_id": 5,
+      "title": "Lab 1: Red-Black Tree Implementation & Benchmark",
+      "instructions": "Implement a generic self-balancing red-black tree with insertion, deletion, and interval queries in C++ or Rust. Submit performance benchmarks against standard library std::map.",
+      "attachment_url": null,
+      "attachment_name": null,
+      "due_date": "2026-11-20 23:59:00",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 100,
+      "weight_percentage": 20,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 3,
+      "course_id": 3,
+      "module_id": 7,
+      "title": "Lab 1: Neural Autodiff Engine in NumPy",
+      "instructions": "Construct a modular micro-framework implementing Tensor nodes, forward evaluation, backward pass with backward hooks, and SGD optimizer.",
+      "attachment_url": null,
+      "attachment_name": null,
+      "due_date": "2026-11-25 23:59:00",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 100,
+      "weight_percentage": 25,
+      "created_at": "2026-10-19 04:22:27"
+    }
+  ],
+  "assignment_submissions": [
+    {
+      "id": 13,
+      "assignment_id": 1,
+      "user_id": 2,
+      "submission_text": "Verified consistent hashing ring with 128 virtual tokens and quorum read/write test harness.",
+      "file_url": "/uploads/submissions/Alex_Chen_CS301_Assignment1_Storage.pdf",
+      "file_name": "Alex_Chen_CS301_Assignment1_Storage.pdf",
+      "file_size_bytes": 45120,
+      "status": "graded",
+      "submitted_at": "2026-10-19 04:54:21",
+      "grade": 95,
+      "feedback": "Exceptional virtual node distribution analysis and partition recovery.",
+      "graded_by": 1,
+      "graded_at": "2026-10-19 04:54:22",
+      "is_grades_released": 1
+    },
+    {
+      "id": 14,
+      "assignment_id": 1,
+      "user_id": 3,
+      "submission_text": "Designed 3-node distributed chunk store with MD5 token ring and configurable write quorum. Included Prometheus metrics exporter.",
+      "file_url": "/uploads/documents/Assignment1_Specification_Cloud_Storage.pdf",
+      "file_name": "Fatima_Zahra_Assignment1_Final.pdf",
+      "file_size_bytes": 39800,
+      "status": "graded",
+      "submitted_at": "2026-10-11 20:10:00",
+      "grade": 88,
+      "feedback": "Very solid implementation, Fatima! Clean modular structure and great metrics visualization. Remember to handle network timeout retries more gracefully.",
+      "graded_by": 1,
+      "graded_at": "2026-10-12 11:30:00",
+      "is_grades_released": 1
+    },
+    {
+      "id": 15,
+      "assignment_id": 1,
+      "user_id": 4,
+      "submission_text": "Implemented basic hash ring. Encountered some concurrency deadlocks with read quorum during simultaneous partition tests.",
+      "file_url": null,
+      "file_name": null,
+      "file_size_bytes": null,
+      "status": "submitted",
+      "submitted_at": "2026-10-13 22:45:00",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 0
+    },
+    {
+      "id": 16,
+      "assignment_id": 1,
+      "user_id": 5,
+      "submission_text": "Complete Raft-coordinated metadata tier coupled with gossip-based chunk health heartbeats. Included comprehensive fuzz testing suite.",
+      "file_url": "/uploads/submissions/Alex_Chen_CS301_Assignment1_Storage.pdf",
+      "file_name": "Layla_Karim_CS301_Storage_Cluster.pdf",
+      "file_size_bytes": 52300,
+      "status": "graded",
+      "submitted_at": "2026-10-09 14:20:00",
+      "grade": 98,
+      "feedback": "Remarkable mastery of consensus and partition tolerance, Layla. This is publication-quality systems programming.",
+      "graded_by": 1,
+      "graded_at": "2026-10-11 09:40:00",
+      "is_grades_released": 1
+    }
+  ],
+  "quizzes": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "module_id": 4,
+      "title": "Midterm Examination: Distributed Systems Architecture",
+      "description": "Comprehensive examination testing your understanding of consistency models, CAP theorem, replication topologies, and container orchestration.",
+      "time_limit_minutes": 30,
+      "max_attempts": 2,
+      "passing_percentage": 60,
+      "weight_percentage": 25,
+      "open_date": "2026-10-01 08:00:00",
+      "close_date": "2026-11-30 23:59:00",
+      "release_results_immediately": 1,
+      "created_at": "2026-10-19 04:22:27"
+    }
+  ],
+  "quiz_questions": [
+    {
+      "id": 1,
+      "quiz_id": 1,
+      "question_text": "According to Brewer's CAP theorem, what is guaranteed in an asynchronous network during a network partition (P)?",
+      "question_type": "single_choice",
+      "options_json": "[{\"id\":\"a\",\"text\":\"You can achieve both perfect Consistency (C) and perfect Availability (A) simultaneously.\",\"isCorrect\":false},{\"id\":\"b\",\"text\":\"You must choose between Consistency (C) or Availability (A); you cannot guarantee both.\",\"isCorrect\":true},{\"id\":\"c\",\"text\":\"Partition tolerance can be eliminated by using fiber-optic links.\",\"isCorrect\":false},{\"id\":\"d\",\"text\":\"Consistency is always preserved regardless of node drops.\",\"isCorrect\":false}]",
+      "correct_answer_text": "b",
+      "points": 10,
+      "sort_order": 1
+    },
+    {
+      "id": 2,
+      "quiz_id": 1,
+      "question_text": "True or False: Linux containers run on a separate guest kernel managed by a Type-1 hypervisor.",
+      "question_type": "true_false",
+      "options_json": "[{\"id\":\"true\",\"text\":\"True\",\"isCorrect\":false},{\"id\":\"false\",\"text\":\"False - Containers share the host Linux kernel and use cgroups/namespaces for isolation.\",\"isCorrect\":true}]",
+      "correct_answer_text": "false",
+      "points": 10,
+      "sort_order": 2
+    },
+    {
+      "id": 3,
+      "quiz_id": 1,
+      "question_text": "Which of the following are among the classic Fallacies of Distributed Computing identified by Peter Deutsch? (Select all that apply)",
+      "question_type": "multiple_choice",
+      "options_json": "[{\"id\":\"opt1\",\"text\":\"The network is reliable\",\"isCorrect\":true},{\"id\":\"opt2\",\"text\":\"Latency is zero\",\"isCorrect\":true},{\"id\":\"opt3\",\"text\":\"Bandwidth is infinite\",\"isCorrect\":true},{\"id\":\"opt4\",\"text\":\"Transport cost is zero\",\"isCorrect\":true}]",
+      "correct_answer_text": null,
+      "points": 15,
+      "sort_order": 3
+    },
+    {
+      "id": 4,
+      "quiz_id": 1,
+      "question_text": "In a quorum-based replication system with N = 3 replicas, what is the minimum value of W + R required to prevent stale reads and ensure strong consistency?",
+      "question_type": "short_answer",
+      "options_json": null,
+      "correct_answer_text": "4",
+      "points": 10,
+      "sort_order": 4
+    },
+    {
+      "id": 5,
+      "quiz_id": 1,
+      "question_text": "Explain the role of Virtual Nodes in a Consistent Hashing ring and describe how they resolve hot spots and heterogeneous node capacities.",
+      "question_type": "essay",
+      "options_json": null,
+      "correct_answer_text": null,
+      "points": 20,
+      "sort_order": 5
+    }
+  ],
+  "quiz_attempts": [
+    {
+      "id": 1,
+      "quiz_id": 1,
+      "user_id": 2,
+      "attempt_number": 1,
+      "started_at": "2026-10-11 14:00:00",
+      "submitted_at": "2026-10-11 14:24:15",
+      "score": 60,
+      "max_score": 65,
+      "percentage": 92.3,
+      "is_passed": 1,
+      "status": "graded",
+      "feedback": "Well done Alex! Comprehensive answers on CAP and virtual nodes."
+    },
+    {
+      "id": 2,
+      "quiz_id": 1,
+      "user_id": 5,
+      "attempt_number": 1,
+      "started_at": "2026-10-10 10:00:00",
+      "submitted_at": "2026-10-10 10:21:00",
+      "score": 65,
+      "max_score": 65,
+      "percentage": 100,
+      "is_passed": 1,
+      "status": "graded",
+      "feedback": "Flawless exam performance."
+    },
+    {
+      "id": 5,
+      "quiz_id": 1,
+      "user_id": 3,
+      "attempt_number": 1,
+      "started_at": "2026-10-19 04:29:38",
+      "submitted_at": "2026-10-19 04:54:22",
+      "score": 45,
+      "max_score": 65,
+      "percentage": 69.2,
+      "is_passed": 1,
+      "status": "in_progress",
+      "feedback": "Objective questions auto-graded. Essay questions are awaiting professor evaluation."
+    }
+  ],
+  "quiz_attempt_answers": [
+    {
+      "id": 46,
+      "attempt_id": 1,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct."
+    },
+    {
+      "id": 47,
+      "attempt_id": 1,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct."
+    },
+    {
+      "id": 48,
+      "attempt_id": 1,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct fallacies selected."
+    },
+    {
+      "id": 49,
+      "attempt_id": 1,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Exact correct quorum formula (W + R > N)."
+    },
+    {
+      "id": 50,
+      "attempt_id": 1,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes map multiple points on the hash ring to a single physical server. This disperses data uniformly across the cluster, preventing non-uniform hash distribution.\"",
+      "awarded_points": 15,
+      "is_auto_graded": 0,
+      "graded_manually": 1,
+      "feedback": "Clear explanation."
+    },
+    {
+      "id": 51,
+      "attempt_id": 2,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct."
+    },
+    {
+      "id": 52,
+      "attempt_id": 2,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct."
+    },
+    {
+      "id": 53,
+      "attempt_id": 2,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct."
+    },
+    {
+      "id": 54,
+      "attempt_id": 2,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct."
+    },
+    {
+      "id": 55,
+      "attempt_id": 2,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes decouple the number of physical nodes from hash space partitions, enabling uniform variance reduction and dynamic proportional weighting according to hardware capabilities.\"",
+      "awarded_points": 20,
+      "is_auto_graded": 0,
+      "graded_manually": 1,
+      "feedback": "Exceptional technical depth."
+    },
+    {
+      "id": 56,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 57,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 58,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 59,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 60,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
+    },
+    {
+      "id": 61,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 62,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 63,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 64,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 65,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
+    },
+    {
+      "id": 66,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 67,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 68,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 69,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 70,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
+    },
+    {
+      "id": 71,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 72,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 73,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 74,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 75,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
+    },
+    {
+      "id": 76,
+      "attempt_id": 5,
+      "question_id": 1,
+      "user_answer_json": "\"b\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 77,
+      "attempt_id": 5,
+      "question_id": 2,
+      "user_answer_json": "\"false\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 78,
+      "attempt_id": 5,
+      "question_id": 3,
+      "user_answer_json": "[\"opt1\",\"opt2\",\"opt3\",\"opt4\"]",
+      "awarded_points": 15,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 79,
+      "attempt_id": 5,
+      "question_id": 4,
+      "user_answer_json": "\"4\"",
+      "awarded_points": 10,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Correct"
+    },
+    {
+      "id": 80,
+      "attempt_id": 5,
+      "question_id": 5,
+      "user_answer_json": "\"Virtual nodes distribute tokens uniformly across the consistent hash ring.\"",
+      "awarded_points": 0,
+      "is_auto_graded": 0,
+      "graded_manually": 0,
+      "feedback": "Pending professor evaluation"
+    }
+  ],
+  "attendance_sessions": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "session_date": "2026-09-08",
+      "title": "Week 1: Course Introduction & Distributed Fundamentals",
+      "description": "First live seminar and lab setup check.",
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 2,
+      "course_id": 1,
+      "session_date": "2026-09-15",
+      "title": "Week 2: Consensus Models & CAP Theorem Discussion",
+      "description": "Interactive seminar on Raft consensus.",
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 3,
+      "course_id": 1,
+      "session_date": "2026-09-22",
+      "title": "Week 3: Container Runtimes & Orchestration",
+      "description": "Live coding demonstration with Docker and Kubernetes.",
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 4,
+      "course_id": 1,
+      "session_date": "2026-09-29",
+      "title": "Week 4: Consistent Hashing & Storage Architecture",
+      "description": "Review of Assignment 1 architectures.",
+      "created_at": "2026-10-19 04:22:27"
+    }
+  ],
+  "attendance_records": [
+    {
+      "id": 61,
+      "session_id": 1,
+      "user_id": 5,
+      "status": "present",
+      "notes": "Lab leader",
+      "recorded_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 62,
+      "session_id": 2,
+      "user_id": 5,
+      "status": "present",
+      "notes": "Active participation",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 63,
+      "session_id": 3,
+      "user_id": 5,
+      "status": "present",
+      "notes": "Active participation",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 64,
+      "session_id": 4,
+      "user_id": 5,
+      "status": "present",
+      "notes": "Active participation",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 65,
+      "session_id": 1,
+      "user_id": 2,
+      "status": "present",
+      "notes": "Active discussion",
+      "recorded_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 66,
+      "session_id": 2,
+      "user_id": 2,
+      "status": "present",
+      "notes": null,
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 67,
+      "session_id": 3,
+      "user_id": 2,
+      "status": "late",
+      "notes": "Arrived 10 mins late",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 68,
+      "session_id": 4,
+      "user_id": 2,
+      "status": "present",
+      "notes": null,
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 69,
+      "session_id": 1,
+      "user_id": 3,
+      "status": "present",
+      "notes": "",
+      "recorded_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 70,
+      "session_id": 2,
+      "user_id": 3,
+      "status": "present",
+      "notes": null,
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 71,
+      "session_id": 3,
+      "user_id": 3,
+      "status": "excused",
+      "notes": "Medical leave approved",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 72,
+      "session_id": 4,
+      "user_id": 3,
+      "status": "present",
+      "notes": null,
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 73,
+      "session_id": 1,
+      "user_id": 4,
+      "status": "late",
+      "notes": "Late by 15 mins",
+      "recorded_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 74,
+      "session_id": 2,
+      "user_id": 4,
+      "status": "absent",
+      "notes": "Unexcused absence",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 75,
+      "session_id": 3,
+      "user_id": 4,
+      "status": "late",
+      "notes": "Late by 25 minutes",
+      "recorded_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 76,
+      "session_id": 4,
+      "user_id": 4,
+      "status": "absent",
+      "notes": "Unexcused absence",
+      "recorded_at": "2026-10-19 04:22:27"
+    }
+  ],
   "badges": [
     {
       "id": 1,
@@ -100,13 +1469,317 @@
       "created_at": "2026-10-19 04:22:27"
     }
   ],
-  "awarded_badges": [],
-  "certificates": [],
-  "announcements": [],
-  "forum_topics": [],
-  "forum_replies": [],
-  "messages": [],
+  "awarded_badges": [
+    {
+      "id": 46,
+      "badge_id": 1,
+      "user_id": 5,
+      "course_id": 1,
+      "awarded_at": "2026-09-02 10:00:00"
+    },
+    {
+      "id": 47,
+      "badge_id": 2,
+      "user_id": 5,
+      "course_id": 1,
+      "awarded_at": "2026-10-10 10:25:00"
+    },
+    {
+      "id": 48,
+      "badge_id": 3,
+      "user_id": 5,
+      "course_id": 1,
+      "awarded_at": "2026-10-11 09:45:00"
+    },
+    {
+      "id": 49,
+      "badge_id": 4,
+      "user_id": 5,
+      "course_id": 1,
+      "awarded_at": "2026-09-30 18:00:00"
+    },
+    {
+      "id": 50,
+      "badge_id": 5,
+      "user_id": 5,
+      "course_id": 1,
+      "awarded_at": "2026-10-12 16:00:00"
+    },
+    {
+      "id": 51,
+      "badge_id": 1,
+      "user_id": 2,
+      "course_id": 1,
+      "awarded_at": "2026-09-03 14:20:00"
+    },
+    {
+      "id": 52,
+      "badge_id": 2,
+      "user_id": 2,
+      "course_id": 1,
+      "awarded_at": "2026-10-11 14:30:00"
+    },
+    {
+      "id": 53,
+      "badge_id": 3,
+      "user_id": 2,
+      "course_id": 1,
+      "awarded_at": "2026-10-12 11:20:00"
+    },
+    {
+      "id": 54,
+      "badge_id": 1,
+      "user_id": 3,
+      "course_id": 1,
+      "awarded_at": "2026-09-04 11:15:00"
+    },
+    {
+      "id": 58,
+      "badge_id": 4,
+      "user_id": 2,
+      "course_id": 1,
+      "awarded_at": "2026-10-19 04:29:38"
+    },
+    {
+      "id": 59,
+      "badge_id": 4,
+      "user_id": 3,
+      "course_id": 1,
+      "awarded_at": "2026-10-19 04:29:38"
+    }
+  ],
+  "certificates": [
+    {
+      "id": 4,
+      "uuid": "CERT-2026-CS301-8849-AK",
+      "user_id": 5,
+      "course_id": 1,
+      "final_grade": 98.5,
+      "issued_at": "2026-10-12 16:30:00"
+    }
+  ],
+  "announcements": [
+    {
+      "id": 7,
+      "course_id": 1,
+      "author_id": 1,
+      "title": "Welcome to CS301: Distributed Systems & Cloud Infrastructure",
+      "content": "Welcome everyone to the Fall term! Please make sure you have reviewed the syllabus and downloaded the required development environment specifications.",
+      "is_pinned": 1,
+      "created_at": "2026-09-01 09:00:00"
+    },
+    {
+      "id": 8,
+      "course_id": 1,
+      "author_id": 1,
+      "title": "Midterm Exam Review & Office Hours Schedule",
+      "content": "The Midterm Examination is now accessible under Module 4. You will have 30 minutes to complete the attempt. Additional office hours will be held this Thursday from 14:00 to 16:00.",
+      "is_pinned": 0,
+      "created_at": "2026-10-08 11:00:00"
+    }
+  ],
+  "forum_topics": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "author_id": 1,
+      "title": "Discussion: CAP Theorem Trade-offs in Real-World Systems",
+      "content": "When designing systems like Amazon DynamoDB or Apache Cassandra, how do practical engineering teams balance between Consistency and Availability during unexpected cross-datacenter cable cuts? Share your thoughts below!",
+      "is_pinned": 1,
+      "is_locked": 0,
+      "created_at": "2026-09-10 10:00:00"
+    }
+  ],
+  "forum_replies": [
+    {
+      "id": 14,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Dynamo chooses high availability for shopping cart writes (using vector clocks and client-side reconciliation) because dropping a user checkout order costs real revenue.",
+      "created_at": "2026-09-10 14:32:00"
+    },
+    {
+      "id": 15,
+      "topic_id": 1,
+      "author_id": 5,
+      "content": "In contrast, financial ledger databases and distributed lock managers like Chubby or etcd strictly prioritize Consistency—returning an error or waiting on leader election rather than serving stale state.",
+      "created_at": "2026-09-10 15:45:00"
+    },
+    {
+      "id": 16,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:29:38"
+    },
+    {
+      "id": 17,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:50:42"
+    },
+    {
+      "id": 18,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:52:01"
+    },
+    {
+      "id": 19,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:52:40"
+    },
+    {
+      "id": 20,
+      "topic_id": 1,
+      "author_id": 2,
+      "content": "Testing distributed consensus with automated verification runner.",
+      "created_at": "2026-10-19 04:54:22"
+    }
+  ],
+  "messages": [
+    {
+      "id": 16,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Professor Maryam, could you clarify whether we are allowed to use MurmurHash3 or SHA-256 for the virtual node token generator in Assignment 1?",
+      "is_read": 1,
+      "created_at": "2026-10-09 11:20:00",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 17,
+      "sender_id": 1,
+      "recipient_id": 2,
+      "content": "Hello Alex, MurmurHash3 is highly recommended because of its fast distribution and low collision rate for hash rings. Good luck!",
+      "is_read": 1,
+      "created_at": "2026-10-09 11:45:00",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 18,
+      "sender_id": 4,
+      "recipient_id": 1,
+      "content": "Professor, I am struggling with the network partition simulator for Assignment 1. May I come to your office hours on Thursday?",
+      "is_read": 0,
+      "created_at": "2026-10-13 19:10:00",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 19,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:29:38",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 20,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:50:42",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 21,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:52:01",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 22,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:52:40",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    },
+    {
+      "id": 23,
+      "sender_id": 2,
+      "recipient_id": 1,
+      "content": "Hello Professor Maryam, checking in regarding the consensus lab!",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:54:22",
+      "attachment_url": null,
+      "attachment_name": null,
+      "attachment_type": null,
+      "file_size_bytes": null
+    }
+  ],
   "notifications": [
+    {
+      "id": 20,
+      "user_id": 2,
+      "title": "Assignment 1 Graded",
+      "message": "Prof. Maryam graded your Assignment 1 submission: 94 / 100 with personalized feedback.",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 21,
+      "user_id": 2,
+      "title": "New Badge Earned!",
+      "message": "You earned the \"Engineering Excellence\" badge for your outstanding assignment grade.",
+      "type": "badge",
+      "link": "#/badges",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 22,
+      "user_id": 4,
+      "title": "Upcoming Midterm Exam Deadline",
+      "message": "Don't forget to complete the Distributed Systems Midterm Examination before the close date.",
+      "type": "warning",
+      "link": "#/course/1/quiz/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:22:27"
+    },
+    {
+      "id": 23,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:29:38"
+    },
     {
       "id": 24,
       "user_id": 1,
@@ -116,6 +1789,16 @@
       "link": "#/messages",
       "is_read": 0,
       "created_at": "2026-10-19 04:29:38"
+    },
+    {
+      "id": 25,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:50:42"
     },
     {
       "id": 26,
@@ -128,6 +1811,16 @@
       "created_at": "2026-10-19 04:50:42"
     },
     {
+      "id": 27,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:52:01"
+    },
+    {
       "id": 28,
       "user_id": 1,
       "title": "New Direct Message",
@@ -138,6 +1831,16 @@
       "created_at": "2026-10-19 04:52:01"
     },
     {
+      "id": 29,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:52:40"
+    },
+    {
       "id": 30,
       "user_id": 1,
       "title": "New Direct Message",
@@ -146,6 +1849,16 @@
       "link": "#/messages",
       "is_read": 0,
       "created_at": "2026-10-19 04:52:40"
+    },
+    {
+      "id": 31,
+      "user_id": 2,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"Assignment 1: Distributed Object Storage Ring Implementation\" has been graded: 95 / 100",
+      "type": "grade",
+      "link": "#/course/1/assignment/1",
+      "is_read": 0,
+      "created_at": "2026-10-19 04:54:22"
     },
     {
       "id": 32,
