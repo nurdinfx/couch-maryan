@@ -27,10 +27,12 @@ function getSyncConfig() {
 }
 
 // ──────────────────────────────────────────────
-// Internal: fetch the current SHA of the file
-// (GitHub requires SHA when updating an existing file)
+let _lastSyncedContent = null;
+
 // ──────────────────────────────────────────────
-async function getFileSha(config) {
+// Internal: fetch current SHA and content from GitHub
+// ──────────────────────────────────────────────
+async function getFileRemoteInfo(config) {
   try {
     const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.filePath}?ref=${config.branch}`;
     const res = await fetch(url, {
@@ -42,7 +44,10 @@ async function getFileSha(config) {
     });
     if (!res.ok) return null;
     const data = await res.json();
-    return data.sha || null;
+    return {
+      sha: data.sha || null,
+      content: data.content ? data.content.replace(/\s+/g, '') : null
+    };
   } catch {
     return null;
   }
@@ -58,9 +63,22 @@ async function pushToGitHub(jsonContent) {
     return false;
   }
 
+  // Fast check: did the content change since the last sync in this process?
+  if (_lastSyncedContent === jsonContent) {
+    return true;
+  }
+
   try {
-    const sha = await getFileSha(config);
     const base64Content = Buffer.from(jsonContent, 'utf8').toString('base64');
+    const remoteInfo = await getFileRemoteInfo(config);
+
+    // If GitHub already has the exact same content, skip committing
+    if (remoteInfo && remoteInfo.content === base64Content) {
+      _lastSyncedContent = jsonContent;
+      return true;
+    }
+
+    const sha = remoteInfo ? remoteInfo.sha : null;
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const body = {
