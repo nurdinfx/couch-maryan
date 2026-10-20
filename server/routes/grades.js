@@ -5,6 +5,7 @@ const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
 function getLetterGrade(pct) {
+  if (pct === null || pct === undefined) return '—';
   if (pct >= 90) return 'A';
   if (pct >= 80) return 'B';
   if (pct >= 70) return 'C';
@@ -95,12 +96,16 @@ router.get('/courses/:courseId/gradebook', requireProfessor, (req, res) => {
     }
 
     // Weighted Overall Percentage
+    // If no graded activities exist yet, return null (not 0%) to avoid falsely showing FAIL
     const totalEffectiveWeight = assignmentTotalWeight + quizTotalWeight;
-    const overallPercentage = totalEffectiveWeight > 0 ?
-      Math.round(((assignmentWeightedSum + quizWeightedSum) / totalEffectiveWeight) * 1000) / 10 : 0;
+    const hasAnyGrade = totalEffectiveWeight > 0;
+    const overallPercentage = hasAnyGrade
+      ? Math.round(((assignmentWeightedSum + quizWeightedSum) / totalEffectiveWeight) * 1000) / 10
+      : null;
 
     const letterGrade = getLetterGrade(overallPercentage);
-    const isPassing = overallPercentage >= (course.pass_percentage || 60);
+    // null = no grades yet (not a failure), true/false = actual pass/fail
+    const isPassing = hasAnyGrade ? overallPercentage >= (course.pass_percentage || 60) : null;
 
     return {
       student,
@@ -184,14 +189,18 @@ router.get('/courses/:courseId/my-grades', requireAuth, (req, res) => {
     return q;
   });
 
-  const overallPct = totalWeight > 0 ? Math.round((weightedEarned / totalWeight) * 1000) / 10 : 0;
+  // null means no graded items yet (not 0% — avoids false FAIL)
+  const hasAnyGrade = totalWeight > 0;
+  const overallPct = hasAnyGrade
+    ? Math.round((weightedEarned / totalWeight) * 1000) / 10
+    : null;
 
   res.json({
     course,
     overall: {
       percentage: overallPct,
       letter_grade: getLetterGrade(overallPct),
-      is_passing: overallPct >= (course.pass_percentage || 60)
+      is_passing: hasAnyGrade ? overallPct >= (course.pass_percentage || 60) : null
     },
     assignments: sanitizedAssignments,
     quizzes: processedQuizzes
@@ -249,11 +258,11 @@ router.get('/courses/:courseId/export-csv', requireProfessor, (req, res) => {
       }
     });
 
-    const avg = count > 0 ? Math.round((totalEarned / count) * 10) / 10 : 0;
+    const avg = count > 0 ? Math.round((totalEarned / count) * 10) / 10 : null;
     const letter = getLetterGrade(avg);
-    const pass = avg >= 60 ? 'PASS' : 'FAIL';
+    const pass = count > 0 ? (avg >= (course.pass_percentage || 60) ? 'PASS' : 'FAIL') : 'Pending';
 
-    csv += `,${avg}%,${letter},${pass}\n`;
+    csv += `,${avg !== null ? avg + '%' : 'N/A'},${letter},${pass}\n`;
   }
 
   res.header('Content-Type', 'text/csv');

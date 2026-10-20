@@ -429,12 +429,15 @@ const CourseView = {
                         const att = r.quizzes[q.id];
                         return `<td>${att && att.percentage !== null ? `<strong>${att.percentage}%</strong>` : '<span style="color: var(--text-muted);">—</span>'}</td>`;
                       }).join('')}
-                      <td><strong style="font-size: 0.95rem;">${r.overall_percentage}%</strong></td>
+                      <td><strong style="font-size: 0.95rem;">${r.overall_percentage !== null ? r.overall_percentage + '%' : '<span style="color: var(--text-muted); font-size: 0.82rem;">No grades yet</span>'}</strong></td>
                       <td><span class="letter-badge letter-${r.letter_grade}">${r.letter_grade}</span></td>
                       <td>
-                        <span class="badge ${r.is_passing ? 'badge-success' : 'badge-danger'}">
-                          ${r.is_passing ? 'PASS' : 'FAIL'}
-                        </span>
+                        ${r.is_passing === null
+                          ? `<span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700;">⏳ Pending</span>`
+                          : r.is_passing
+                            ? `<span class="badge badge-success">✅ PASS</span>`
+                            : `<span class="badge badge-danger">❌ FAIL</span>`
+                        }
                       </td>
                     </tr>
                   `).join('')}
@@ -468,14 +471,17 @@ const CourseView = {
               <div style="display: flex; align-items: center; gap: 1rem; background: var(--bg-surface-alt); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                 <div>
                   <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">OVERALL GRADE</div>
-                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">${data.overall.percentage}%</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">${data.overall.percentage !== null ? data.overall.percentage + '%' : '—'}</div>
                 </div>
                 <div class="letter-badge letter-${data.overall.letter_grade}" style="font-size: 1.2rem; padding: 0.3rem 0.8rem;">
                   ${data.overall.letter_grade}
                 </div>
-                <span class="badge ${data.overall.is_passing ? 'badge-success' : 'badge-danger'}">
-                  ${data.overall.is_passing ? 'Passing' : 'Below Passing'}
-                </span>
+                ${data.overall.is_passing === null
+                  ? `<span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700;">⏳ Weli la qadin</span>`
+                  : data.overall.is_passing
+                    ? `<span class="badge badge-success">✅ Passing</span>`
+                    : `<span class="badge badge-danger">❌ Below Passing</span>`
+                }
               </div>
             </div>
 
