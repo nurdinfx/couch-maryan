@@ -151,21 +151,6 @@
       "created_at": "2026-10-19 07:43:09",
       "target_year": "Year 1",
       "faculty": "General"
-    },
-    {
-      "id": 9,
-      "code": "BMW2024",
-      "title": "Normal Labour & BIRTH",
-      "description": "",
-      "cover_image": "/uploads/covers/1792652233171_IMG_9357.jpeg",
-      "professor_id": 1,
-      "start_date": "2026-09-01",
-      "end_date": "2026-12-31",
-      "is_published": 1,
-      "pass_percentage": 60,
-      "created_at": "2026-10-22 06:57:13",
-      "target_year": "Year 3",
-      "faculty": "General"
     }
   ],
   "enrollments": [
@@ -216,14 +201,6 @@
     {
       "id": 9,
       "course_id": 8,
-      "title": "General & Course Orientation",
-      "description": "Course announcements, syllabus, and introductory resources.",
-      "sort_order": 1,
-      "is_published": 1
-    },
-    {
-      "id": 10,
-      "course_id": 9,
       "title": "General & Course Orientation",
       "description": "Course announcements, syllabus, and introductory resources.",
       "sort_order": 1,
