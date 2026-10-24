@@ -134,6 +134,21 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science"
+    },
+    {
+      "id": 17,
+      "email": "maryan@guraysicid.edu",
+      "password_hash": "$2b$10$h0QNq3kpzZTBSbapdSRSCuwH8kzv1N.8AIxJuU6D6h9K1k0Xudmdy",
+      "full_name": "mayran",
+      "role": "admin",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+      "student_id_number": null,
+      "department": "Platform Operations & Security",
+      "bio": null,
+      "created_at": "2026-10-24 06:58:38",
+      "is_active": 1,
+      "academic_year": "Year 1",
+      "faculty": "General"
     }
   ],
   "courses": [
@@ -150,6 +165,21 @@
       "pass_percentage": 60,
       "created_at": "2026-10-19 07:43:09",
       "target_year": "Year 1",
+      "faculty": "General"
+    },
+    {
+      "id": 9,
+      "code": "BMW-2023",
+      "title": "Complications of Labour and BIRTH",
+      "description": "",
+      "cover_image": "/uploads/covers/1792823065720_Capture_d_____cran_2026-10-24____09.23.45.png",
+      "professor_id": 1,
+      "start_date": "2026-09-01",
+      "end_date": "2026-12-31",
+      "is_published": 1,
+      "pass_percentage": 60,
+      "created_at": "2026-10-24 06:24:25",
+      "target_year": "Year 5",
       "faculty": "General"
     }
   ],
@@ -197,21 +227,43 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [
-    {
-      "id": 9,
-      "course_id": 8,
-      "title": "General & Course Orientation",
-      "description": "Course announcements, syllabus, and introductory resources.",
-      "sort_order": 1,
-      "is_published": 1
-    }
-  ],
+  "modules": [],
   "lessons": [],
   "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
-  "quizzes": [],
+  "quizzes": [
+    {
+      "id": 2,
+      "course_id": 8,
+      "module_id": null,
+      "title": "nuurdin mahamed",
+      "description": "",
+      "time_limit_minutes": 30,
+      "max_attempts": 3,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": null,
+      "release_results_immediately": 1,
+      "created_at": "2026-10-24 06:43:46"
+    },
+    {
+      "id": 3,
+      "course_id": 9,
+      "module_id": null,
+      "title": "Knowledge test Essential Care for labor and birth",
+      "description": "Answer the question , You only have 1 good answer . Good LUCK ",
+      "time_limit_minutes": 30,
+      "max_attempts": 2,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": null,
+      "release_results_immediately": 1,
+      "created_at": "2026-10-24 06:44:41"
+    }
+  ],
   "quiz_questions": [],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
@@ -273,8 +325,39 @@
       "created_at": "2026-10-19 04:22:27"
     }
   ],
-  "awarded_badges": [],
-  "certificates": [],
+  "awarded_badges": [
+    {
+      "id": 84,
+      "badge_id": 1,
+      "user_id": 1,
+      "course_id": 9,
+      "awarded_at": "2026-10-24 06:37:46"
+    },
+    {
+      "id": 85,
+      "badge_id": 1,
+      "user_id": 1,
+      "course_id": 8,
+      "awarded_at": "2026-10-24 06:41:27"
+    },
+    {
+      "id": 86,
+      "badge_id": 5,
+      "user_id": 1,
+      "course_id": 8,
+      "awarded_at": "2026-10-24 06:41:27"
+    }
+  ],
+  "certificates": [
+    {
+      "id": 5,
+      "uuid": "CERT-2026-FACULTY-3C1C1005",
+      "user_id": 1,
+      "course_id": 8,
+      "final_grade": 95,
+      "issued_at": "2026-10-24 06:41:27"
+    }
+  ],
   "announcements": [],
   "forum_topics": [],
   "forum_replies": [],
@@ -329,6 +412,16 @@
       "link": "#/messages",
       "is_read": 0,
       "created_at": "2026-10-19 04:54:22"
+    },
+    {
+      "id": 33,
+      "user_id": 1,
+      "title": "Congratulations! Course Completed",
+      "message": "You have completed all requirements and earned your official Faculty Certificate.",
+      "type": "badge",
+      "link": "#/certificates",
+      "is_read": 0,
+      "created_at": "2026-10-24 06:41:27"
     }
   ],
   "system_settings": [
