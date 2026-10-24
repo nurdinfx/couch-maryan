@@ -136,16 +136,16 @@
       "faculty": "Health Science"
     },
     {
-      "id": 18,
+      "id": 17,
       "email": "maryan@guraysicid.edu",
-      "password_hash": "$2b$10$PPj9xA9SllEIh/yZzl.d7OuLKFPq7KqaPmu9ZQwnpEdamjM2Y86m.",
-      "full_name": "maryan",
+      "password_hash": "$2b$10$h0QNq3kpzZTBSbapdSRSCuwH8kzv1N.8AIxJuU6D6h9K1k0Xudmdy",
+      "full_name": "mayran",
       "role": "admin",
       "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
       "student_id_number": null,
       "department": "Platform Operations & Security",
       "bio": null,
-      "created_at": "2026-10-24 08:02:15",
+      "created_at": "2026-10-24 06:58:38",
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "General"
