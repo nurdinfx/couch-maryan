@@ -201,10 +201,34 @@ const CourseView = {
             <!-- Activities Accordion Body -->
             <div class="module-activities-list" id="module-content-${m.id}">
               
+              ${isProfessor && ((m.lessons?.length || 0) + (m.assignments?.length || 0) + (m.quizzes?.length || 0)) > 0 ? `
+                <div class="module-selection-bar" id="selection-bar-${m.id}" style="display: none; padding: 0.6rem 0.9rem; background: var(--bg-surface-alt); border-radius: var(--radius-md); margin-bottom: 0.75rem; border: 1px solid var(--border-color); align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.85rem; font-weight: 600;">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; margin: 0;">
+                      <input type="checkbox" id="select-all-box-${m.id}" onchange="App.toggleSelectAllActivities(${m.id}, this.checked)" style="width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary);">
+                      <span>Dooro Dhamaan / Select All</span>
+                    </label>
+                    <span style="color: var(--text-muted); font-weight: normal;">|</span>
+                    <span style="color: var(--primary); font-weight: 700;"><span id="selected-count-${m.id}">0</span> la doortay / selected</span>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <button class="btn btn-sm btn-outline" onclick="App.clearSelection(${m.id})" style="font-size: 0.78rem; padding: 0.3rem 0.65rem;">
+                      Baaji / Deselect
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="App.deleteSelectedActivities(${m.id})" style="font-size: 0.78rem; padding: 0.3rem 0.65rem; display: flex; align-items: center; gap: 0.35rem; background: var(--danger); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer;">
+                      🗑 Tirtir Kuwa La Doortay / Delete Selected
+                    </button>
+                  </div>
+                </div>
+              ` : ''}
+
               <!-- 1. Lessons (Videos, Documents, Texts) -->
               ${(m.lessons || []).map(l => `
                 <div class="activity-row" onclick="App.navigate('/course/${course.id}/lesson/${l.id}')" style="cursor: pointer;">
                   <div class="activity-left">
+                    ${isProfessor ? `
+                      <input type="checkbox" class="activity-select-box" data-module="${m.id}" data-type="lesson" data-id="${l.id}" data-title="${(l.title || '').replace(/"/g, '&quot;')}" onclick="event.stopPropagation(); App.onActivitySelectChanged(${m.id})" title="Dooro casharkan / Select lesson" style="width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary); margin-right: 0.35rem; flex-shrink: 0;">
+                    ` : ''}
                     <div class="activity-icon-badge ${l.content_type}">
                       ${l.content_type === 'video' ? '🎥' : l.content_type === 'document' ? '📄' : '📝'}
                     </div>
@@ -218,7 +242,7 @@ const CourseView = {
                     </div>
                   </div>
 
-                  <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
                     ${l.video_watch_percentage > 0 && l.content_type === 'video' ? `
                       <span style="font-size: 0.75rem; color: var(--text-muted);">${l.video_watch_percentage}% watched</span>
                     ` : ''}
@@ -228,6 +252,14 @@ const CourseView = {
                          onclick="event.stopPropagation(); App.toggleLessonCompletion(${l.id}, ${l.student_completed ? 0 : 1})">
                       ✓
                     </div>
+                    ${isProfessor ? `
+                      <button class="btn btn-outline btn-sm activity-delete-btn"
+                              style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
+                              title="Tirtir casharkan / Delete lesson"
+                              onclick="event.stopPropagation(); App.deleteLesson(${l.id}, '${(l.title || '').replace(/'/g, "\\'")}')">
+                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                      </button>
+                    ` : ''}
                   </div>
                 </div>
               `).join('')}
@@ -236,6 +268,9 @@ const CourseView = {
               ${(m.assignments || []).map(a => `
                 <div class="activity-row" onclick="App.navigate('/course/${course.id}/assignment/${a.id}')" style="cursor: pointer;">
                   <div class="activity-left">
+                    ${isProfessor ? `
+                      <input type="checkbox" class="activity-select-box" data-module="${m.id}" data-type="assignment" data-id="${a.id}" data-title="${(a.title || '').replace(/"/g, '&quot;')}" onclick="event.stopPropagation(); App.onActivitySelectChanged(${m.id})" title="Dooro shaqadan / Select assignment" style="width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary); margin-right: 0.35rem; flex-shrink: 0;">
+                    ` : ''}
                     <div class="activity-icon-badge assignment">⚡</div>
                     <div class="activity-info">
                       <div class="activity-name">${a.title}</div>
@@ -254,19 +289,48 @@ const CourseView = {
                       <span class="badge badge-primary">Due Soon</span>
                     `}
                     <div class="activity-completion-check ${a.submission_status ? 'completed' : ''}">✓</div>
+                    ${isProfessor ? `
+                      <button class="btn btn-outline btn-sm activity-delete-btn"
+                              style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
+                              title="Tirtir shaqadan / Delete assignment"
+                              onclick="event.stopPropagation(); App.deleteAssignment(${a.id}, '${(a.title || '').replace(/'/g, "\\'")}')">
+                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                      </button>
+                    ` : ''}
                   </div>
                 </div>
               `).join('')}
 
               <!-- 3. Quizzes / Examinations -->
-              ${(m.quizzes || []).map(q => `
+              ${(m.quizzes || []).map(q => {
+                const now = new Date();
+                const isOpen = !q.open_date || new Date(q.open_date) <= now;
+                const isClosed = q.close_date && new Date(q.close_date) < now;
+                let scheduleBadge = '';
+                if (!isOpen) {
+                  const diffDays = Math.ceil((new Date(q.open_date) - now) / (1000 * 60 * 60 * 24));
+                  scheduleBadge = `<span class="badge" style="background:#fef3c7;color:#b45309;font-size:0.72rem;font-weight:700;">⏳ Active in ${diffDays} day${diffDays > 1 ? 's' : ''} (${new Date(q.open_date).toLocaleDateString()})</span>`;
+                } else if (isClosed) {
+                  scheduleBadge = `<span class="badge" style="background:#fee2e2;color:#b91c1c;font-size:0.72rem;font-weight:700;">🔒 Closed (${new Date(q.close_date).toLocaleDateString()})</span>`;
+                } else if (q.open_date) {
+                  scheduleBadge = `<span class="badge" style="background:#dcfce7;color:#15803d;font-size:0.72rem;font-weight:700;">🟢 Active Now</span>`;
+                }
+
+                return `
                 <div class="activity-row" onclick="App.navigate('/course/${course.id}/quiz/${q.id}')" style="cursor: pointer;">
                   <div class="activity-left">
+                    ${isProfessor ? `
+                      <input type="checkbox" class="activity-select-box" data-module="${m.id}" data-type="quiz" data-id="${q.id}" data-title="${(q.title || '').replace(/"/g, '&quot;')}" onclick="event.stopPropagation(); App.onActivitySelectChanged(${m.id})" title="Dooro imtixaankan / Select quiz" style="width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary); margin-right: 0.35rem; flex-shrink: 0;">
+                    ` : ''}
                     <div class="activity-icon-badge quiz">🏆</div>
                     <div class="activity-info">
-                      <div class="activity-name">${q.title}</div>
+                      <div class="activity-name" style="display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;">
+                        <span>${q.title}</span>
+                        ${scheduleBadge}
+                      </div>
                       <div class="activity-meta">
                         Examination • ${q.time_limit_minutes} mins time limit • Passing score: ${q.passing_percentage}%
+                        ${q.open_date ? ` • Scheduled: ${new Date(q.open_date).toLocaleDateString()}` : ''}
                       </div>
                     </div>
                   </div>
@@ -276,13 +340,32 @@ const CourseView = {
                       <span class="badge ${q.is_passed ? 'badge-success' : 'badge-danger'}">
                         Score: ${q.highest_percentage}% (${q.is_passed ? 'Passed' : 'Not Passed'})
                       </span>
+                    ` : !isOpen ? `
+                      <span class="badge badge-warning" style="font-size: 0.78rem;">⏳ Opens ${new Date(q.open_date).toLocaleDateString()}</span>
+                    ` : isClosed ? `
+                      <span class="badge badge-danger" style="font-size: 0.78rem;">🔒 Closed</span>
                     ` : `
                       <span class="badge badge-info">Take Quiz</span>
                     `}
                     <div class="activity-completion-check ${q.is_passed ? 'completed' : ''}">✓</div>
+                    ${isProfessor ? `
+                      <button class="btn btn-outline btn-sm"
+                              style="color: var(--primary); border-color: var(--border-color); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
+                              title="Wax ka beddel / Edit quiz & schedule"
+                              onclick="event.stopPropagation(); App.showModal('editQuizModal', { quizId: ${q.id} })">
+                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                      </button>
+                      <button class="btn btn-outline btn-sm activity-delete-btn"
+                              style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
+                              title="Tirtir imtixaankan / Delete quiz"
+                              onclick="event.stopPropagation(); App.deleteQuiz(${q.id}, '${(q.title || '').replace(/'/g, "\\'")}')">
+                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                      </button>
+                    ` : ''}
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
 
               ${(!m.lessons?.length && !m.assignments?.length && !m.quizzes?.length) ? `
                 <div style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.84rem;">

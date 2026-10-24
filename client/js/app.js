@@ -420,6 +420,92 @@ const App = {
     }
   },
 
+  async deleteLesson(lessonId, lessonTitle) {
+    const title = lessonTitle ? `"${lessonTitle}"` : 'this lesson';
+    if (!confirm(`Ma hubtaa inaad tirtirto casharkan: ${title}?\nAre you sure you want to delete this lesson?`)) return;
+    try {
+      await API.deleteLesson(lessonId);
+      this.showToast('Casharka si guul leh ayaa loo tirtiray / Lesson deleted successfully.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteAssignment(assignmentId, assignmentTitle) {
+    const title = assignmentTitle ? `"${assignmentTitle}"` : 'this assignment';
+    if (!confirm(`Ma hubtaa inaad tirtirto shaqadan: ${title}?\nAre you sure you want to delete this assignment?`)) return;
+    try {
+      await API.deleteAssignment(assignmentId);
+      this.showToast('Shaqada waa la tirtiray / Assignment deleted successfully.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteQuiz(quizId, quizTitle) {
+    const title = quizTitle ? `"${quizTitle}"` : 'this quiz';
+    if (!confirm(`Ma hubtaa inaad tirtirto imtixaankan/kediskan: ${title}?\nAre you sure you want to delete this quiz?`)) return;
+    try {
+      await API.deleteQuiz(quizId);
+      this.showToast('Imtixaanka/Kediska waa la tirtiray / Quiz deleted successfully.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  onActivitySelectChanged(moduleId) {
+    const checked = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]:checked`);
+    const all = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]`);
+    const bar = document.getElementById(`selection-bar-${moduleId}`);
+    const countEl = document.getElementById(`selected-count-${moduleId}`);
+    const selectAllCheckbox = document.getElementById(`select-all-box-${moduleId}`);
+
+    if (countEl) countEl.textContent = checked.length;
+    if (bar) bar.style.display = checked.length > 0 ? 'flex' : 'none';
+    if (selectAllCheckbox) selectAllCheckbox.checked = checked.length === all.length && all.length > 0;
+  },
+
+  toggleSelectAllActivities(moduleId, isChecked) {
+    const boxes = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]`);
+    boxes.forEach(box => { box.checked = isChecked; });
+    this.onActivitySelectChanged(moduleId);
+  },
+
+  clearSelection(moduleId) {
+    this.toggleSelectAllActivities(moduleId, false);
+  },
+
+  async deleteSelectedActivities(moduleId) {
+    const checked = Array.from(document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]:checked`));
+    if (checked.length === 0) return;
+
+    if (!confirm(`Ma hubtaa inaad tirtirto ${checked.length} cashar/waxqabad oo la doortay?\nAre you sure you want to delete ${checked.length} selected activities?`)) {
+      return;
+    }
+
+    try {
+      for (const box of checked) {
+        const type = box.getAttribute('data-type');
+        const id = parseInt(box.getAttribute('data-id'));
+        if (type === 'lesson') {
+          await API.deleteLesson(id);
+        } else if (type === 'assignment') {
+          await API.deleteAssignment(id);
+        } else if (type === 'quiz') {
+          await API.deleteQuiz(id);
+        }
+      }
+      this.showToast(`${checked.length} waxqabad si guul leh ayaa loo tirtiray / Activities deleted.`);
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+      this.refreshCurrentView();
+    }
+  },
+
   // Modal Manager
   showCustomModal(html) {
     const modalRoot = document.getElementById('modal-root');
@@ -700,6 +786,57 @@ const App = {
                   <input type="number" name="max_attempts" value="3" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
               </div>
+
+              <!-- Active Days & Schedule Section -->
+              <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.45rem;">
+                  <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);display:flex;align-items:center;gap:0.35rem;">
+                    📅 Qorsheynta Maalmaha / Active Days Scheduling
+                  </span>
+                  <span class="badge badge-info" style="font-size:0.72rem;">Schedule</span>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.45rem;">
+                  <div>
+                    <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
+                      Firfircoonow (Cisho Kadib / Days until Active)
+                    </label>
+                    <input type="number" name="days_until_active" id="quiz-days-until-active" value="0" min="0" max="365" placeholder="0 = Hadda fur" 
+                           oninput="App.updateQuizSchedulePreview()"
+                           style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                    <span style="font-size:0.7rem;color:var(--text-muted);">Tusaale: 10 = 10 cisho kadib fur</span>
+                  </div>
+
+                  <div>
+                    <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
+                      Furnaaw (Imisa Cisho / Active Duration)
+                    </label>
+                    <input type="number" name="active_days" id="quiz-active-duration" value="0" min="0" max="365" placeholder="0 = Waligii furan"
+                           oninput="App.updateQuizSchedulePreview()"
+                           style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                    <span style="font-size:0.7rem;color:var(--text-muted);">0 = Ma xirmayo (Unlimited)</span>
+                  </div>
+                </div>
+
+                <!-- Live Schedule Preview -->
+                <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);margin-bottom:0.4rem;">
+                  <span>🟢 <strong>Xaaladda:</strong> Quiz-kani wuxuu active noqonayaa <strong>hadda (Immediately)</strong></span>
+                </div>
+
+                <details style="font-size:0.75rem;">
+                  <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">⚙️ Taariikh Go'an oo Toos ah (Specific Dates)</summary>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.35rem;padding-top:0.35rem;border-top:1px solid var(--border-color);">
+                    <div>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Open Date</label>
+                      <input type="datetime-local" name="open_date" id="quiz-open-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    </div>
+                    <div>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Close Date</label>
+                      <input type="datetime-local" name="close_date" id="quiz-close-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    </div>
+                  </div>
+                </details>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
@@ -708,6 +845,104 @@ const App = {
           </form>
         </div>
       `);
+    } else if (name === 'editQuizModal') {
+      const quizId = context.quizId;
+      try {
+        const data = await API.getQuiz(quizId);
+        const quiz = data.quiz || data;
+        let diffDays = 0;
+        if (quiz.open_date) {
+          const ms = new Date(quiz.open_date) - new Date();
+          diffDays = Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+        }
+        let durationDays = 0;
+        if (quiz.open_date && quiz.close_date) {
+          const durMs = new Date(quiz.close_date) - new Date(quiz.open_date);
+          durationDays = Math.max(0, Math.round(durMs / (1000 * 60 * 60 * 24)));
+        }
+
+        const openVal = quiz.open_date ? new Date(quiz.open_date).toISOString().slice(0, 16) : '';
+        const closeVal = quiz.close_date ? new Date(quiz.close_date).toISOString().slice(0, 16) : '';
+
+        this.showCustomModal(`
+          <div class="modal-dialog" style="max-width:540px;">
+            <div class="modal-header">
+              <h3>✏️ Edit Quiz & Active Schedule</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form onsubmit="App.handleEditQuiz(event, ${quiz.id})">
+              <div class="modal-body">
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Quiz Title *</label>
+                  <input type="text" name="title" required value="${(quiz.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description / Instructions</label>
+                  <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${quiz.description || ''}</textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Time Limit (min)</label>
+                    <input type="number" name="time_limit" min="1" value="${quiz.time_limit_minutes || ''}" placeholder="e.g. 90" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Pass % *</label>
+                    <input type="number" name="pass_percentage" value="${quiz.passing_percentage || 60}" min="1" max="100" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Attempts</label>
+                    <input type="number" name="max_attempts" value="${quiz.max_attempts || 3}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                </div>
+
+                <!-- Active Schedule -->
+                <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                    <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);">📅 Qorsheynta Maalmaha (Active Days Schedule)</span>
+                    <span class="badge badge-info" style="font-size:0.72rem;">Schedule</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.5rem;">
+                    <div>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">Firfircoonow (Cisho Kadib / Days until Active)</label>
+                      <input type="number" name="days_until_active" id="quiz-days-until-active" value="${diffDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                      <span style="font-size:0.7rem;color:var(--text-muted);">0 = Hadda fur (Open now)</span>
+                    </div>
+                    <div>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">Furnaaw (Imisa Cisho / Active Duration)</label>
+                      <input type="number" name="active_days" id="quiz-active-duration" value="${durationDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                      <span style="font-size:0.7rem;color:var(--text-muted);">0 = Waligii furan (Unlimited)</span>
+                    </div>
+                  </div>
+
+                  <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);">
+                    <span>${diffDays > 0 ? `⏳ Wuxuu active noqonayaa ${diffDays} cisho kadib (${new Date(quiz.open_date).toLocaleDateString()})` : '🟢 Wuxuu active yahay hadda (Active Now)'}</span>
+                  </div>
+
+                  <details style="margin-top:0.5rem;font-size:0.76rem;" ${quiz.open_date || quiz.close_date ? 'open' : ''}>
+                    <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">⚙️ Taariikh Go'an (Specific Dates)</summary>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-color);">
+                      <div>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Open Date</label>
+                        <input type="datetime-local" name="open_date" id="quiz-open-date" value="${openVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                      </div>
+                      <div>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Close Date</label>
+                        <input type="datetime-local" name="close_date" id="quiz-close-date" value="${closeVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">💾 Save Quiz Changes</button>
+              </div>
+            </form>
+          </div>
+        `);
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
     } else if (name === 'addQuestionModal') {
       const quizId = context.quizId;
       const quizTitle = context.quizTitle || 'Quiz';
@@ -1146,6 +1381,77 @@ const App = {
     }
   },
 
+  updateQuizSchedulePreview() {
+    const daysUntilInput = document.getElementById('quiz-days-until-active');
+    const durationInput = document.getElementById('quiz-active-duration');
+    const previewEl = document.getElementById('quiz-schedule-preview');
+    const openDateInput = document.getElementById('quiz-open-date');
+    const closeDateInput = document.getElementById('quiz-close-date');
+
+    const daysUntil = parseInt(daysUntilInput ? daysUntilInput.value : 0) || 0;
+    const duration = parseInt(durationInput ? durationInput.value : 0) || 0;
+
+    let text = '';
+    let openDate = null;
+    let closeDate = null;
+
+    if (daysUntil <= 0) {
+      text = '🟢 <strong>Xaaladda:</strong> Quiz-kani wuxuu active noqonayaa <strong>hadda (Immediately)</strong>.';
+      if (openDateInput) openDateInput.value = '';
+    } else {
+      openDate = new Date();
+      openDate.setDate(openDate.getDate() + daysUntil);
+      openDate.setHours(8, 0, 0, 0);
+      const dateStr = openDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      text = `⏳ <strong>Xaaladda:</strong> Wuxuu active noqonayaa <strong>${daysUntil} cisho kadib</strong> (Taariikhda: <strong>${dateStr}</strong>).`;
+      if (openDateInput) {
+        openDateInput.value = openDate.toISOString().slice(0, 16);
+      }
+    }
+
+    if (duration > 0) {
+      closeDate = openDate ? new Date(openDate) : new Date();
+      closeDate.setDate(closeDate.getDate() + duration);
+      closeDate.setHours(23, 59, 0, 0);
+      const closeStr = closeDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      text += ` Wuxuuna furan doonaa <strong>${duration} cisho</strong> (wuxuu xirmayaa: <strong>${closeStr}</strong>).`;
+      if (closeDateInput) {
+        closeDateInput.value = closeDate.toISOString().slice(0, 16);
+      }
+    } else {
+      if (closeDateInput) closeDateInput.value = '';
+    }
+
+    if (previewEl) {
+      previewEl.innerHTML = text;
+    }
+  },
+
+  onCustomDateChanged() {
+    const openInput = document.getElementById('quiz-open-date');
+    const closeInput = document.getElementById('quiz-close-date');
+    const previewEl = document.getElementById('quiz-schedule-preview');
+    const daysUntilInput = document.getElementById('quiz-days-until-active');
+    const durationInput = document.getElementById('quiz-active-duration');
+
+    if (openInput && openInput.value) {
+      const openDate = new Date(openInput.value);
+      const diffMs = openDate - new Date();
+      const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      if (daysUntilInput) daysUntilInput.value = days;
+
+      let msg = `📅 Wuxuu active noqonayaa: <strong>${openDate.toLocaleString()}</strong>`;
+      if (closeInput && closeInput.value) {
+        const closeDate = new Date(closeInput.value);
+        const durMs = closeDate - openDate;
+        const durDays = Math.max(0, Math.round(durMs / (1000 * 60 * 60 * 24)));
+        if (durationInput) durationInput.value = durDays;
+        msg += ` | Wuxuu xirmayaa: <strong>${closeDate.toLocaleString()}</strong> (${durDays} cisho).`;
+      }
+      if (previewEl) previewEl.innerHTML = msg;
+    }
+  },
+
   async handleCreateQuiz(e, courseId) {
     e.preventDefault();
     const form = e.target;
@@ -1156,11 +1462,38 @@ const App = {
         time_limit: parseInt(form.time_limit.value) || null,
         pass_percentage: parseFloat(form.pass_percentage.value) || 60,
         quiz_type: form.quiz_type.value,
-        max_attempts: parseInt(form.max_attempts.value) || 3
+        max_attempts: parseInt(form.max_attempts.value) || 3,
+        days_until_active: parseInt(form.days_until_active?.value) || 0,
+        active_days: parseInt(form.active_days?.value) || 0,
+        open_date: form.open_date?.value || null,
+        close_date: form.close_date?.value || null
       });
       this.closeModal();
-      this.showToast('✅ Quiz/Exam created! Now add questions.');
+      this.showToast('✅ Quiz/Exam created with scheduled active days! Now add questions.');
       this.showModal('addQuestionModal', { quizId: res.quiz.id, quizTitle: res.quiz.title });
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleEditQuiz(e, quizId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.updateQuiz(quizId, {
+        title: form.title.value,
+        description: form.description.value,
+        time_limit: parseInt(form.time_limit.value) || null,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        max_attempts: parseInt(form.max_attempts.value) || 3,
+        days_until_active: parseInt(form.days_until_active?.value) || 0,
+        active_days: parseInt(form.active_days?.value) || 0,
+        open_date: form.open_date?.value || null,
+        close_date: form.close_date?.value || null
+      });
+      this.closeModal();
+      this.showToast('✅ Imtixaanka & jadwalkiisa si guul leh ayaa loo cusbooneysiiyay / Quiz schedule updated!', 'success');
+      this.refreshCurrentView();
     } catch (err) {
       this.showToast(err.message, 'error');
     }

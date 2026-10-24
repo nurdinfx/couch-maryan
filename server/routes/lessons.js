@@ -190,8 +190,10 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
 // 4. Delete Lesson (Professor only)
 router.delete('/:id', requireProfessor, (req, res) => {
   const lessonId = parseInt(req.params.id);
+  db.prepare('DELETE FROM lesson_progress WHERE lesson_id = ?').run(lessonId);
   db.prepare('DELETE FROM lessons WHERE id = ?').run(lessonId);
   try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'LESSON_DELETED', `Deleted lesson #${lessonId}`, req); } catch (e) {}
   res.json({ message: 'Lesson deleted successfully.' });
 });
 

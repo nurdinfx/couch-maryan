@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../../database/db');
+const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
 const { logAudit } = require('../middleware/audit');
@@ -151,7 +151,10 @@ router.put('/:id', requireProfessor, upload.single('attachment'), (req, res) => 
 // 4. Delete Assignment (Professor only)
 router.delete('/:id', requireProfessor, (req, res) => {
   const assignmentId = parseInt(req.params.id);
+  db.prepare('DELETE FROM assignment_submissions WHERE assignment_id = ?').run(assignmentId);
   db.prepare('DELETE FROM assignments WHERE id = ?').run(assignmentId);
+  try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'ASSIGNMENT_DELETED', `Deleted assignment #${assignmentId}`, req); } catch (e) {}
   res.json({ message: 'Assignment deleted successfully.' });
 });
 

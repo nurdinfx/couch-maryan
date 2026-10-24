@@ -51,16 +51,51 @@ const QuizView = {
             <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 750px; line-height: 1.5;">${quiz.description || ''}</p>
           </div>
 
-          <div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
             ${isProfessor ? `
               <button class="btn btn-outline btn-sm" onclick="App.showModal('addQuestionModal', { quizId: ${quiz.id} })">
-                + Add Question to Bank
+                + Add Question
+              </button>
+              <button class="btn btn-outline btn-sm" style="color: var(--primary); border-color: var(--border-color); display: flex; align-items: center; gap: 0.25rem;"
+                      title="Edit Quiz & Schedule"
+                      onclick="App.showModal('editQuizModal', { quizId: ${quiz.id} })">
+                ✏️ <span>Edit & Schedule</span>
+              </button>
+              <button class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.25rem;"
+                      title="Tirtir imtixaankan / Delete quiz"
+                      onclick="App.deleteQuiz(${quiz.id}, '${(quiz.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${quiz.course_id}'); })">
+                🗑 <span>Delete Quiz</span>
               </button>
             ` : ''}
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+        ${(() => {
+          const now = new Date();
+          const isOpen = !quiz.open_date || new Date(quiz.open_date) <= now;
+          const isClosed = quiz.close_date && new Date(quiz.close_date) < now;
+          const diffDays = quiz.open_date ? Math.ceil((new Date(quiz.open_date) - now) / (1000 * 60 * 60 * 24)) : 0;
+
+          if (!isOpen && isProfessor) {
+            return `
+              <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 0.75rem 1.25rem; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 1.25rem;">⏳</span>
+                  <div>
+                    <strong style="color: #92400e; font-size: 0.88rem;">Scheduled Quiz (Professor Notice):</strong>
+                    <span style="color: #b45309; font-size: 0.84rem;"> Wuxuu ardayda u furmayaa <strong>${diffDays} cisho kadib</strong> (${new Date(quiz.open_date).toLocaleString()}).</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline btn-sm" style="background: white;" onclick="App.showModal('editQuizModal', { quizId: ${quiz.id} })">
+                  Beddel Maalmaha / Change Schedule
+                </button>
+              </div>
+            `;
+          }
+          return '';
+        })()}
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
           <div>
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">TIME LIMIT</div>
             <div style="font-size: 1.25rem; font-weight: 800;">${quiz.time_limit_minutes} Minutes</div>
@@ -74,28 +109,76 @@ const QuizView = {
             <div style="font-size: 1.25rem; font-weight: 800;">${quiz.question_count} Questions (${quiz.total_points} Pts)</div>
           </div>
           <div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">ATTEMPTS ALLOWED</div>
-            <div style="font-size: 1.25rem; font-weight: 800;">${quiz.max_attempts} Maximum</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">ACTIVE STATUS</div>
+            <div style="font-size: 1rem; font-weight: 700; margin-top: 0.2rem;">
+              ${(() => {
+                const now = new Date();
+                const isOpen = !quiz.open_date || new Date(quiz.open_date) <= now;
+                const isClosed = quiz.close_date && new Date(quiz.close_date) < now;
+                if (!isOpen) {
+                  const diffDays = Math.ceil((new Date(quiz.open_date) - now) / (1000 * 60 * 60 * 24));
+                  return `<span style="color: #b45309;">⏳ Opens in ${diffDays} day${diffDays > 1 ? 's' : ''}</span>`;
+                }
+                if (isClosed) return `<span style="color: var(--danger);">🔒 Closed</span>`;
+                return `<span style="color: var(--success);">🟢 Active Now</span>`;
+              })()}
+            </div>
           </div>
         </div>
 
-        <!-- Start Attempt Action -->
-        <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
-          ${attempts.length < quiz.max_attempts ? `
-            <button class="btn btn-primary" onclick="QuizView.startAttempt(${quiz.id})" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
-              🚀 ${attempts.length > 0 ? 'Start Another Attempt' : 'Start Exam Now'}
-            </button>
-          ` : `
-            <span class="badge badge-warning" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
-              Maximum attempt limit reached (${quiz.max_attempts} of ${quiz.max_attempts})
-            </span>
-          `}
-          ${isProfessor ? `
-            <button class="btn btn-outline" onclick="QuizView.previewQuestionBank(${quiz.id})">
-              Inspect Questions Bank
-            </button>
-          ` : ''}
-        </div>
+        <!-- Start Attempt Action / Scheduled Notice -->
+        ${(() => {
+          const now = new Date();
+          const isOpen = !quiz.open_date || new Date(quiz.open_date) <= now;
+          const isClosed = quiz.close_date && new Date(quiz.close_date) < now;
+          const diffDays = quiz.open_date ? Math.ceil((new Date(quiz.open_date) - now) / (1000 * 60 * 60 * 24)) : 0;
+
+          if (!isOpen && !isProfessor) {
+            return `
+              <div style="margin-top: 2rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
+                <h3 style="font-size: 1.25rem; color: #92400e; margin-bottom: 0.35rem;">Imtixaankan Wali Ma Furna / Quiz Not Active Yet</h3>
+                <p style="font-size: 0.95rem; color: #b45309; max-width: 600px; margin: 0 auto 0.75rem auto;">
+                  Professor-ku wuxuu imtixaankan qorsheeyay inuu active noqdo <strong>${diffDays} cisho kadib</strong> (Taariikhda: <strong>${new Date(quiz.open_date).toLocaleString()}</strong>).
+                </p>
+                <div style="display: inline-block; padding: 0.5rem 1.25rem; background: white; border: 1px solid #fde68a; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-muted);">
+                  🔒 Ardaydu waxay geli karaan oo kaliya marka xilligaas la gaaro.
+                </div>
+              </div>
+            `;
+          }
+
+          if (isClosed && !isProfessor) {
+            return `
+              <div style="margin-top: 2rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔒</div>
+                <h3 style="font-size: 1.25rem; color: #991b1b; margin-bottom: 0.35rem;">Imtixaankan Wuu Xirmay / Quiz Closed</h3>
+                <p style="font-size: 0.95rem; color: #b91c1c;">
+                  Imtixaankani wuxuu xirmay taariikhdu markay ahayd: <strong>${new Date(quiz.close_date).toLocaleString()}</strong>.
+                </p>
+              </div>
+            `;
+          }
+
+          return `
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+              ${attempts.length < quiz.max_attempts ? `
+                <button class="btn btn-primary" onclick="QuizView.startAttempt(${quiz.id})" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
+                  🚀 ${attempts.length > 0 ? 'Start Another Attempt' : 'Start Exam Now'}
+                </button>
+              ` : `
+                <span class="badge badge-warning" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                  Maximum attempt limit reached (${quiz.max_attempts} of ${quiz.max_attempts})
+                </span>
+              `}
+              ${isProfessor ? `
+                <button class="btn btn-outline" onclick="QuizView.previewQuestionBank(${quiz.id})">
+                  Inspect Questions Bank
+                </button>
+              ` : ''}
+            </div>
+          `;
+        })()}
       </div>
 
       <!-- Past Attempts History Table -->

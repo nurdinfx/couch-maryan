@@ -207,6 +207,10 @@ const API = {
     });
   },
 
+  async deleteAssignment(id) {
+    return this.request(`/assignments/${id}`, { method: 'DELETE' });
+  },
+
   // Quizzes
   async getQuiz(id) {
     return this.request(`/quizzes/${id}`);
@@ -217,6 +221,17 @@ const API = {
       method: 'POST',
       body: JSON.stringify(quizData)
     });
+  },
+
+  async updateQuiz(id, quizData) {
+    return this.request(`/quizzes/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(quizData)
+    });
+  },
+
+  async deleteQuiz(id) {
+    return this.request(`/quizzes/${id}`, { method: 'DELETE' });
   },
 
   async getQuizQuestions(quizId) {

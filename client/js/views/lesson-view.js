@@ -47,12 +47,19 @@ const LessonView = {
           <p style="font-size: 0.85rem; color: var(--text-muted);">${lesson.description || ''}</p>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
           <button id="lesson-complete-toggle-btn"
                   class="btn ${lesson.student_completed ? 'btn-success' : 'btn-outline'}"
                   onclick="LessonView.toggleCompletion(${lesson.id}, ${lesson.student_completed ? 0 : 1})">
             <span>${lesson.student_completed ? '✓ Completed' : '○ Mark as Completed'}</span>
           </button>
+          ${(API.currentUser?.role === 'professor' || API.currentUser?.role === 'admin') ? `
+            <button class="btn btn-outline" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.35rem;"
+                    title="Tirtir casharkan / Delete lesson"
+                    onclick="App.deleteLesson(${lesson.id}, '${(lesson.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${lesson.course_id}'); })">
+              🗑 <span>Delete Lesson</span>
+            </button>
+          ` : ''}
         </div>
       </div>
 

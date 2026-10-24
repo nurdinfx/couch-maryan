@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../../database/db');
+const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
@@ -50,13 +50,32 @@ router.get('/:id', requireAuth, (req, res) => {
 router.post('/course/:courseId', requireProfessor, (req, res) => {
   const courseId = parseInt(req.params.courseId);
   const {
-    module_id, title, description, time_limit_minutes,
-    max_attempts, passing_percentage, weight_percentage,
-    open_date, close_date, release_results_immediately
+    module_id, title, description, time_limit_minutes, time_limit,
+    max_attempts, passing_percentage, pass_percentage, weight_percentage,
+    open_date, close_date, days_until_active, active_days, active_duration_days,
+    release_results_immediately
   } = req.body;
 
   if (!title) {
     return res.status(400).json({ error: 'Quiz title is required.' });
+  }
+
+  // Calculate open_date from days_until_active if provided
+  let finalOpenDate = open_date ? String(open_date).replace('T', ' ') : null;
+  const daysUntil = parseFloat(days_until_active);
+  if (!finalOpenDate && !isNaN(daysUntil) && daysUntil > 0) {
+    const target = new Date();
+    target.setDate(target.getDate() + daysUntil);
+    finalOpenDate = target.toISOString().replace('T', ' ').substring(0, 19);
+  }
+
+  // Calculate close_date from active_days if provided
+  let finalCloseDate = close_date ? String(close_date).replace('T', ' ') : null;
+  const duration = parseFloat(active_days || active_duration_days);
+  if (!finalCloseDate && !isNaN(duration) && duration > 0) {
+    const base = finalOpenDate ? new Date(finalOpenDate) : new Date();
+    base.setDate(base.getDate() + duration);
+    finalCloseDate = base.toISOString().replace('T', ' ').substring(0, 19);
   }
 
   const result = db.prepare(`
@@ -70,19 +89,92 @@ router.post('/course/:courseId', requireProfessor, (req, res) => {
     module_id ? parseInt(module_id) : null,
     title.trim(),
     description || '',
-    parseInt(time_limit_minutes) || 30,
+    parseInt(time_limit_minutes || time_limit) || 30,
     parseInt(max_attempts) || 2,
-    parseFloat(passing_percentage) || 60.0,
+    parseFloat(passing_percentage || pass_percentage) || 60.0,
     parseFloat(weight_percentage) || 20.0,
-    open_date || null,
-    close_date || null,
+    finalOpenDate,
+    finalCloseDate,
     release_results_immediately !== undefined ? (release_results_immediately ? 1 : 0) : 1
   );
 
+  try { savePersistence(db); } catch (e) {}
+
   const newQuiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(result.lastInsertRowid);
-  logAudit(req.user.id, 'QUIZ_CREATED', `Created quiz ${title} in course ${courseId}`, req);
+  try { logAudit(req.user.id, 'QUIZ_CREATED', `Created quiz ${title} in course ${courseId}`, req); } catch (e) {}
 
   res.status(201).json({ message: 'Quiz created successfully', quiz: newQuiz });
+});
+
+// Update Quiz / Schedule (Professor or Admin)
+router.put('/:id', requireProfessor, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const quiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
+  if (!quiz) {
+    return res.status(404).json({ error: 'Quiz not found.' });
+  }
+
+  const {
+    title, description, time_limit_minutes, time_limit,
+    max_attempts, passing_percentage, pass_percentage, weight_percentage,
+    open_date, close_date, days_until_active, active_days, active_duration_days,
+    release_results_immediately
+  } = req.body;
+
+  let finalOpenDate = open_date !== undefined ? (open_date ? String(open_date).replace('T', ' ') : null) : quiz.open_date;
+  const daysUntil = parseFloat(days_until_active);
+  if (days_until_active !== undefined && !isNaN(daysUntil)) {
+    if (daysUntil > 0) {
+      const target = new Date();
+      target.setDate(target.getDate() + daysUntil);
+      finalOpenDate = target.toISOString().replace('T', ' ').substring(0, 19);
+    } else {
+      finalOpenDate = null;
+    }
+  }
+
+  let finalCloseDate = close_date !== undefined ? (close_date ? String(close_date).replace('T', ' ') : null) : quiz.close_date;
+  const duration = parseFloat(active_days || active_duration_days);
+  if (duration !== undefined && !isNaN(duration)) {
+    if (duration > 0) {
+      const base = finalOpenDate ? new Date(finalOpenDate) : new Date();
+      base.setDate(base.getDate() + duration);
+      finalCloseDate = base.toISOString().replace('T', ' ').substring(0, 19);
+    } else {
+      finalCloseDate = null;
+    }
+  }
+
+  db.prepare(`
+    UPDATE quizzes SET
+      title = COALESCE(?, title),
+      description = COALESCE(?, description),
+      time_limit_minutes = COALESCE(?, time_limit_minutes),
+      max_attempts = COALESCE(?, max_attempts),
+      passing_percentage = COALESCE(?, passing_percentage),
+      weight_percentage = COALESCE(?, weight_percentage),
+      open_date = ?,
+      close_date = ?,
+      release_results_immediately = COALESCE(?, release_results_immediately)
+    WHERE id = ?
+  `).run(
+    title ? title.trim() : null,
+    description !== undefined ? description : null,
+    time_limit_minutes || time_limit ? parseInt(time_limit_minutes || time_limit) : null,
+    max_attempts ? parseInt(max_attempts) : null,
+    passing_percentage || pass_percentage ? parseFloat(passing_percentage || pass_percentage) : null,
+    weight_percentage ? parseFloat(weight_percentage) : null,
+    finalOpenDate,
+    finalCloseDate,
+    release_results_immediately !== undefined ? (release_results_immediately ? 1 : 0) : null,
+    quizId
+  );
+
+  try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'QUIZ_UPDATED', `Updated quiz #${quizId} schedule and settings`, req); } catch (e) {}
+
+  const updatedQuiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
+  res.json({ message: 'Quiz updated successfully', quiz: updatedQuiz });
 });
 
 // 3. Question Bank: Get questions for quiz
@@ -186,6 +278,18 @@ router.delete('/questions/:questionId', requireProfessor, (req, res) => {
   res.json({ message: 'Question removed from question bank.' });
 });
 
+// Delete Entire Quiz (Professor or Admin)
+router.delete('/:id', requireProfessor, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  db.prepare('DELETE FROM quiz_attempt_answers WHERE attempt_id IN (SELECT id FROM quiz_attempts WHERE quiz_id = ?)').run(quizId);
+  db.prepare('DELETE FROM quiz_attempts WHERE quiz_id = ?').run(quizId);
+  db.prepare('DELETE FROM quiz_questions WHERE quiz_id = ?').run(quizId);
+  db.prepare('DELETE FROM quizzes WHERE id = ?').run(quizId);
+  try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'QUIZ_DELETED', `Deleted quiz #${quizId}`, req); } catch (e) {}
+  res.json({ message: 'Quiz deleted successfully.' });
+});
+
 // 6. Start Quiz Attempt (Student)
 router.post('/:id/start', requireAuth, (req, res) => {
   const quizId = parseInt(req.params.id);
@@ -194,6 +298,24 @@ router.post('/:id/start', requireAuth, (req, res) => {
   const quiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
   if (!quiz) {
     return res.status(404).json({ error: 'Quiz not found.' });
+  }
+
+  // If user is a student, enforce active schedule (open_date & close_date)
+  if (req.user.role === 'student') {
+    const now = new Date();
+    if (quiz.open_date && new Date(quiz.open_date) > now) {
+      const openFormatted = new Date(quiz.open_date).toLocaleString();
+      const diffDays = Math.ceil((new Date(quiz.open_date) - now) / (1000 * 60 * 60 * 24));
+      return res.status(403).json({
+        error: `Imtixaankan wali ma furna. Wuxuu active noqon doonaa ${diffDays} cisho kadib (${openFormatted}). / This quiz is scheduled and will open in ${diffDays} day(s) on ${openFormatted}.`
+      });
+    }
+    if (quiz.close_date && new Date(quiz.close_date) < now) {
+      const closeFormatted = new Date(quiz.close_date).toLocaleString();
+      return res.status(403).json({
+        error: `Imtixaankan wuu xirmay ${closeFormatted} / This quiz closed on ${closeFormatted}.`
+      });
+    }
   }
 
   // Count existing attempts

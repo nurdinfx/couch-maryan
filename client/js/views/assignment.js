@@ -44,11 +44,16 @@ const AssignmentView = {
           </div>
 
           ${isProfessor ? `
-            <div style="text-align: right;">
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
               <span class="badge badge-primary" style="font-size: 0.8rem;">Professor View</span>
-              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+              <div style="font-size: 0.78rem; color: var(--text-muted);">
                 ${stats?.submittedCount || 0} Submitted • ${stats?.needsGradingCount || 0} Need Grading
               </div>
+              <button class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.25rem;"
+                      title="Tirtir shaqadan / Delete assignment"
+                      onclick="App.deleteAssignment(${assignment.id}, '${(assignment.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${assignment.course_id}'); })">
+                🗑 <span>Delete Assignment</span>
+              </button>
             </div>
           ` : ''}
         </div>
