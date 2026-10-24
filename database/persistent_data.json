@@ -220,85 +220,10 @@
       "description": "Course announcements, syllabus, and introductory resources.",
       "sort_order": 1,
       "is_published": 1
-    },
-    {
-      "id": 10,
-      "course_id": 9,
-      "title": "General & Course Orientation",
-      "description": "Course announcements, syllabus, and introductory resources.",
-      "sort_order": 1,
-      "is_published": 1
     }
   ],
-  "lessons": [
-    {
-      "id": 11,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "ESSENTIAL CARE FOR  LABOR AND BIRTH",
-      "content_type": "document",
-      "description": "FLIPCHARD STEP BY STEP ",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1792823237467_ECLB-flipchart-print-en_african.pdf",
-      "file_name": "ECLB-flipchart-print-en_african.pdf",
-      "file_size_bytes": 32027436,
-      "is_required_for_completion": 1,
-      "sort_order": 1,
-      "is_published": 1,
-      "created_at": "2026-10-24 06:27:19"
-    },
-    {
-      "id": 12,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "ACTION PLAN ESSENTIAL CARE FOR LABOR AND BIRTH",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1792823372884_ECLB-action_plan-print-en.pdf",
-      "file_name": "ECLB-action_plan-print-en.pdf",
-      "file_size_bytes": 3556322,
-      "is_required_for_completion": 1,
-      "sort_order": 2,
-      "is_published": 1,
-      "created_at": "2026-10-24 06:29:33"
-    },
-    {
-      "id": 13,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "SIMULATION CARD",
-      "content_type": "video",
-      "description": "",
-      "content_body": "",
-      "video_url": "https://hmbs.org/digital-learning/eclb-simulation-practice-cards/#/",
-      "video_duration_seconds": 0,
-      "file_url": null,
-      "file_name": null,
-      "file_size_bytes": 0,
-      "is_required_for_completion": 1,
-      "sort_order": 3,
-      "is_published": 1,
-      "created_at": "2026-10-24 06:33:21"
-    }
-  ],
-  "lesson_progress": [
-    {
-      "id": 74,
-      "user_id": 1,
-      "lesson_id": 13,
-      "course_id": 9,
-      "is_completed": 0,
-      "video_watched_seconds": 0,
-      "video_watch_percentage": 0,
-      "completed_at": null,
-      "last_accessed_at": "2026-10-24 06:36:04"
-    }
-  ],
+  "lessons": [],
+  "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
   "quizzes": [],
@@ -363,7 +288,15 @@
       "created_at": "2026-10-19 04:22:27"
     }
   ],
-  "awarded_badges": [],
+  "awarded_badges": [
+    {
+      "id": 84,
+      "badge_id": 1,
+      "user_id": 1,
+      "course_id": 9,
+      "awarded_at": "2026-10-24 06:37:46"
+    }
+  ],
   "certificates": [],
   "announcements": [],
   "forum_topics": [],
