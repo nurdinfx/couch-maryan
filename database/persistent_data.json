@@ -257,7 +257,23 @@
   ],
   "assignments": [],
   "assignment_submissions": [],
-  "quizzes": [],
+  "quizzes": [
+    {
+      "id": 2,
+      "course_id": 8,
+      "module_id": null,
+      "title": "nuurdin mahamed",
+      "description": "",
+      "time_limit_minutes": 30,
+      "max_attempts": 3,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": null,
+      "release_results_immediately": 1,
+      "created_at": "2026-10-24 06:43:46"
+    }
+  ],
   "quiz_questions": [],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
