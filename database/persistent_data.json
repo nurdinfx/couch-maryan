@@ -230,7 +230,26 @@
       "is_published": 1
     }
   ],
-  "lessons": [],
+  "lessons": [
+    {
+      "id": 11,
+      "module_id": 10,
+      "course_id": 9,
+      "title": "ESSENTIAL CARE FOR  LABOR AND BIRTH",
+      "content_type": "document",
+      "description": "FLIPCHARD STEP BY STEP ",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1792823237467_ECLB-flipchart-print-en_african.pdf",
+      "file_name": "ECLB-flipchart-print-en_african.pdf",
+      "file_size_bytes": 32027436,
+      "is_required_for_completion": 1,
+      "sort_order": 1,
+      "is_published": 1,
+      "created_at": "2026-10-24 06:27:19"
+    }
+  ],
   "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
