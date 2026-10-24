@@ -134,21 +134,6 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science"
-    },
-    {
-      "id": 17,
-      "email": "maryan@guraysicid.edu",
-      "password_hash": "$2b$10$h0QNq3kpzZTBSbapdSRSCuwH8kzv1N.8AIxJuU6D6h9K1k0Xudmdy",
-      "full_name": "mayran",
-      "role": "admin",
-      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-      "student_id_number": null,
-      "department": "Platform Operations & Security",
-      "bio": null,
-      "created_at": "2026-10-24 06:58:38",
-      "is_active": 1,
-      "academic_year": "Year 1",
-      "faculty": "General"
     }
   ],
   "courses": [
@@ -227,36 +212,8 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [
-    {
-      "id": 10,
-      "course_id": 8,
-      "title": "midewifery",
-      "description": "",
-      "sort_order": 1,
-      "is_published": 1
-    }
-  ],
-  "lessons": [
-    {
-      "id": 11,
-      "module_id": 10,
-      "course_id": 8,
-      "title": "fdgff",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1792827161015_Hudi-Soft_E-Learning_Agreement_Footer.pdf",
-      "file_name": "Hudi-Soft_E-Learning_Agreement_Footer.pdf",
-      "file_size_bytes": 3092861,
-      "is_required_for_completion": 1,
-      "sort_order": 1,
-      "is_published": 1,
-      "created_at": "2026-10-24 07:32:42"
-    }
-  ],
+  "modules": [],
+  "lessons": [],
   "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
