@@ -6,6 +6,93 @@ const App = {
   activeModal: null,
   isDrawerCollapsed: false,
 
+  COURSE_PRESETS: [
+    { url: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&auto=format&fit=crop&q=80', label: '🩺 Midwifery' },
+    { url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=500&auto=format&fit=crop&q=80', label: '👶 Labour & Birth' },
+    { url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&auto=format&fit=crop&q=80', label: '🏥 Clinical Nursing' },
+    { url: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=500&auto=format&fit=crop&q=80', label: '🔬 Medical Lab' },
+    { url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=500&auto=format&fit=crop&q=80', label: '🫀 Anatomy' },
+    { url: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=80', label: '💊 Pharmacology' },
+    { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&fit=crop&q=80', label: '💻 Technology' },
+    { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&fit=crop&q=80', label: '📊 Public Health' }
+  ],
+
+  getCourseFallback(code = '', title = '') {
+    const palettes = [
+      { bg1: '#0284c7', bg2: '#0369a1', accent: '#7dd3fc' },
+      { bg1: '#7c3aed', bg2: '#5b21b6', accent: '#c4b5fd' },
+      { bg1: '#059669', bg2: '#047857', accent: '#6ee7b7' },
+      { bg1: '#e11d48', bg2: '#9f1239', accent: '#fda4af' },
+      { bg1: '#d97706', bg2: '#b45309', accent: '#fde68a' },
+      { bg1: '#4f46e5', bg2: '#3730a3', accent: '#a5b4fc' }
+    ];
+    let hash = 0;
+    const str = (code + title) || 'Course';
+    for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i);
+    const p = palettes[Math.abs(hash) % palettes.length];
+
+    const safeCode = (code || 'COURSE').replace(/[^a-zA-Z0-9 -]/g, '');
+    const safeTitle = (title || 'Curriculum').slice(0, 36).replace(/[^a-zA-Z0-9 -]/g, '');
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+      <defs>
+        <linearGradient id="g_${Math.abs(hash)}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${p.bg1}"/>
+          <stop offset="100%" stop-color="${p.bg2}"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="340" fill="url(#g_${Math.abs(hash)})"/>
+      <circle cx="520" cy="50" r="130" fill="rgba(255,255,255,0.08)"/>
+      <circle cx="80" cy="290" r="90" fill="rgba(255,255,255,0.05)"/>
+      <g transform="translate(44, 110)">
+        <text font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="44" fill="${p.accent}" font-weight="900" letter-spacing="1.5">${safeCode}</text>
+        <text y="50" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="20" fill="#ffffff" font-weight="600" opacity="0.95">${safeTitle}</text>
+        <text y="86" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" fill="#ffffff" opacity="0.75" letter-spacing="0.5">Guray Sicid Learning Platform</text>
+      </g>
+    </svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  },
+
+  handleCoverError(img, code = '', title = '') {
+    if (!img) return;
+    img.onerror = null;
+    img.src = this.getCourseFallback(code, title);
+  },
+
+  processImageFile(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve('');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 800;
+          const maxH = 480;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxW) {
+            h = Math.round((h * maxW) / w);
+            w = maxW;
+          }
+          if (h > maxH) {
+            w = Math.round((w * maxH) / h);
+            h = maxH;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Faylka sawirka lama akhrin karo'));
+      reader.readAsDataURL(file);
+    });
+  },
+
   async init() {
     console.log('Initializing Guray Sicid Learning Platform...');
 
@@ -222,9 +309,9 @@ const App = {
                        onclick="App.navigate('/course/${c.id}')"
                        onmouseover="this.style.boxShadow='var(--shadow-lg)'; this.style.transform='translateY(-3px)'"
                        onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)'">
-                    <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'}" 
+                    <img src="${c.cover_image || App.getCourseFallback(c.code, c.title)}" 
                          style="width: 100%; height: 160px; object-fit: cover;" 
-                         onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+                         onerror="App.handleCoverError(this, '${c.code}', '${(c.title || '').replace(/'/g, "\\'")}')">
                     <div style="padding: 1.25rem;">
                       <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
                         <code style="font-size: 0.75rem; background: var(--bg-surface-alt); padding: 0.2rem 0.5rem; border-radius: 4px;">${c.code}</code>
@@ -520,14 +607,6 @@ const App = {
 
   async showModal(name, context = {}) {
     if (name === 'createCourseModal') {
-      const presets = [
-        { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&fit=crop&q=80', label: '💻 Programming' },
-        { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&fit=crop&q=80', label: '🤖 AI / ML' },
-        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&fit=crop&q=80', label: '🔐 Cybersecurity' },
-        { url: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&fit=crop&q=80', label: '☁️ Cloud' },
-        { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&fit=crop&q=80', label: '📊 Data Science' },
-        { url: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&fit=crop&q=80', label: '🗄️ Databases' }
-      ];
       this.showCustomModal(`
         <div class="modal-dialog" style="max-width: 600px;">
           <div class="modal-header">
@@ -570,11 +649,11 @@ const App = {
               </div>
               <div style="margin-bottom:1rem;">
                 <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📷 Course Thumbnail</label>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
-                  ${presets.map((p, i) => `
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                  ${App.COURSE_PRESETS.map((p) => `
                     <div class="thumb-preset" data-url="${p.url}" onclick="App.selectCoverPreset(this, '${p.url}')" style="cursor:pointer;border:2px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;transition:border-color 0.2s;">
-                      <img src="${p.url}" alt="${p.label}" style="width:100%;height:60px;object-fit:cover;display:block;">
-                      <div style="padding:0.2rem 0.4rem;font-size:0.7rem;font-weight:600;text-align:center;">${p.label}</div>
+                      <img src="${p.url}" alt="${p.label}" style="width:100%;height:54px;object-fit:cover;display:block;">
+                      <div style="padding:0.2rem 0.25rem;font-size:0.67rem;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.label}</div>
                     </div>
                   `).join('')}
                 </div>
@@ -647,8 +726,14 @@ const App = {
               </div>`;
           } else {
             moduleSelectorHtml = `
-              <div style="margin-bottom:1rem; padding:0.75rem; background:#fef3c7; border-radius:var(--radius-md); font-size:0.85rem; color:#92400e;">
-                ⚠️ No sections found. Please create a section first before adding an activity.
+              <div style="margin-bottom:1rem; padding:1rem; background:#eff6ff; border:1.5px dashed #3b82f6; border-radius:var(--radius-md);">
+                <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.35rem; color:#1d4ed8; font-weight:700; font-size:0.85rem;">
+                  <span>📂</span> Qayb Cusub (Create Section First) *
+                </div>
+                <p style="font-size:0.8rem; color:#2563eb; margin-bottom:0.55rem; line-height:1.4;">
+                  Koorsadani wali ma laha Section. Qor magaca qaybta uu casharkani ku geli doono (nidaamku si toos ah ayuu kuu abuuri doonaa):
+                </p>
+                <input type="text" id="new-section-title-input" required placeholder="t.s. Cutubka 1aad: Horudhac (Chapter 1: Intro)" style="width:100%; padding:0.65rem; border:1px solid #93c5fd; border-radius:var(--radius-md); background:#ffffff; font-weight:600;">
               </div>`;
           }
         } catch (e) {
@@ -662,7 +747,7 @@ const App = {
             <h3>Add Activity / Learning Resource</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
-          <form onsubmit="App.handleAddActivity(event, ${formModuleId || 'null'})">
+          <form onsubmit="App.handleAddActivity(event, ${formModuleId || 'null'}, ${context.courseId || 'null'})">
             <div class="modal-body">
               ${moduleSelectorHtml}
               <div style="margin-bottom: 1rem;">
@@ -1117,15 +1202,6 @@ const App = {
       try {
         const courseData = await API.getCourse(context.courseId);
         const course = courseData.course || courseData;
-        const presets = [
-          { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&fit=crop&q=80', label: '💻 Programming' },
-          { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&fit=crop&q=80', label: '🤖 AI / ML' },
-          { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&fit=crop&q=80', label: '🔐 Cybersecurity' },
-          { url: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&fit=crop&q=80', label: '☁️ Cloud' },
-          { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&fit=crop&q=80', label: '📊 Data Science' },
-          { url: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&fit=crop&q=80', label: '🗄️ Databases' }
-        ];
-
         this.showCustomModal(`
           <div class="modal-dialog" style="max-width: 600px;">
             <div class="modal-header">
@@ -1168,11 +1244,11 @@ const App = {
                 </div>
                 <div style="margin-bottom:1rem;">
                   <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📷 Course Thumbnail</label>
-                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
-                    ${presets.map((p) => `
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                    ${App.COURSE_PRESETS.map((p) => `
                       <div class="thumb-preset" data-url="${p.url}" onclick="App.selectCoverPreset(this, '${p.url}')" style="cursor:pointer;border:2px solid ${course.cover_image === p.url ? 'var(--primary)' : 'var(--border-color)'};border-radius:var(--radius-md);overflow:hidden;transition:border-color 0.2s;">
-                        <img src="${p.url}" alt="${p.label}" style="width:100%;height:60px;object-fit:cover;display:block;">
-                        <div style="padding:0.2rem 0.4rem;font-size:0.7rem;font-weight:600;text-align:center;">${p.label}</div>
+                        <img src="${p.url}" alt="${p.label}" style="width:100%;height:54px;object-fit:cover;display:block;">
+                        <div style="padding:0.2rem 0.25rem;font-size:0.67rem;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.label}</div>
                       </div>
                     `).join('')}
                   </div>
@@ -1272,19 +1348,19 @@ const App = {
     if (fileInput) fileInput.value = '';
   },
 
-  previewCoverFile(input) {
+  async previewCoverFile(input) {
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = e => {
+      try {
         const preview = document.getElementById('cover-preview-container');
         const img = document.getElementById('cover-preview-img');
-        if (preview && img) { img.src = e.target.result; preview.style.display = 'block'; }
-      };
-      reader.readAsDataURL(input.files[0]);
-      // clear preset selection
-      document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
-      const hiddenInput = document.getElementById('cover-preset-url');
-      if (hiddenInput) hiddenInput.value = '';
+        const dataUrl = await this.processImageFile(input.files[0]);
+        if (preview && img) { img.src = dataUrl; preview.style.display = 'block'; }
+        const hiddenInput = document.getElementById('cover-preset-url');
+        if (hiddenInput) hiddenInput.value = dataUrl;
+        document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
+      } catch (e) {
+        console.error('Error previewing file:', e);
+      }
     }
   },
 
@@ -1305,25 +1381,25 @@ const App = {
     const fileInput = form.querySelector('[name="cover_file"]');
     const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
     try {
-      let res;
-      if (hasFile) {
-        const fd = new FormData(form);
-        // Remove the cover_url_input field, keep cover_file
-        fd.delete('cover_url_input');
-        res = await API.createCourse(fd);
-      } else {
-        const presetUrl = (document.getElementById('cover-preset-url') || {}).value || '';
-        const urlInput = form.cover_url_input ? form.cover_url_input.value : '';
-        const coverImage = presetUrl || urlInput || '';
-        res = await API.createCourse({
-          code: form.code.value,
-          title: form.title.value,
-          description: form.description.value,
-          pass_percentage: form.pass_percentage.value,
-          target_year: form.target_year ? form.target_year.value : 'All Years',
-          cover_image: coverImage
-        });
+      let coverImage = (document.getElementById('cover-preset-url') || {}).value || '';
+      if (!coverImage && hasFile) {
+        try {
+          coverImage = await this.processImageFile(fileInput.files[0]);
+        } catch (err) {}
       }
+      if (!coverImage && form.cover_url_input) {
+        coverImage = form.cover_url_input.value || '';
+      }
+
+      const res = await API.createCourse({
+        code: form.code.value,
+        title: form.title.value,
+        description: form.description.value,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        target_year: form.target_year ? form.target_year.value : 'All Years',
+        cover_image: coverImage
+      });
+
       this.closeModal();
       this.showToast('✅ Koorsada si guul leh ayaa loo abuuray (Course created)!');
       this.navigate(`/course/${res.course.id}`);
@@ -1338,23 +1414,25 @@ const App = {
     const fileInput = form.querySelector('[name="cover_file"]');
     const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
     try {
+      let coverImage = (document.getElementById('cover-preset-url') || {}).value || '';
       if (hasFile) {
-        const fd = new FormData(form);
-        fd.delete('cover_url_input');
-        await API.updateCourse(courseId, fd);
-      } else {
-        const presetUrl = (document.getElementById('cover-preset-url') || {}).value || '';
-        const urlInput = form.cover_url_input ? form.cover_url_input.value : '';
-        const coverImage = presetUrl || urlInput || '';
-        await API.updateCourse(courseId, {
-          code: form.code.value,
-          title: form.title.value,
-          description: form.description.value,
-          pass_percentage: parseFloat(form.pass_percentage.value) || 60,
-          target_year: form.target_year ? form.target_year.value : 'All Years',
-          cover_image: coverImage
-        });
+        try {
+          coverImage = await this.processImageFile(fileInput.files[0]);
+        } catch (err) {}
       }
+      if (!coverImage && form.cover_url_input) {
+        coverImage = form.cover_url_input.value || '';
+      }
+
+      await API.updateCourse(courseId, {
+        code: form.code.value,
+        title: form.title.value,
+        description: form.description.value,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        target_year: form.target_year ? form.target_year.value : 'All Years',
+        cover_image: coverImage
+      });
+
       this.closeModal();
       this.showToast('✅ Koorsada si guul leh ayaa loo cusboonaysiiyay!', 'success');
       this.refreshCurrentView();
@@ -1612,20 +1690,39 @@ const App = {
     }
   },
 
-  async handleAddActivity(e, moduleId) {
+  async handleAddActivity(e, moduleId, courseId) {
     e.preventDefault();
     const form = e.target;
     const submitBtn = form.querySelector('button[type="submit"]');
     const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Add Activity';
 
-    // If moduleId wasn't passed directly (course-level button), read from the dropdown
+    // If moduleId wasn't passed directly (course-level button), check if there is an inline section creation input or dropdown
     if (!moduleId) {
-      const moduleSelect = document.getElementById('activity-module-select');
-      if (!moduleSelect || !moduleSelect.value) {
-        this.showToast('Fadlan dooro qaybta (module) aad casharku ku geli doono!', 'error');
-        return;
+      const newSectionInput = document.getElementById('new-section-title-input');
+      if (newSectionInput && newSectionInput.value.trim()) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '⏳ Abuuraya qaybta cusub (Creating section)...';
+        }
+        try {
+          const modRes = await API.createModule(courseId, { title: newSectionInput.value.trim() });
+          moduleId = (modRes.module && modRes.module.id) || modRes.id;
+        } catch (err) {
+          this.showToast('Khalad ayaa ka dhacay abuurista qaybta: ' + (err.message || ''), 'error');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnHtml;
+          }
+          return;
+        }
+      } else {
+        const moduleSelect = document.getElementById('activity-module-select');
+        if (!moduleSelect || !moduleSelect.value) {
+          this.showToast('Fadlan dooro qaybta (module) aad casharku ku geli doono!', 'error');
+          return;
+        }
+        moduleId = parseInt(moduleSelect.value);
       }
-      moduleId = parseInt(moduleSelect.value);
     }
 
     const formData = new FormData(form);

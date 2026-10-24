@@ -96,7 +96,7 @@ const DashboardView = {
       <div class="course-grid">
         ${courses.length > 0 ? courses.map(c => `
           <div class="course-card">
-            <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'}" class="course-cover-img" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+            <img src="${c.cover_image || App.getCourseFallback(c.code, c.title)}" class="course-cover-img" alt="${c.title}" onerror="App.handleCoverError(this, '${c.code}', '${(c.title || '').replace(/'/g, "\\'")}')">
             <div class="course-card-body">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
                 <span class="course-code">${c.code}</span>
@@ -215,7 +215,7 @@ const DashboardView = {
       <div class="course-grid">
         ${courses.map(c => `
           <div class="course-card">
-            <img src="${c.cover_image}" class="course-cover-img" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+            <img src="${c.cover_image || App.getCourseFallback(c.code, c.title)}" class="course-cover-img" alt="${c.title}" onerror="App.handleCoverError(this, '${c.code}', '${(c.title || '').replace(/'/g, "\\'")}')">
             <div class="course-card-body">
               <div class="course-code">${c.code}</div>
               <h3 class="course-card-title">${c.title}</h3>

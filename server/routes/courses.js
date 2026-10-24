@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
@@ -181,6 +182,46 @@ router.get('/:id', requireAuth, (req, res) => {
 
 const { upload } = require('../middleware/upload');
 
+function generateCourseCoverSvg(code = '', title = '') {
+  const palettes = [
+    { bg1: '#0ea5e9', bg2: '#0369a1', accent: '#38bdf8' },
+    { bg1: '#8b5cf6', bg2: '#5b21b6', accent: '#a78bfa' },
+    { bg1: '#10b981', bg2: '#047857', accent: '#34d399' },
+    { bg1: '#f43f5e', bg2: '#9f1239', accent: '#fb7185' },
+    { bg1: '#f59e0b', bg2: '#b45309', accent: '#fbbf24' },
+    { bg1: '#6366f1', bg2: '#3730a3', accent: '#818cf8' }
+  ];
+  let hash = 0;
+  const str = (code + title) || 'Course';
+  for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i);
+  const p = palettes[Math.abs(hash) % palettes.length];
+
+  const safeCode = (code || 'COURSE').replace(/[^a-zA-Z0-9 -]/g, '');
+  const safeTitle = (title || 'Curriculum').slice(0, 32).replace(/[^a-zA-Z0-9 -]/g, '');
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+    <defs>
+      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+      <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1.5" fill="rgba(255,255,255,0.12)"/>
+      </pattern>
+    </defs>
+    <rect width="600" height="340" fill="url(#grad)"/>
+    <rect width="600" height="340" fill="url(#grid)"/>
+    <circle cx="530" cy="60" r="140" fill="rgba(255,255,255,0.06)"/>
+    <circle cx="80" cy="280" r="90" fill="rgba(255,255,255,0.04)"/>
+    <g transform="translate(48, 120)">
+      <text font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="44" fill="${p.accent}" font-weight="900" letter-spacing="1.5">${safeCode}</text>
+      <text y="52" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="20" fill="#ffffff" font-weight="600" opacity="0.95">${safeTitle}</text>
+      <text y="88" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" fill="#ffffff" opacity="0.75" letter-spacing="0.5">Guray Sicid Learning Platform</text>
+    </g>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 // 3. Create Course (Professor only)
 router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
   const { code, title, description, cover_image, target_year, start_date, end_date, pass_percentage } = req.body;
@@ -194,9 +235,19 @@ router.post('/', requireProfessor, upload.single('cover_file'), (req, res) => {
     return res.status(400).json({ error: 'A course with this code already exists.' });
   }
 
-  let finalCover = cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80';
+  let finalCover = cover_image;
   if (req.file) {
-    finalCover = `/uploads/covers/${req.file.filename}`;
+    try {
+      const fileBuffer = fs.readFileSync(req.file.path);
+      const mime = req.file.mimetype || 'image/jpeg';
+      finalCover = `data:${mime};base64,${fileBuffer.toString('base64')}`;
+    } catch (err) {
+      finalCover = `/uploads/covers/${req.file.filename}`;
+    }
+  }
+
+  if (!finalCover || !finalCover.trim()) {
+    finalCover = generateCourseCoverSvg(code.trim(), title.trim());
   }
 
   const assignedTargetYear = target_year || 'All Years';
@@ -249,7 +300,13 @@ router.put('/:id', requireProfessor, upload.single('cover_file'), (req, res) => 
 
   let finalCover = cover_image;
   if (req.file) {
-    finalCover = `/uploads/covers/${req.file.filename}`;
+    try {
+      const fileBuffer = fs.readFileSync(req.file.path);
+      const mime = req.file.mimetype || 'image/jpeg';
+      finalCover = `data:${mime};base64,${fileBuffer.toString('base64')}`;
+    } catch (err) {
+      finalCover = `/uploads/covers/${req.file.filename}`;
+    }
   }
 
   db.prepare(`

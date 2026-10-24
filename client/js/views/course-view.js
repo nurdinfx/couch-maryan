@@ -49,7 +49,7 @@ const CourseView = {
       <!-- Course Hero Header -->
       <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
         <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
-          <img src="${course.cover_image}" style="width: 180px; height: 120px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-sm);" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'">
+          <img src="${course.cover_image || App.getCourseFallback(course.code, course.title)}" style="width: 180px; height: 120px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-sm);" onerror="App.handleCoverError(this, '${course.code}', '${(course.title || '').replace(/'/g, "\\'")}')">
           
           <div style="flex: 1; min-width: 280px;">
             <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap;">

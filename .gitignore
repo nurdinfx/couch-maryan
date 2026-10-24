@@ -9,6 +9,8 @@ node_modules/
 uploads/*
 !uploads/.gitkeep
 !uploads/*/.gitkeep
+!uploads/covers/*
+!uploads/covers/**/*
 !uploads/documents/*.pdf
 !uploads/submissions/*.pdf
 scratch/
