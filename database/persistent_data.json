@@ -286,7 +286,19 @@
       "created_at": "2026-10-24 06:33:21"
     }
   ],
-  "lesson_progress": [],
+  "lesson_progress": [
+    {
+      "id": 74,
+      "user_id": 1,
+      "lesson_id": 13,
+      "course_id": 9,
+      "is_completed": 0,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": null,
+      "last_accessed_at": "2026-10-24 06:35:51"
+    }
+  ],
   "assignments": [],
   "assignment_submissions": [],
   "quizzes": [],
