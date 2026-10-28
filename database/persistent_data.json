@@ -365,6 +365,16 @@
       "correct_answer_text": "d",
       "points": 1,
       "sort_order": 4
+    },
+    {
+      "id": 10,
+      "quiz_id": 4,
+      "question_text": "Which is the correct order of assessments for the typical woman presenting in labor when\nbirth does not appear to be imminent?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Take history, do a Quick check, conduct an abdominal examination, and conduct a\",\"vaginal examination\",\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a\",\"vaginal examination\",\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal\",\"examination, and take history\"]",
+      "correct_answer_text": "b",
+      "points": 1,
+      "sort_order": 5
     }
   ],
   "quiz_attempts": [],
