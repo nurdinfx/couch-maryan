@@ -227,7 +227,16 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [],
+  "modules": [
+    {
+      "id": 10,
+      "course_id": 9,
+      "title": "ESSENTIAL NEWBORN CARE",
+      "description": "",
+      "sort_order": 1,
+      "is_published": 1
+    }
+  ],
   "lessons": [],
   "lesson_progress": [],
   "assignments": [],
