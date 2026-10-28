@@ -308,6 +308,21 @@
       "close_date": null,
       "release_results_immediately": 1,
       "created_at": "2026-10-24 06:44:41"
+    },
+    {
+      "id": 4,
+      "course_id": 9,
+      "module_id": null,
+      "title": "PRE-TEST QUIZZ",
+      "description": "",
+      "time_limit_minutes": 60,
+      "max_attempts": 1,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": "2026-10-30 05:00",
+      "close_date": "2026-11-06 20:59",
+      "release_results_immediately": 1,
+      "created_at": "2026-10-28 07:11:35"
     }
   ],
   "quiz_questions": [],
