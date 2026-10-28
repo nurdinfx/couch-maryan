@@ -345,6 +345,16 @@
       "correct_answer_text": "B",
       "points": 1,
       "sort_order": 2
+    },
+    {
+      "id": 8,
+      "quiz_id": 4,
+      "question_text": "When can you wash your hands with alcohol-based rub rather than soap and water?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) If hands are not visibly soiled\",\"b) If hands are visibly soiled\",\"c) Any time, regardless of activity or soil\"]",
+      "correct_answer_text": "A",
+      "points": 1,
+      "sort_order": 3
     }
   ],
   "quiz_attempts": [],
