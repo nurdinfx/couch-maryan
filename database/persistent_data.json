@@ -385,6 +385,16 @@
       "correct_answer_text": "c",
       "points": 1,
       "sort_order": 6
+    },
+    {
+      "id": 12,
+      "quiz_id": 4,
+      "question_text": "Which of the following is a critical element of a Quick check?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Assess whether birth is very close\",\"b) Check the woman’s records and ask about the history of her current pregnancy\",\"c) Perform an abdominal examination\"]",
+      "correct_answer_text": "a",
+      "points": 1,
+      "sort_order": 7
     }
   ],
   "quiz_attempts": [],
