@@ -136,16 +136,16 @@
       "faculty": "Health Science"
     },
     {
-      "id": 18,
+      "id": 17,
       "email": "maryan@guraysicid.edu",
-      "password_hash": "$2b$10$sL6RoZOtweDiCKEscfRMYeqk.GJXeZgYEXZDJ2xJ7IXveX1BSKZuu",
-      "full_name": "nour",
+      "password_hash": "$2b$10$h0QNq3kpzZTBSbapdSRSCuwH8kzv1N.8AIxJuU6D6h9K1k0Xudmdy",
+      "full_name": "mayran",
       "role": "admin",
       "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
       "student_id_number": null,
       "department": "Platform Operations & Security",
       "bio": null,
-      "created_at": "2026-10-28 06:55:55",
+      "created_at": "2026-10-24 06:58:38",
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "General"
@@ -227,54 +227,8 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [
-    {
-      "id": 10,
-      "course_id": 9,
-      "title": "ESSENTIAL NEWBORN CARE",
-      "description": "",
-      "sort_order": 1,
-      "is_published": 1
-    }
-  ],
-  "lessons": [
-    {
-      "id": 11,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "ESSENTIAL CARE FOR LABOUR AND BIRTH",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1793170978857_ESSENTIAL_CARE_FOR_LABOR_AND_BIRTH.pdf",
-      "file_name": "ESSENTIAL CARE FOR LABOR AND BIRTH.pdf",
-      "file_size_bytes": 18626132,
-      "is_required_for_completion": 1,
-      "sort_order": 1,
-      "is_published": 1,
-      "created_at": "2026-10-28 07:03:01"
-    },
-    {
-      "id": 12,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "ACTION PLAN ESSENTIAL CARE FOR LABOR AND BIRTH",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1793171081120_ACTION_PLAN_.pdf",
-      "file_name": "ACTION PLAN .pdf",
-      "file_size_bytes": 493471,
-      "is_required_for_completion": 1,
-      "sort_order": 2,
-      "is_published": 1,
-      "created_at": "2026-10-28 07:04:41"
-    }
-  ],
+  "modules": [],
+  "lessons": [],
   "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
@@ -308,105 +262,9 @@
       "close_date": null,
       "release_results_immediately": 1,
       "created_at": "2026-10-24 06:44:41"
-    },
-    {
-      "id": 4,
-      "course_id": 9,
-      "module_id": null,
-      "title": "PRE-TEST QUIZZ",
-      "description": "",
-      "time_limit_minutes": 60,
-      "max_attempts": 1,
-      "passing_percentage": 60,
-      "weight_percentage": 20,
-      "open_date": "2026-10-30 05:00",
-      "close_date": "2026-11-06 20:59",
-      "release_results_immediately": 1,
-      "created_at": "2026-10-28 07:11:35"
     }
   ],
-  "quiz_questions": [
-    {
-      "id": 6,
-      "quiz_id": 4,
-      "question_text": "Which woman below would be classified as a woman in active labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\",\"b) Mrs. B. with cervix dilated 4 cms and painful contractions every 3 minutes\",\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "correct_answer_text": "C",
-      "points": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 7,
-      "quiz_id": 4,
-      "question_text": "How often should the fetal heart rate be checked and recorded during active phase of the 1st stage of labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Every 15 minutes\",\"b) Every 30 minutes\",\"c) Every 60 minutes\"]",
-      "correct_answer_text": "B",
-      "points": 1,
-      "sort_order": 2
-    },
-    {
-      "id": 8,
-      "quiz_id": 4,
-      "question_text": "When can you wash your hands with alcohol-based rub rather than soap and water?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) If hands are not visibly soiled\",\"b) If hands are visibly soiled\",\"c) Any time, regardless of activity or soil\"]",
-      "correct_answer_text": "A",
-      "points": 1,
-      "sort_order": 3
-    },
-    {
-      "id": 9,
-      "quiz_id": 4,
-      "question_text": "Which of the following has been shown to decrease complications at birth?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Performing a vaginal examination every two hours\",\"b) Routinely augmenting labor to shorten the first stage\",\"c) Performing artificial rupture of membranes during labor to assess the color of the\",\"amniotic fluid\",\"d) Allowing the woman to have a companion of her choice with her during labor and\",\"birth\"]",
-      "correct_answer_text": "d",
-      "points": 1,
-      "sort_order": 4
-    },
-    {
-      "id": 10,
-      "quiz_id": 4,
-      "question_text": "Which is the correct order of assessments for the typical woman presenting in labor when\nbirth does not appear to be imminent?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Take history, do a Quick check, conduct an abdominal examination, and conduct a\",\"vaginal examination\",\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a\",\"vaginal examination\",\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal\",\"examination, and take history\"]",
-      "correct_answer_text": "b",
-      "points": 1,
-      "sort_order": 5
-    },
-    {
-      "id": 11,
-      "quiz_id": 4,
-      "question_text": "What action is not included in a Quick check?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Determine if birth is imminent\",\"b) Check for danger signs\",\"c) Do a vaginal examination\"]",
-      "correct_answer_text": "c",
-      "points": 1,
-      "sort_order": 6
-    },
-    {
-      "id": 12,
-      "quiz_id": 4,
-      "question_text": "Which of the following is a critical element of a Quick check?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Assess whether birth is very close\",\"b) Check the woman’s records and ask about the history of her current pregnancy\",\"c) Perform an abdominal examination\"]",
-      "correct_answer_text": "a",
-      "points": 1,
-      "sort_order": 7
-    },
-    {
-      "id": 13,
-      "quiz_id": 4,
-      "question_text": "Which of these methods is the most accurate for determining gestational age?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Calculation based on known last normal menstrual period\",\"b) Measurement of fundal height\",\"c) Ultrasonography performed at 25 weeks\"]",
-      "correct_answer_text": "a",
-      "points": 1,
-      "sort_order": 8
-    }
-  ],
+  "quiz_questions": [],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
