@@ -418,6 +418,16 @@
       "correct_answer_text": "a",
       "points": 1,
       "sort_order": 6
+    },
+    {
+      "id": 12,
+      "quiz_id": 5,
+      "question_text": "The first day of Maria’s last menstrual period was on 20 September. What is her estimated date of delivery (EDD)?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) 21 April\",\"b) 12 June\",\"c) 27 June\",\"d) 4 August\"]",
+      "correct_answer_text": "c",
+      "points": 1,
+      "sort_order": 7
     }
   ],
   "quiz_attempts": [],
