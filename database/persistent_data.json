@@ -388,6 +388,16 @@
       "correct_answer_text": "A",
       "points": 1,
       "sort_order": 3
+    },
+    {
+      "id": 9,
+      "quiz_id": 5,
+      "question_text": "Which of the following has been shown to decrease complications at birth?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Performing a vaginal examination every two hours\",\"b) Routinely augmenting labor to shorten the first stage\",\"c) Performing artificial rupture of membranes during labor to assess the color of the\",\"amniotic fluid\",\"d) Allowing the woman to have a companion of her choice with her during labor and birth\"]",
+      "correct_answer_text": "d",
+      "points": 1,
+      "sort_order": 4
     }
   ],
   "quiz_attempts": [],
