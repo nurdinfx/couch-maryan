@@ -368,6 +368,16 @@
       "correct_answer_text": "C",
       "points": 1,
       "sort_order": 1
+    },
+    {
+      "id": 7,
+      "quiz_id": 5,
+      "question_text": "How often should the fetal heart rate be checked and recorded during active phase of the 1st stage of labor?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Every 15 minutes\",\"b) Every 30 minutes\",\"c) Every 60 minutes\"]",
+      "correct_answer_text": "B",
+      "points": 1,
+      "sort_order": 2
     }
   ],
   "quiz_attempts": [],
