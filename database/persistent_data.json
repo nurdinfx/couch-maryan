@@ -4,7 +4,7 @@
       "id": 1,
       "email": "professor@faculty.edu",
       "password_hash": "$2b$10$QuGTnXbHy1JK/VtmnRlEKeFwR3462lX86xVecXVI01kxPggB/AdDu",
-      "full_name": "Prof. Maryam Axmed Gambol",
+      "full_name": "Prof. Maryam Al-Mansoor",
       "role": "professor",
       "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
       "student_id_number": null,
@@ -13,7 +13,7 @@
       "created_at": "2026-10-19 04:22:27",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science"
+      "faculty": "General"
     },
     {
       "id": 6,
@@ -136,16 +136,16 @@
       "faculty": "Health Science"
     },
     {
-      "id": 19,
-      "email": "maryan@faculty.edu",
-      "password_hash": "$2b$10$EtARxFy.03gR0H4Bb4CRuOMIVxP4IpDBleHmttLXwSOx5.PIqx8ha",
-      "full_name": "Maryan A.G",
+      "id": 17,
+      "email": "maryan@guraysicid.edu",
+      "password_hash": "$2b$10$h0QNq3kpzZTBSbapdSRSCuwH8kzv1N.8AIxJuU6D6h9K1k0Xudmdy",
+      "full_name": "mayran",
       "role": "admin",
       "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
       "student_id_number": null,
       "department": "Platform Operations & Security",
       "bio": null,
-      "created_at": "2026-10-30 09:37:16",
+      "created_at": "2026-10-24 06:58:38",
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "General"
@@ -227,72 +227,8 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [
-    {
-      "id": 10,
-      "course_id": 9,
-      "title": "MODULE 1 : ESSENTIAL CARE AND LABOR AND BIRTH",
-      "description": "NORMAL LABOR AND BIRTH ",
-      "sort_order": 1,
-      "is_published": 1
-    }
-  ],
-  "lessons": [
-    {
-      "id": 11,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "Essential Care and labor VIDEO OF EACH STEP",
-      "content_type": "video",
-      "description": "",
-      "content_body": "",
-      "video_url": "/uploads/videos/1793353295112_ECLB_-_Video_collection_-_English.ppsx",
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/videos/1793353295112_ECLB_-_Video_collection_-_English.ppsx",
-      "file_name": "ECLB - Video collection - English.ppsx",
-      "file_size_bytes": 0,
-      "is_required_for_completion": 1,
-      "sort_order": 1,
-      "is_published": 1,
-      "created_at": "2026-10-30 09:41:35"
-    },
-    {
-      "id": 12,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "Provider GUIDE : ECLB PDF",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1793353716306_Provider_guide_.pdf",
-      "file_name": "Provider guide .pdf",
-      "file_size_bytes": 22287361,
-      "is_required_for_completion": 1,
-      "sort_order": 2,
-      "is_published": 1,
-      "created_at": "2026-10-30 09:48:37"
-    },
-    {
-      "id": 13,
-      "module_id": 10,
-      "course_id": 9,
-      "title": "ACTION PLAN",
-      "content_type": "document",
-      "description": "",
-      "content_body": "",
-      "video_url": null,
-      "video_duration_seconds": 0,
-      "file_url": "/uploads/documents/1793353778368_ECLB-action_plan-print-en.pdf",
-      "file_name": "ECLB-action_plan-print-en.pdf",
-      "file_size_bytes": 3556322,
-      "is_required_for_completion": 1,
-      "sort_order": 3,
-      "is_published": 1,
-      "created_at": "2026-10-30 09:49:38"
-    }
-  ],
+  "modules": [],
+  "lessons": [],
   "lesson_progress": [],
   "assignments": [],
   "assignment_submissions": [],
@@ -326,110 +262,9 @@
       "close_date": null,
       "release_results_immediately": 1,
       "created_at": "2026-10-24 06:44:41"
-    },
-    {
-      "id": 4,
-      "course_id": 9,
-      "module_id": null,
-      "title": "Helping Mothers Survive Essential Care for Labor & Birth Post Knowledge Assessment",
-      "description": "MCQ ",
-      "time_limit_minutes": 30,
-      "max_attempts": 1,
-      "passing_percentage": 60,
-      "weight_percentage": 20,
-      "open_date": "2026-10-30 12:52",
-      "close_date": "2026-11-06 23:59",
-      "release_results_immediately": 1,
-      "created_at": "2026-10-30 09:53:23"
-    },
-    {
-      "id": 5,
-      "course_id": 9,
-      "module_id": null,
-      "title": "Helping Mothers Survive Essential Care for Labor & Birth Post -Knowledge Assessment",
-      "description": "MCQ ",
-      "time_limit_minutes": 30,
-      "max_attempts": 1,
-      "passing_percentage": 70,
-      "weight_percentage": 20,
-      "open_date": null,
-      "close_date": "2026-11-06 23:59",
-      "release_results_immediately": 1,
-      "created_at": "2026-10-30 09:56:50"
     }
   ],
-  "quiz_questions": [
-    {
-      "id": 6,
-      "quiz_id": 5,
-      "question_text": "Which woman below would be classified as a woman in active labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\",\"b) Mrs. B. with cervix dilated 4 cms and painful contractions every 3 minutes\",\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "correct_answer_text": "C",
-      "points": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 7,
-      "quiz_id": 5,
-      "question_text": "How often should the fetal heart rate be checked and recorded during active phase of the 1st stage of labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Every 15 minutes\",\"b) Every 30 minutes\",\"c) Every 60 minutes\"]",
-      "correct_answer_text": "B",
-      "points": 1,
-      "sort_order": 2
-    },
-    {
-      "id": 8,
-      "quiz_id": 5,
-      "question_text": "When can you wash your hands with alcohol-based rub rather than soap and water?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) If hands are not visibly soiled\",\"b) If hands are visibly soiled\",\"c) Any time, regardless of activity or soil\"]",
-      "correct_answer_text": "A",
-      "points": 1,
-      "sort_order": 3
-    },
-    {
-      "id": 9,
-      "quiz_id": 5,
-      "question_text": "Which of the following has been shown to decrease complications at birth?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Performing a vaginal examination every two hours\",\"b) Routinely augmenting labor to shorten the first stage\",\"c) Performing artificial rupture of membranes during labor to assess the color of the\",\"amniotic fluid\",\"d) Allowing the woman to have a companion of her choice with her during labor and birth\"]",
-      "correct_answer_text": "d",
-      "points": 1,
-      "sort_order": 4
-    },
-    {
-      "id": 10,
-      "quiz_id": 5,
-      "question_text": "Which is the correct order of assessments for the typical woman presenting in labor when birth does not appear to be imminent?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Take history, do a Quick check, conduct an abdominal examination, and conduct a vaginal examination\",\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\",\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal examination, and take history\"]",
-      "correct_answer_text": "b",
-      "points": 1,
-      "sort_order": 5
-    },
-    {
-      "id": 11,
-      "quiz_id": 5,
-      "question_text": "Which of these methods is the most accurate for determining gestational age?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Calculation based on known last normal menstrual period\",\"b) Measurement of fundal height\",\"c) Ultrasonography performed at 25 weeks\"]",
-      "correct_answer_text": "a",
-      "points": 1,
-      "sort_order": 6
-    },
-    {
-      "id": 12,
-      "quiz_id": 5,
-      "question_text": "The first day of Maria’s last menstrual period was on 20 September. What is her estimated date of delivery (EDD)?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) 21 April\",\"b) 12 June\",\"c) 27 June\",\"d) 4 August\"]",
-      "correct_answer_text": "c",
-      "points": 1,
-      "sort_order": 7
-    }
-  ],
+  "quiz_questions": [],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
