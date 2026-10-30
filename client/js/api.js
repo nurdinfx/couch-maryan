@@ -38,14 +38,20 @@ const API = {
     try {
       const response = await fetch(url, { ...options, headers });
       
+      const data = await response.json().catch(() => ({}));
+
       if (response.status === 401) {
-        // If unauthenticated, notify and route to login
-        this.setToken(null);
-        window.dispatchEvent(new CustomEvent('auth-required'));
-        throw new Error('Authentication required');
+        if (endpoint !== '/auth/login') {
+          // If unauthenticated on protected routes, notify and route to login
+          this.setToken(null);
+          window.dispatchEvent(new CustomEvent('auth-required'));
+          throw new Error('Authentication required');
+        } else {
+          // If login failed, surface the exact error from server (e.g. invalid credentials)
+          throw new Error(data.error || data.message || 'Email ama password-kaagu waa khalad.');
+        }
       }
 
-      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(data.error || data.message || `Request failed (${response.status})`);
       }
@@ -64,6 +70,9 @@ const API = {
     });
     this.setToken(data.token);
     this.currentUser = data.user;
+    if (data.user) {
+      localStorage.setItem('faculty_lms_user', JSON.stringify(data.user));
+    }
     return data;
   },
 
