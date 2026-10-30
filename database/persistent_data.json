@@ -408,6 +408,16 @@
       "correct_answer_text": "b",
       "points": 1,
       "sort_order": 5
+    },
+    {
+      "id": 11,
+      "quiz_id": 5,
+      "question_text": "Which of these methods is the most accurate for determining gestational age?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Calculation based on known last normal menstrual period\",\"b) Measurement of fundal height\",\"c) Ultrasonography performed at 25 weeks\"]",
+      "correct_answer_text": "a",
+      "points": 1,
+      "sort_order": 6
     }
   ],
   "quiz_attempts": [],
