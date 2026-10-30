@@ -273,6 +273,24 @@
       "sort_order": 2,
       "is_published": 1,
       "created_at": "2026-10-30 09:48:37"
+    },
+    {
+      "id": 13,
+      "module_id": 10,
+      "course_id": 9,
+      "title": "ACTION PLAN",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793353778368_ECLB-action_plan-print-en.pdf",
+      "file_name": "ECLB-action_plan-print-en.pdf",
+      "file_size_bytes": 3556322,
+      "is_required_for_completion": 1,
+      "sort_order": 3,
+      "is_published": 1,
+      "created_at": "2026-10-30 09:49:38"
     }
   ],
   "lesson_progress": [],
