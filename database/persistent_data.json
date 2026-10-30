@@ -227,7 +227,16 @@
       "enrolled_at": "2026-10-19 08:14:25"
     }
   ],
-  "modules": [],
+  "modules": [
+    {
+      "id": 10,
+      "course_id": 9,
+      "title": "MODULE 1 : ESSENTIAL CARE AND LABOR AND BIRTH",
+      "description": "NORMAL LABOR AND BIRTH ",
+      "sort_order": 1,
+      "is_published": 1
+    }
+  ],
   "lessons": [],
   "lesson_progress": [],
   "assignments": [],
