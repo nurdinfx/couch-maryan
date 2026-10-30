@@ -358,7 +358,18 @@
       "created_at": "2026-10-30 09:56:50"
     }
   ],
-  "quiz_questions": [],
+  "quiz_questions": [
+    {
+      "id": 6,
+      "quiz_id": 5,
+      "question_text": "Which woman below would be classified as a woman in active labor?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\",\"b) Mrs. B. with cervix dilated 4 cms and painful contractions every 3 minutes\",\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "correct_answer_text": "C",
+      "points": 1,
+      "sort_order": 1
+    }
+  ],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
