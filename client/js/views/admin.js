@@ -20,6 +20,7 @@ const FACULTIES = [
 
 const AdminView = {
   cachedProfessors: [],
+  cachedAdmins: [],
 
   async render() {
     let health = null;
@@ -42,6 +43,7 @@ const AdminView = {
       professors = professorsRes.professors || [];
       users = usersRes.users || [];
       this.cachedProfessors = professors;
+      this.cachedAdmins = admins;
     } catch (err) {
       console.error('Error loading admin data:', err);
     }
@@ -277,14 +279,20 @@ const AdminView = {
                     <td style="padding: 0.95rem 1rem; font-size: 0.85rem; color: var(--text-muted);">${a.department || 'Platform Operations'}</td>
                     <td style="padding: 0.95rem 1rem; font-size: 0.82rem; color: var(--text-muted);">${a.created_at ? new Date(a.created_at).toLocaleDateString() : 'N/A'}</td>
                     <td style="padding: 0.95rem 1rem; text-align: right;">
-                      ${!isCurrent ? `
-                        <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: var(--danger-border); font-size: 0.78rem; padding: 0.35rem 0.65rem;"
-                                onclick="AdminView.deleteAdminAccount(${a.id}, '${safeName}')">
-                          ✕ ${I18N.t('common.delete', 'Remove')}
+                      <div style="display: inline-flex; align-items: center; gap: 0.4rem; justify-content: flex-end;">
+                        <button class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;"
+                                onclick="AdminView.openEditAdminModal(${a.id})">
+                          ✏️ Edit
                         </button>
-                      ` : `
-                        <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Protected</span>
-                      `}
+                        ${!isCurrent ? `
+                          <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: var(--danger-border); font-size: 0.78rem; padding: 0.35rem 0.65rem;"
+                                  onclick="AdminView.deleteAdminAccount(${a.id}, '${safeName}')">
+                            ✕ ${I18N.t('common.delete', 'Remove')}
+                          </button>
+                        ` : `
+                          <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Protected</span>
+                        `}
+                      </div>
                     </td>
                   </tr>
                 `;
@@ -388,6 +396,29 @@ const AdminView = {
         <form onsubmit="AdminView.submitCreateProfessor(event)">
           <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 1.5rem;">
 
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="create_prof_avatar_preview" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Profile-ka (Profile Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Ka dooro sawirka professor-ka device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Soo Dooro Sawir</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'create_prof_avatar_preview', 'create_prof_avatar_url', 'create_prof_avatar_status')">
+                  </label>
+                  <span id="create_prof_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="create_prof_avatar_url" value="">
+              </div>
+            </div>
+
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 Full Name *
@@ -461,7 +492,8 @@ const AdminView = {
         email: form.email.value,
         password: form.password.value,
         faculty: form.faculty.value,
-        department: form.department.value
+        department: form.department.value,
+        avatar_url: form.avatar_url ? form.avatar_url.value : ''
       });
       App.closeModal();
       App.showToast('Professor registered successfully! 🎓');
@@ -487,6 +519,29 @@ const AdminView = {
         </div>
         <form onsubmit="AdminView.submitEditProfessor(event, ${prof.id})">
           <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 1.5rem;">
+
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="edit_prof_avatar_preview" src="${prof.avatar_url || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Profile-ka (Profile Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Beddel sawirka oo ka dooro device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Beddel Sawirka</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'edit_prof_avatar_preview', 'edit_prof_avatar_url', 'edit_prof_avatar_status')">
+                  </label>
+                  <span id="edit_prof_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="edit_prof_avatar_url" value="${prof.avatar_url || ''}">
+              </div>
+            </div>
 
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Full Name *</label>
@@ -540,7 +595,8 @@ const AdminView = {
         email: form.email.value,
         faculty: form.faculty.value,
         department: form.department.value,
-        is_active: form.is_active.checked
+        is_active: form.is_active.checked,
+        avatar_url: form.avatar_url ? form.avatar_url.value : undefined
       });
       App.closeModal();
       App.showToast('Professor updated successfully!');
@@ -574,6 +630,29 @@ const AdminView = {
         <form onsubmit="AdminView.submitCreateAdmin(event)">
           <div class="modal-body" style="padding: 1.5rem;">
             
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="create_admin_avatar_preview" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Profile-ka (Profile Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Ka dooro sawirka maamulaha device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Soo Dooro Sawir</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'create_admin_avatar_preview', 'create_admin_avatar_url', 'create_admin_avatar_status')">
+                  </label>
+                  <span id="create_admin_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="create_admin_avatar_url" value="">
+              </div>
+            </div>
+
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 ${I18N.t('students.full_name', 'Full Name')} *
@@ -620,10 +699,93 @@ const AdminView = {
         full_name: form.full_name.value,
         email: form.email.value,
         password: form.password.value,
-        department: form.department.value
+        department: form.department.value,
+        avatar_url: form.avatar_url ? form.avatar_url.value : ''
       });
       App.closeModal();
       App.showToast(I18N.t('common.success', 'Administrator registered successfully! 🛡️'));
+      App.refreshCurrentView();
+    } catch (err) {
+      App.showToast(err.message, 'error');
+    }
+  },
+
+  openEditAdminModal(adminId) {
+    const admin = (this.cachedAdmins || []).find(a => a.id === adminId);
+    if (!admin) return;
+
+    App.showCustomModal(`
+      <div class="modal-dialog" style="max-width: 540px; width: 95%;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.2rem; font-weight: 700;">✏️ Edit Administrator - ${admin.full_name}</h3>
+          <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <form onsubmit="AdminView.submitEditAdmin(event, ${admin.id})">
+          <div class="modal-body" style="padding: 1.5rem;">
+
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="edit_admin_avatar_preview" src="${admin.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Profile-ka (Profile Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Beddel sawirka oo ka dooro device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Beddel Sawirka</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'edit_admin_avatar_preview', 'edit_admin_avatar_url', 'edit_admin_avatar_status')">
+                  </label>
+                  <span id="edit_admin_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="edit_admin_avatar_url" value="${admin.avatar_url || ''}">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.15rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Full Name *</label>
+              <input type="text" name="full_name" required value="${admin.full_name || ''}"
+                style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+            </div>
+
+            <div style="margin-bottom: 1.15rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Email Address *</label>
+              <input type="email" name="email" required value="${admin.email || ''}"
+                style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+            </div>
+
+            <div style="margin-bottom: 1.15rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Department / Role Title</label>
+              <input type="text" name="department" value="${admin.department || ''}"
+                style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+            </div>
+
+          </div>
+          <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    `);
+  },
+
+  async submitEditAdmin(e, adminId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.updateAdmin(adminId, {
+        full_name: form.full_name.value,
+        email: form.email.value,
+        department: form.department.value,
+        avatar_url: form.avatar_url ? form.avatar_url.value : undefined
+      });
+      App.closeModal();
+      App.showToast('Administrator updated successfully! 🛡️');
       App.refreshCurrentView();
     } catch (err) {
       App.showToast(err.message, 'error');

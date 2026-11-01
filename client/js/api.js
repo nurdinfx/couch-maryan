@@ -437,6 +437,13 @@ const API = {
     });
   },
 
+  async updateAdmin(adminId, adminData) {
+    return this.request(`/admin/admins/${adminId}`, {
+      method: 'PUT',
+      body: JSON.stringify(adminData)
+    });
+  },
+
   async deleteAdmin(adminId) {
     return this.request(`/admin/admins/${adminId}`, {
       method: 'DELETE'

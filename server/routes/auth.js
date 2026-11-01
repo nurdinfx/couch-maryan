@@ -197,7 +197,7 @@ router.post('/students', requireAuth, (req, res) => {
     return res.status(403).json({ error: 'Only the professor or administrator can create student accounts.' });
   }
 
-  const { email, password, full_name, student_id_number, academic_year, course_ids, is_active, faculty } = req.body;
+  const { email, password, full_name, student_id_number, academic_year, course_ids, is_active, faculty, avatar_url } = req.body;
   if (!email || !full_name) {
     return res.status(400).json({ error: 'Student email and full name are required.' });
   }
@@ -211,14 +211,17 @@ router.post('/students', requireAuth, (req, res) => {
   const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
   const activeVal = is_active !== undefined ? (is_active ? 1 : 0) : 1;
   const assignedYear = academic_year || 'Year 1';
+  const defaultStudentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+  const finalAvatar = (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : defaultStudentAvatar;
 
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, is_active, faculty)
-    VALUES (?, ?, ?, 'student', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', ?, ?, 'Guray Sicid Learning Platform', ?, ?)
+    VALUES (?, ?, ?, 'student', ?, ?, ?, 'Guray Sicid Learning Platform', ?, ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
+    finalAvatar,
     student_id_number || `STU-2026-${Math.floor(100 + Math.random() * 900)}`,
     assignedYear,
     activeVal,
@@ -259,7 +262,7 @@ router.put('/students/:id', requireAuth, (req, res) => {
   }
 
   const studentId = parseInt(req.params.id);
-  const { full_name, email, academic_year, course_ids, is_active, faculty } = req.body;
+  const { full_name, email, academic_year, course_ids, is_active, faculty, avatar_url } = req.body;
 
   db.prepare(`
     UPDATE users
@@ -267,7 +270,8 @@ router.put('/students/:id', requireAuth, (req, res) => {
         email = COALESCE(?, email),
         academic_year = COALESCE(?, academic_year),
         faculty = COALESCE(?, faculty),
-        is_active = COALESCE(?, is_active)
+        is_active = COALESCE(?, is_active),
+        avatar_url = COALESCE(?, avatar_url)
     WHERE id = ? AND role = 'student'
   `).run(
     full_name,
@@ -275,6 +279,7 @@ router.put('/students/:id', requireAuth, (req, res) => {
     academic_year,
     faculty || null,
     is_active !== undefined ? (is_active ? 1 : 0) : null,
+    (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : null,
     studentId
   );
 
@@ -379,7 +384,7 @@ router.post('/professors', requireAuth, (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Only an administrator can register new professors.' });
   }
-  const { email, password, full_name, department, faculty } = req.body;
+  const { email, password, full_name, department, faculty, avatar_url } = req.body;
   if (!email || !full_name || !password) {
     return res.status(400).json({ error: 'Full name, email, and password are required.' });
   }
@@ -391,17 +396,21 @@ router.post('/professors', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'An account with this email address already exists.' });
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
+  const defaultProfAvatar = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150';
+  const finalAvatar = (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : defaultProfAvatar;
+
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, department, faculty, is_active)
-    VALUES (?, ?, ?, 'professor', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150', ?, ?, 1)
+    VALUES (?, ?, ?, 'professor', ?, ?, ?, 1)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
+    finalAvatar,
     department || (faculty || 'General') + ' Department',
     faculty || 'General'
   );
-  const newProf = db.prepare('SELECT id, email, full_name, role, department, faculty, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);
+  const newProf = db.prepare('SELECT id, email, full_name, role, avatar_url, department, faculty, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);
   try {
     const { savePersistence } = require('../../database/db');
     savePersistence(db);
@@ -415,14 +424,15 @@ router.put('/professors/:id', requireAuth, (req, res) => {
     return res.status(403).json({ error: 'Permission denied.' });
   }
   const profId = parseInt(req.params.id);
-  const { full_name, email, department, faculty, is_active } = req.body;
+  const { full_name, email, department, faculty, is_active, avatar_url } = req.body;
   db.prepare(`
     UPDATE users
     SET full_name = COALESCE(?, full_name),
         email = COALESCE(?, email),
         department = COALESCE(?, department),
         faculty = COALESCE(?, faculty),
-        is_active = COALESCE(?, is_active)
+        is_active = COALESCE(?, is_active),
+        avatar_url = COALESCE(?, avatar_url)
     WHERE id = ? AND role = 'professor'
   `).run(
     full_name,
@@ -430,6 +440,7 @@ router.put('/professors/:id', requireAuth, (req, res) => {
     department,
     faculty,
     is_active !== undefined ? (is_active ? 1 : 0) : null,
+    (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : null,
     profId
   );
   try {

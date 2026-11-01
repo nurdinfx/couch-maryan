@@ -189,7 +189,7 @@ router.post('/admins', requireAuth, (req, res) => {
     return res.status(403).json({ error: 'Permission denied. Only an administrator can register new admins.' });
   }
 
-  const { full_name, email, password, department } = req.body;
+  const { full_name, email, password, department, avatar_url } = req.body;
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: 'Full name, email, and password are required.' });
   }
@@ -203,18 +203,21 @@ router.post('/admins', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'An account with this email address already exists.' });
   }
 
+  const defaultAdminAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150';
+  const finalAvatar = (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : defaultAdminAvatar;
   const hashedPassword = bcrypt.hashSync(password, 10);
   const result = db.prepare(`
     INSERT INTO users (email, password_hash, full_name, role, avatar_url, department, is_active)
-    VALUES (?, ?, ?, 'admin', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', ?, 1)
+    VALUES (?, ?, ?, 'admin', ?, ?, 1)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
     full_name.trim(),
+    finalAvatar,
     department || 'Guray Sicid Learning Platform Administration'
   );
 
-  const newAdmin = db.prepare('SELECT id, email, full_name, role, department, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);
+  const newAdmin = db.prepare('SELECT id, email, full_name, role, avatar_url, department, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);
 
   try {
     const { savePersistence } = require('../../database/db');
@@ -224,6 +227,40 @@ router.post('/admins', requireAuth, (req, res) => {
   logAudit(req.user.id, 'ADMIN_CREATED', `Registered new admin: ${newAdmin.email}`, req);
 
   res.status(201).json({ message: 'Admin account created successfully', admin: newAdmin });
+});
+
+router.put('/admins/:id', requireAuth, (req, res) => {
+  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const targetId = parseInt(req.params.id);
+  const { full_name, email, department, avatar_url, is_active } = req.body;
+
+  db.prepare(`
+    UPDATE users
+    SET full_name = COALESCE(?, full_name),
+        email = COALESCE(?, email),
+        department = COALESCE(?, department),
+        avatar_url = COALESCE(?, avatar_url),
+        is_active = COALESCE(?, is_active)
+    WHERE id = ? AND role = 'admin'
+  `).run(
+    full_name,
+    email ? email.trim().toLowerCase() : null,
+    department,
+    (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : null,
+    is_active !== undefined ? (is_active ? 1 : 0) : null,
+    targetId
+  );
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  const updatedAdmin = db.prepare('SELECT id, email, full_name, role, avatar_url, department, is_active FROM users WHERE id = ?').get(targetId);
+  res.json({ message: 'Admin account updated successfully', admin: updatedAdmin });
 });
 
 router.delete('/admins/:id', requireAuth, (req, res) => {

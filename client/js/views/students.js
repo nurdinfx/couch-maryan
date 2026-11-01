@@ -211,6 +211,29 @@ const StudentsView = {
         <form onsubmit="StudentsView.submitCreateStudent(event)">
           <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 1.5rem;">
             
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="create_student_avatar_preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Ardayga (Student Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Ka dooro sawirka ardayga device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Soo Dooro Sawir</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'create_student_avatar_preview', 'create_student_avatar_url', 'create_student_avatar_status')">
+                  </label>
+                  <span id="create_student_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="create_student_avatar_url" value="">
+              </div>
+            </div>
+
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 ${I18N.t('students.full_name', 'Full Name')} *
@@ -346,7 +369,8 @@ const StudentsView = {
         academic_year: form.academic_year.value,
         faculty: form.faculty.value,
         course_ids: course_ids,
-        is_active: form.is_active.checked
+        is_active: form.is_active.checked,
+        avatar_url: form.avatar_url ? form.avatar_url.value : ''
       });
       App.closeModal();
       App.showToast(I18N.t('common.success', 'Student account created and course access configured! 🎓'));
@@ -372,6 +396,29 @@ const StudentsView = {
         <form onsubmit="StudentsView.submitEditStudent(event, ${student.id})">
           <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 1.5rem;">
             
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <div style="position: relative; width: 72px; height: 72px; flex-shrink: 0;">
+                <img id="edit_student_avatar_preview" src="${student.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div style="flex: 1;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;">
+                  📷 Sawirka Ardayga (Student Photo)
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Beddel sawirka oo ka dooro device-kaaga (kombiyuutar ama mobayl)
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <label class="btn btn-sm btn-outline" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; padding: 0.4rem 0.85rem; font-weight: 600;">
+                    <span>📁 Beddel Sawirka</span>
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'edit_student_avatar_preview', 'edit_student_avatar_url', 'edit_student_avatar_status')">
+                  </label>
+                  <span id="edit_student_avatar_status" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <input type="hidden" name="avatar_url" id="edit_student_avatar_url" value="${student.avatar_url || ''}">
+              </div>
+            </div>
+
             <div style="margin-bottom: 1.15rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                 ${I18N.t('students.full_name', 'Full Name')}
@@ -475,7 +522,8 @@ const StudentsView = {
         academic_year: form.academic_year.value,
         faculty: form.faculty ? form.faculty.value : undefined,
         course_ids: course_ids,
-        is_active: form.is_active.checked
+        is_active: form.is_active.checked,
+        avatar_url: form.avatar_url ? form.avatar_url.value : undefined
       });
       App.closeModal();
       App.showToast(I18N.t('common.success', 'Student level & course permissions updated!'));

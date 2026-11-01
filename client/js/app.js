@@ -93,6 +93,55 @@ const App = {
     });
   },
 
+  processAvatarFile(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve('');
+      if (!file.type || !file.type.startsWith('image/')) {
+        return reject(new Error('Fadlan soo dooro fayl sawir ah (JPG, PNG, WebP).'));
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Crop and resize to clean square avatar
+          const size = Math.min(img.width, img.height);
+          const startX = (img.width - size) / 2;
+          const startY = (img.height - size) / 2;
+          const targetDim = Math.min(size, 260);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = targetDim;
+          canvas.height = targetDim;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, startX, startY, size, size, 0, 0, targetDim, targetDim);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Faylka sawirka lama akhrin karo'));
+      reader.readAsDataURL(file);
+    });
+  },
+
+  async handleAvatarChange(input, previewImgId, hiddenInputId, statusTextId) {
+    if (!input.files || !input.files[0]) return;
+    try {
+      const file = input.files[0];
+      const dataUrl = await this.processAvatarFile(file);
+      const previewImg = document.getElementById(previewImgId);
+      const hiddenInput = document.getElementById(hiddenInputId);
+      const statusText = statusTextId ? document.getElementById(statusTextId) : null;
+      if (previewImg) previewImg.src = dataUrl;
+      if (hiddenInput) hiddenInput.value = dataUrl;
+      if (statusText) {
+        statusText.innerHTML = '<span style="color: #16a34a; font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;">✓ Sawirka waa la doortay (' + Math.round(file.size / 1024) + ' KB)</span>';
+      }
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
   async init() {
     console.log('Initializing Guray Sicid Learning Platform...');
 
