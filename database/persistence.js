@@ -122,44 +122,31 @@ function restorePersistence(db, customSnapshot = null, force = false) {
   }
 
   try {
-    const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
-    const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
-    const mockCoursesCount = db.prepare("SELECT COUNT(*) as c FROM courses WHERE code IN ('CS301', 'CS204', 'CS410')").get().c;
-
     const snapshotCourses = Array.isArray(snapshot.courses) ? snapshot.courses : [];
-    const realCoursesInSnapshot = snapshotCourses.filter(c => !['CS301', 'CS204', 'CS410'].includes(c.code));
+    const snapshotUsers = Array.isArray(snapshot.users) ? snapshot.users : [];
 
-    // Check if any course from snapshot is missing from DB
-    const missingSnapshotCourse = snapshotCourses.length > 0 && snapshotCourses.some(c => !db.prepare('SELECT id FROM courses WHERE code = ?').get(c.code));
+    // Always synchronize SQLite with persistent_data.json if snapshot contains valid data
+    if (snapshotUsers.length > 0 || snapshotCourses.length > 0) {
+      console.log(`[Persistence] Hydrating and synchronizing database from persistent snapshot (${snapshotUsers.length} users, ${snapshotCourses.length} courses)...`);
 
-    // Check if any student from snapshot is missing from DB
-    const snapshotStudents = Array.isArray(snapshot.users) ? snapshot.users.filter(u => u.role === 'student') : [];
-    const missingSnapshotStudent = snapshotStudents.length > 0 && snapshotStudents.some(u => !db.prepare('SELECT id FROM users WHERE email = ?').get(u.email));
-
-    // Stale mock data detected if DB has mock courses while snapshot has real courses
-    const hasStaleMockData = mockCoursesCount > 0 && realCoursesInSnapshot.length > 0;
-
-    const shouldRestore = force ||
-      usersCount === 0 ||
-      coursesCount === 0 ||
-      hasStaleMockData ||
-      missingSnapshotCourse ||
-      missingSnapshotStudent;
-
-    if (shouldRestore) {
-      console.log(`[Persistence] Hydrating database from snapshot (users: ${usersCount}, courses: ${coursesCount}, mockInDb: ${mockCoursesCount}, force: ${force}, missingCourse: ${missingSnapshotCourse}, missingStudent: ${missingSnapshotStudent})...`);
       const tx = db.transaction(() => {
-        // Clear all tables if forced, or if database had mock data or missing courses to avoid conflict
-        if (force || hasStaleMockData || missingSnapshotCourse) {
-          for (let i = TABLES.length - 1; i >= 0; i--) {
-            try { db.prepare(`DELETE FROM ${TABLES[i]}`).run(); } catch (e) {}
-          }
-        }
-
+        // Clean up stale mock data or deleted users if necessary
         for (const table of TABLES) {
           const rows = snapshot[table];
-          if (!rows || !Array.isArray(rows) || rows.length === 0) continue;
+          if (!rows || !Array.isArray(rows)) continue;
 
+          // For users and courses, delete any row not present in snapshot to prevent ghost accounts
+          if (['users', 'courses'].includes(table) && rows.length > 0) {
+            const validIds = rows.map(r => r.id).filter(id => id !== undefined && id !== null);
+            if (validIds.length > 0) {
+              const placeholders = validIds.map(() => '?').join(',');
+              try {
+                db.prepare(`DELETE FROM ${table} WHERE id NOT IN (${placeholders})`).run(...validIds);
+              } catch (e) {}
+            }
+          }
+
+          // Insert or update all rows from snapshot
           for (const row of rows) {
             const cols = Object.keys(row);
             const placeholders = cols.map(() => '?').join(', ');
@@ -176,9 +163,11 @@ function restorePersistence(db, customSnapshot = null, force = false) {
 
       // Checkpoint WAL to flush all restored tables to disk immediately
       try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch (e) {}
-      console.log('[Persistence] ✅ Database successfully hydrated and synced from persistent snapshot.');
+      const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
+      const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
+      console.log(`[Persistence] ✅ Database successfully hydrated and in sync (${usersCount} users, ${coursesCount} courses).`);
     } else {
-      console.log(`[Persistence] Database active and in sync (${usersCount} users, ${coursesCount} courses).`);
+      console.log('[Persistence] Snapshot is empty. Keeping current database.');
     }
   } catch (err) {
     console.error('Failed to restore persistence:', err.message);

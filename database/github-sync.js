@@ -116,15 +116,17 @@ async function pushToGitHub(jsonContent) {
 
 // ──────────────────────────────────────────────
 // Debounced scheduler — batches rapid saves
-// into a single GitHub push after 8 seconds
+// into a single GitHub push after 2 seconds
 // of inactivity. Prevents GitHub API rate limits.
 // ──────────────────────────────────────────────
 let _debounceTimer = null;
+let _pendingFilePath = null;
 
 function scheduleSyncToGitHub(filePath) {
   const config = getSyncConfig();
   if (!config.token) return; // noop in local dev
 
+  _pendingFilePath = filePath;
   if (_debounceTimer) clearTimeout(_debounceTimer);
 
   _debounceTimer = setTimeout(async () => {
@@ -137,7 +139,31 @@ function scheduleSyncToGitHub(filePath) {
     } catch (err) {
       console.error('[GitHubSync] Could not read persistence file:', err.message);
     }
-  }, 8000); // 8-second debounce window
+  }, 2000); // 2-second debounce window for fast persistence
 }
 
-module.exports = { scheduleSyncToGitHub, pushToGitHub, getSyncConfig };
+// Immediate flush on process termination (e.g. Render restart/spin-down)
+async function flushSyncNow() {
+  if (_debounceTimer && _pendingFilePath) {
+    clearTimeout(_debounceTimer);
+    _debounceTimer = null;
+    try {
+      if (fs.existsSync(_pendingFilePath)) {
+        const content = fs.readFileSync(_pendingFilePath, 'utf8');
+        await pushToGitHub(content);
+      }
+    } catch (e) {}
+  }
+}
+
+process.on('SIGTERM', async () => {
+  await flushSyncNow();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  await flushSyncNow();
+  process.exit(0);
+});
+
+module.exports = { scheduleSyncToGitHub, pushToGitHub, getSyncConfig, flushSyncNow };
