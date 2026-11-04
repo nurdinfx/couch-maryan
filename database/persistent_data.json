@@ -867,21 +867,6 @@
       "created_at": "2026-10-24 06:44:41"
     },
     {
-      "id": 4,
-      "course_id": 9,
-      "module_id": null,
-      "title": "ECLB QUIZZ ASSIGNMENT",
-      "description": "",
-      "time_limit_minutes": 30,
-      "max_attempts": 1,
-      "passing_percentage": 60,
-      "weight_percentage": 20,
-      "open_date": null,
-      "close_date": "2026-11-07 20:59",
-      "release_results_immediately": 1,
-      "created_at": "2026-11-04 19:57:42"
-    },
-    {
       "id": 5,
       "course_id": 9,
       "module_id": null,
@@ -969,22 +954,7 @@
       "sort_order": 7
     }
   ],
-  "quiz_attempts": [
-    {
-      "id": 6,
-      "quiz_id": 4,
-      "user_id": 18,
-      "attempt_number": 1,
-      "started_at": "2026-11-04 20:08:05",
-      "submitted_at": "2026-11-04 20:08:12",
-      "score": 0,
-      "max_score": 0,
-      "percentage": 0,
-      "is_passed": 0,
-      "status": "completed",
-      "feedback": "Attempt completed."
-    }
-  ],
+  "quiz_attempts": [],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
   "attendance_records": [],
