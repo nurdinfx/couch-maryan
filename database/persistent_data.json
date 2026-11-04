@@ -16,21 +16,6 @@
       "faculty": "General"
     },
     {
-      "id": 6,
-      "email": "admin@faculty.edu",
-      "password_hash": "$2b$10$TA62X6DuQgAOCPseFGcm2uFl25GvRWU2iTp4WBJ2tAQnlfHkMFTsS",
-      "full_name": "Faculty Administrator",
-      "role": "admin",
-      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
-      "student_id_number": null,
-      "department": "Guray Sicid Learning Platform Operations",
-      "bio": "Technical administrator managing LMS infrastructure, security tokens, and persistent backups.",
-      "created_at": "2026-10-19 04:22:27",
-      "is_active": 1,
-      "academic_year": "Year 1",
-      "faculty": "General"
-    },
-    {
       "id": 8,
       "email": "ridwan.student@guraysicid.edu",
       "password_hash": "$2b$10$3ekBaR9IVpZtg886WSBTpeINDrFZWAYPRSIc.k4U5Do230rINuBnC",
