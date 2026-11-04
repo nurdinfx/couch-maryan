@@ -375,11 +375,19 @@
       "is_published": 1
     },
     {
-      "id": 14,
+      "id": 15,
       "course_id": 9,
-      "title": "Prolonged & Obstructed Labor",
+      "title": "MODULE 3 : PROLONGED & OBSTRUCTED LABOR",
       "description": "",
       "sort_order": 3,
+      "is_published": 1
+    },
+    {
+      "id": 16,
+      "course_id": 9,
+      "title": "MODULE 4 : BLEEDING AFTER BIRTH",
+      "description": "",
+      "sort_order": 4,
       "is_published": 1
     }
   ],
