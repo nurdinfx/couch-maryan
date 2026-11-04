@@ -254,6 +254,21 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science"
+    },
+    {
+      "id": 27,
+      "email": "shukri@student.edu",
+      "password_hash": "$2b$10$MBDQ7Pl/DG8iq6QiU/7mau6y0nOay5mFY1i62EVT./Ish1sRX9zkq",
+      "full_name": "Shukri",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "BMW2023",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-04 21:08:58",
+      "is_active": 1,
+      "academic_year": "Year 5",
+      "faculty": "Computer Science"
     }
   ],
   "courses": [
@@ -372,6 +387,12 @@
       "user_id": 26,
       "course_id": 9,
       "enrolled_at": "2026-11-04 21:08:18"
+    },
+    {
+      "id": 64,
+      "user_id": 27,
+      "course_id": 9,
+      "enrolled_at": "2026-11-04 21:08:58"
     }
   ],
   "modules": [
