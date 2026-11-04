@@ -107,15 +107,36 @@ const LessonView = {
 
   getVimeoEmbed(url) {
     if (!url) return null;
-    const match = String(url).match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/[^\/]*\/videos\/|album\/\d+\/video\/|video\/|)(\d+)/);
-    if (match && match[1]) {
-      return `https://player.vimeo.com/video/${match[1]}?title=0&byline=0&portrait=0`;
+    const str = String(url).trim();
+    // 1. Unlisted format: vimeo.com/123456789/abcdef1234
+    const unlistedMatch = str.match(/vimeo\.com\/(?:video\/)?(\d+)\/([a-zA-Z0-9]+)/);
+    if (unlistedMatch && unlistedMatch[1] && unlistedMatch[2]) {
+      return `https://player.vimeo.com/video/${unlistedMatch[1]}?h=${unlistedMatch[2]}&title=0&byline=0&portrait=0&badge=0&autopause=0`;
+    }
+    // 2. Query param hash: vimeo.com/123456789?h=abcdef1234
+    const queryHashMatch = str.match(/vimeo\.com\/(?:video\/)?(\d+).*?[?&]h=([a-zA-Z0-9]+)/);
+    if (queryHashMatch && queryHashMatch[1] && queryHashMatch[2]) {
+      return `https://player.vimeo.com/video/${queryHashMatch[1]}?h=${queryHashMatch[2]}&title=0&byline=0&portrait=0&badge=0&autopause=0`;
+    }
+    // 3. Direct player URL: player.vimeo.com/video/123456789...
+    if (str.includes('player.vimeo.com/video/')) {
+      return str;
+    }
+    // 4. Standard public video: vimeo.com/123456789
+    const standardMatch = str.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/[^\/]*\/videos\/|album\/\d+\/video\/|video\/|)(\d+)/);
+    if (standardMatch && standardMatch[1]) {
+      return `https://player.vimeo.com/video/${standardMatch[1]}?title=0&byline=0&portrait=0&badge=0&autopause=0`;
     }
     return null;
   },
 
   renderActivityBody(lesson) {
-    if (lesson.content_type === 'video') {
+    const isActuallyPdf = (lesson.file_name && lesson.file_name.toLowerCase().endsWith('.pdf')) ||
+                          (lesson.file_url && lesson.file_url.toLowerCase().endsWith('.pdf')) ||
+                          (lesson.video_url && lesson.video_url.toLowerCase().endsWith('.pdf'));
+    const isVideoWithRealUrl = (lesson.video_url && (lesson.video_url.includes('youtu') || lesson.video_url.includes('vimeo')));
+
+    if (lesson.content_type === 'video' && (!isActuallyPdf || isVideoWithRealUrl)) {
       const videoSrc = lesson.video_url || lesson.file_url || '';
       const ytEmbed = this.getYouTubeEmbed(videoSrc);
       const vimeoEmbed = this.getVimeoEmbed(videoSrc);
@@ -182,23 +203,28 @@ const LessonView = {
 
       // B: Vimeo Video
       if (vimeoEmbed) {
+        const directVimeoLink = videoSrc.startsWith('http') ? videoSrc : `https://vimeo.com/${(vimeoEmbed.match(/video\/(\d+)/) || [])[1] || ''}`;
         return `
           <div class="video-player-container widescreen-16-9" id="video-wrapper">
             <iframe 
               id="lesson-embed-frame"
               src="${vimeoEmbed}"
-              allow="autoplay; fullscreen; picture-in-picture"
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
               allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
               title="${(lesson.title || 'Vimeo Video').replace(/"/g, '&quot;')}">
             </iframe>
           </div>
 
           <div class="video-enhanced-toolbar">
             <div class="toolbar-left">
-              <span class="badge badge-info">Vimeo Player</span>
+              <span class="badge badge-info">▶ Vimeo Player</span>
               <button class="btn btn-outline btn-xs" onclick="LessonView.toggleTheaterMode()">
                 <span id="theater-icon">🔲</span> Wide Mode
               </button>
+              <a href="${directVimeoLink}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs" title="Ka fur Vimeo toos ah (Open directly on Vimeo)">
+                <span>↗</span> Open on Vimeo
+              </a>
             </div>
             <div class="toolbar-right">
               <button class="btn btn-primary btn-xs" onclick="LessonView.markCompletedManually(${lesson.id})">
@@ -326,25 +352,44 @@ const LessonView = {
       `;
     }
 
-    if (lesson.content_type === 'document') {
-      const docUrl = lesson.file_url || '/uploads/documents/CS301_Course_Syllabus.pdf';
+    if (lesson.content_type === 'document' || isActuallyPdf) {
+      const docUrl = lesson.file_url || lesson.video_url || '/uploads/documents/CS301_Course_Syllabus.pdf';
+      const encodedDocUrl = encodeURI(docUrl);
+      const fileName = lesson.file_name || (docUrl.split('/').pop()) || 'Document Resource';
       return `
         <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <div style="font-weight: 700; font-size: 1rem;">${lesson.file_name || 'Document Resource'}</div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">
+            <div style="font-weight: 700; font-size: 1.05rem;">📄 ${fileName}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
               Format: PDF Document • ${lesson.file_size_bytes ? Math.round(lesson.file_size_bytes / 1024) + ' KB' : 'Official Document'}
             </div>
           </div>
-          <a href="${docUrl}" target="_blank" download="${lesson.file_name || 'resource.pdf'}" class="btn btn-outline btn-sm">
-            <span>📥</span> Download File
-          </a>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <a href="${encodedDocUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+              <span>↗</span> Fur Shaashad Weyn (Open in Tab)
+            </a>
+            <a href="${encodedDocUrl}" target="_blank" download="${fileName.replace(/"/g, '&quot;')}" class="btn btn-outline btn-sm">
+              <span>📥</span> Degso (Download File)
+            </a>
+          </div>
         </div>
 
         <!-- Embedded In-Browser PDF Viewer -->
-        <iframe src="${docUrl}#toolbar=1" class="pdf-viewer-frame" title="PDF Document Viewer">
-          <p>Your browser does not support embedded PDF preview. <a href="${docUrl}" target="_blank">Click here to download and view the PDF</a>.</p>
-        </iframe>
+        <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); background: #1e293b;">
+          <iframe 
+            src="${encodedDocUrl}#toolbar=1" 
+            class="pdf-viewer-frame" 
+            style="width: 100%; height: 750px; border: none; display: block;" 
+            title="PDF Document Viewer"
+            referrerpolicy="no-referrer-when-downgrade">
+            <p style="padding: 2rem; text-align: center; color: white;">
+              Preview-ga PDF-ka toos uma furmin browser-kaaga. 
+              <a href="${encodedDocUrl}" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+                Riix halkan si aad u degsato ama ugu daawato tab cusub
+              </a>.
+            </p>
+          </iframe>
+        </div>
 
         ${lesson.content_body ? `
           <div style="margin-top: 1.5rem; line-height: 1.6;">

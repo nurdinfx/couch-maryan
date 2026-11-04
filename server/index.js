@@ -112,14 +112,96 @@ async function startServer() {
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
-  app.use('/uploads', express.static(uploadsDir, {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith('.pdf')) {
+
+  // Dedicated robust handler for /uploads/*
+  app.get('/uploads/*', async (req, res, next) => {
+    const rawPath = req.params[0] || req.path.replace(/^\/uploads\/?/, '');
+    const cleanRelative = decodeURIComponent(rawPath).replace(/^[\\/]+/, '').replace(/\\/g, '/');
+    const fullLocalPath = path.join(uploadsDir, cleanRelative);
+
+    // 1. If file exists on local disk, serve it immediately!
+    if (fs.existsSync(fullLocalPath) && fs.statSync(fullLocalPath).isFile()) {
+      if (cleanRelative.toLowerCase().endsWith('.pdf')) {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'inline');
       }
+      return res.sendFile(fullLocalPath);
     }
-  }));
+
+    // 2. If missing on local disk, try fetching from GitHub repository (handles cold starts / redeploys)
+    const repoBranch = process.env.GITHUB_BRANCH || 'main';
+    const repoOwner = process.env.GITHUB_OWNER || 'nurdinfx';
+    const repoName = process.env.GITHUB_REPO || 'couch-maryan';
+    const remoteUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${repoBranch}/uploads/${cleanRelative}`;
+
+    try {
+      console.log(`[Uploads] Local file missing (${cleanRelative}). Trying GitHub fetch...`);
+      const headers = { 'User-Agent': 'GurayLMS-FileFetcher/1.0' };
+      if (process.env.GITHUB_TOKEN) {
+        headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN.trim()}`;
+      }
+      const remoteRes = await fetch(remoteUrl, { headers });
+      if (remoteRes.ok) {
+        const buffer = Buffer.from(await remoteRes.arrayBuffer());
+        // Cache to local disk
+        try {
+          const dir = path.dirname(fullLocalPath);
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+          fs.writeFileSync(fullLocalPath, buffer);
+          console.log(`[Uploads] ✅ Downloaded and cached from GitHub: ${cleanRelative}`);
+        } catch (e) {}
+
+        if (cleanRelative.toLowerCase().endsWith('.pdf')) {
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', 'inline');
+        }
+        return res.send(buffer);
+      }
+    } catch (err) {
+      console.warn(`[Uploads] Could not fetch remote file: ${err.message}`);
+    }
+
+    // 3. File is NOT on disk and NOT on GitHub:
+    // IMPORTANT: DO NOT SEND index.html! Return clean, friendly Somali/English 404 document notice!
+    if (cleanRelative.toLowerCase().endsWith('.pdf')) {
+      res.status(404);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.send(`
+        <!DOCTYPE html>
+        <html lang="so">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Faylka PDF-ka lama helin</title>
+          <style>
+            * { box-sizing: border-box; }
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0b132b; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+            .card { background: #1c2541; border: 1px solid #3a506b; border-radius: 14px; padding: 2.2rem; max-width: 520px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+            .icon { font-size: 3rem; margin-bottom: 0.8rem; }
+            h2 { color: #f59e0b; font-size: 1.35rem; margin: 0 0 0.75rem 0; }
+            p { color: #cbd5e1; font-size: 0.92rem; line-height: 1.6; margin: 0 0 1.25rem 0; }
+            .badge { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 0.35rem 0.8rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; }
+            .btn { display: inline-block; background: #2563eb; color: white; padding: 0.75rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.88rem; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="icon">📄⚠️</div>
+            <div class="badge">Document Update Notice</div>
+            <h2>Faylkan Lama Helin (File Not Found)</h2>
+            <p>
+              Document-kan PDF-ka ah ma yaalo server-ka xilligan ama platform-ka ayaa dib u cusboonaaday.<br><br>
+              <strong>Fadlan bare-weynaha casharka (Prof. Maryam) ha dib ugu soo shubo faylkan (Edit Lesson &rarr; Re-upload PDF).</strong>
+            </p>
+            <a href="javascript:history.back()" class="btn">&larr; Dib u noqo (Go Back)</a>
+          </div>
+        </body>
+        </html>
+      `);
+    }
+
+    return res.status(404).json({ error: `Faylka la codsaday lama helin: ${cleanRelative}` });
+  });
 
   // Static files for client frontend
   const clientDir = path.join(__dirname, '..', 'client');
@@ -182,14 +264,20 @@ async function startServer() {
 
   // Single Page Application fallback
   app.use((req, res, next) => {
-    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    // Never fall back to HTML website for API, uploads, or static asset extensions
+    if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/uploads') ||
+      req.path.match(/\.(pdf|mp4|webm|mov|mkv|avi|png|jpg|jpeg|gif|svg|webp|json|css|js|map|woff|woff2|ttf|ico)$/i)
+    ) {
+      return res.status(404).json({ error: `Resource not found: ${req.path}` });
+    }
+
+    if (req.method === 'GET') {
       if (req.path.startsWith('/app') || req.path.startsWith('/dashboard') || req.path.startsWith('/courses')) {
         return res.sendFile(path.join(clientDir, 'app.html'));
       }
       return res.sendFile(path.join(clientDir, 'index.html'));
-    }
-    if (req.path.startsWith('/api')) {
-      return res.status(404).json({ error: 'Endpoint not found' });
     }
     next();
   });

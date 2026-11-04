@@ -96,6 +96,12 @@ router.post('/modules/:moduleId', requireProfessor, safeUploadSingle('file'), (r
     file_url = `/uploads/${subfolder}/${req.file.filename}`;
     file_name = req.file.originalname;
     file_size_bytes = req.file.size;
+
+    // Background backup of uploaded document to GitHub
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(req.file.path, file_url);
+    } catch (e) {}
   }
 
   const trimmedVideoUrl = (video_url && typeof video_url === 'string') ? video_url.trim() : null;
@@ -155,6 +161,12 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
     file_url = `/uploads/${subfolder}/${req.file.filename}`;
     file_name = req.file.originalname;
     file_size_bytes = req.file.size;
+
+    // Background backup of uploaded document to GitHub
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(req.file.path, file_url);
+    } catch (e) {}
   }
 
   db.prepare(`

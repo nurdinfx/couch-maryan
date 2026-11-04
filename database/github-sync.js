@@ -117,7 +117,7 @@ async function pushToGitHub(jsonContent) {
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const body = {
-      message: `chore: auto-sync db snapshot [${now} UTC]`,
+      message: `chore: auto-sync db snapshot [${now} UTC] [skip render] [skip ci]`,
       content: base64Content,
       branch: config.branch
     };
@@ -209,4 +209,76 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-module.exports = { scheduleSyncToGitHub, pushToGitHub, fetchLatestFromGitHub, getSyncConfig, flushSyncNow };
+// ──────────────────────────────────────────────
+// Push an uploaded file (e.g. PDF document) to GitHub
+// in the background so it survives Render redeployments
+// ──────────────────────────────────────────────
+async function pushUploadedFileToGitHub(localFilePath, relativeRepoPath) {
+  const config = getSyncConfig();
+  if (!config.token) return false;
+  if (!fs.existsSync(localFilePath)) return false;
+
+  try {
+    const stats = fs.statSync(localFilePath);
+    // Don't push files larger than 40MB over Contents API
+    if (stats.size > 40 * 1024 * 1024) {
+      console.log(`[GitHubSync] File ${relativeRepoPath} is larger than 40MB, skipping GitHub API sync.`);
+      return false;
+    }
+
+    const fileBuffer = fs.readFileSync(localFilePath);
+    const base64Content = fileBuffer.toString('base64');
+    const cleanRepoPath = relativeRepoPath.replace(/^[\\/]+/, '').replace(/\\/g, '/');
+
+    // Get current sha if file already exists in repo
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${cleanRepoPath}?ref=${config.branch}`;
+    let sha = null;
+    try {
+      const checkRes = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${config.token}`,
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'GurayLMS-AutoSync/1.0'
+        }
+      });
+      if (checkRes.ok) {
+        const info = await checkRes.json();
+        sha = info.sha;
+      }
+    } catch (e) {}
+
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const body = {
+      message: `chore(upload): sync ${cleanRepoPath.split('/').pop()} [${now} UTC] [skip render] [skip ci]`,
+      content: base64Content,
+      branch: config.branch
+    };
+    if (sha) body.sha = sha;
+
+    const putUrl = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${cleanRepoPath}`;
+    const res = await fetch(putUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      console.log(`[GitHubSync] ✅ Uploaded file synced to GitHub: ${cleanRepoPath}`);
+      return true;
+    } else {
+      const err = await res.json().catch(() => ({}));
+      console.error(`[GitHubSync] ❌ Failed to sync upload ${cleanRepoPath}:`, err.message || res.status);
+      return false;
+    }
+  } catch (err) {
+    console.error(`[GitHubSync] ❌ Error syncing upload to GitHub:`, err.message);
+    return false;
+  }
+}
+
+module.exports = { scheduleSyncToGitHub, pushToGitHub, pushUploadedFileToGitHub, fetchLatestFromGitHub, getSyncConfig, flushSyncNow };
