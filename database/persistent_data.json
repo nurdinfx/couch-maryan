@@ -947,6 +947,16 @@
       "correct_answer_text": "C",
       "points": 1,
       "sort_order": 5
+    },
+    {
+      "id": 11,
+      "quiz_id": 5,
+      "question_text": "If the baby is crying and does not need resuscitation, when should you clamp or tie the umbilical cord?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Immediately after birth\",\"b) 5 minutes after birth\",\"c) 1 to 3 minutes after birth\"]",
+      "correct_answer_text": "C",
+      "points": 1,
+      "sort_order": 6
     }
   ],
   "quiz_attempts": [],
