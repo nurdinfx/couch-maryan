@@ -54,6 +54,41 @@ async function getFileRemoteInfo(config) {
 }
 
 // ──────────────────────────────────────────────
+// FETCH latest persistent_data.json FROM GitHub (used at startup)
+// Returns parsed JSON object, or null if unavailable
+// ──────────────────────────────────────────────
+async function fetchLatestFromGitHub() {
+  const config = getSyncConfig();
+  if (!config.token) {
+    console.log('[GitHubSync] No GITHUB_TOKEN — skipping remote fetch, using local snapshot.');
+    return null;
+  }
+  try {
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.filePath}?ref=${config.branch}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      }
+    });
+    if (!res.ok) {
+      console.error('[GitHubSync] Could not fetch from GitHub:', res.status);
+      return null;
+    }
+    const data = await res.json();
+    if (!data.content) return null;
+    const decoded = Buffer.from(data.content, 'base64').toString('utf8');
+    const parsed = JSON.parse(decoded);
+    console.log(`[GitHubSync] ✅ Fetched latest snapshot from GitHub (${(parsed.users || []).length} users, ${(parsed.courses || []).length} courses)`);
+    return parsed;
+  } catch (err) {
+    console.error('[GitHubSync] Error fetching from GitHub:', err.message);
+    return null;
+  }
+}
+
+// ──────────────────────────────────────────────
 // Core: push the JSON content to GitHub
 // ──────────────────────────────────────────────
 async function pushToGitHub(jsonContent) {
@@ -101,6 +136,7 @@ async function pushToGitHub(jsonContent) {
     });
 
     if (res.ok) {
+      _lastSyncedContent = jsonContent;
       console.log(`[GitHubSync] ✅ persistent_data.json successfully synced to GitHub (${now} UTC)`);
       return true;
     } else {
@@ -144,26 +180,33 @@ function scheduleSyncToGitHub(filePath) {
 
 // Immediate flush on process termination (e.g. Render restart/spin-down)
 async function flushSyncNow() {
-  if (_debounceTimer && _pendingFilePath) {
-    clearTimeout(_debounceTimer);
-    _debounceTimer = null;
+  if (_pendingFilePath) {
+    if (_debounceTimer) {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = null;
+    }
     try {
       if (fs.existsSync(_pendingFilePath)) {
         const content = fs.readFileSync(_pendingFilePath, 'utf8');
-        await pushToGitHub(content);
+        const result = await pushToGitHub(content);
+        if (result) console.log('[GitHubSync] ✅ Final flush to GitHub completed before shutdown.');
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('[GitHubSync] Error during final flush:', e.message);
+    }
   }
 }
 
 process.on('SIGTERM', async () => {
+  console.log('[GitHubSync] SIGTERM received — flushing data to GitHub...');
   await flushSyncNow();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
+  console.log('[GitHubSync] SIGINT received — flushing data to GitHub...');
   await flushSyncNow();
   process.exit(0);
 });
 
-module.exports = { scheduleSyncToGitHub, pushToGitHub, getSyncConfig, flushSyncNow };
+module.exports = { scheduleSyncToGitHub, pushToGitHub, fetchLatestFromGitHub, getSyncConfig, flushSyncNow };

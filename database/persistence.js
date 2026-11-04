@@ -60,8 +60,8 @@ function savePersistence(db) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    // Safety guard: If an existing persistent snapshot has real courses (e.g. BMW2026),
-    // and current DB has 0 real courses and only mock courses, DO NOT wipe persistent_data.json!
+    // Safety guard: If an existing persistent snapshot has real courses,
+    // and current DB has 0 real courses and only mock courses, DO NOT wipe it!
     if (fs.existsSync(PERSISTENCE_FILE)) {
       try {
         const rawExisting = fs.readFileSync(PERSISTENCE_FILE, 'utf8');
@@ -86,7 +86,7 @@ function savePersistence(db) {
 
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
 
-    // ── Auto-sync to GitHub so Render re-deploys keep the latest data ──
+    // Auto-sync to GitHub so Render re-deploys keep the latest data
     scheduleSyncToGitHub(PERSISTENCE_FILE);
 
     return true;
@@ -97,80 +97,90 @@ function savePersistence(db) {
 }
 
 /**
- * Restore data from snapshot object or persistent_data.json into SQLite
+ * Restore (hydrate) SQLite from persistent_data.json.
+ * Call this AFTER fetching the latest snapshot from GitHub (done in server/index.js startup).
+ * This function is synchronous — it reads from the local file only.
  */
-function restorePersistence(db, customSnapshot = null, force = false) {
+function restorePersistence(db) {
   if (!db) {
     const { db: defaultDb } = require('./db');
     db = defaultDb;
   }
 
-  let snapshot = customSnapshot;
-  if (!snapshot) {
-    if (!fs.existsSync(PERSISTENCE_FILE)) {
-      savePersistence(db);
-      return;
-    }
-    try {
-      const raw = fs.readFileSync(PERSISTENCE_FILE, 'utf8');
-      if (!raw.trim()) return;
-      snapshot = JSON.parse(raw);
-    } catch (err) {
-      console.error('Error reading persistence file:', err.message);
-      return;
-    }
+  if (!fs.existsSync(PERSISTENCE_FILE)) {
+    console.log('[Persistence] No local snapshot found — saving current DB state.');
+    savePersistence(db);
+    return;
   }
 
+  let snapshot;
+  try {
+    const raw = fs.readFileSync(PERSISTENCE_FILE, 'utf8');
+    if (!raw.trim()) return;
+    snapshot = JSON.parse(raw);
+  } catch (err) {
+    console.error('[Persistence] Error reading persistence file:', err.message);
+    return;
+  }
+
+  _hydrateDB(db, snapshot);
+}
+
+/**
+ * Hydrate SQLite database from a snapshot object (internal)
+ */
+function _hydrateDB(db, snapshot) {
   try {
     const snapshotCourses = Array.isArray(snapshot.courses) ? snapshot.courses : [];
     const snapshotUsers = Array.isArray(snapshot.users) ? snapshot.users : [];
 
-    // Always synchronize SQLite with persistent_data.json if snapshot contains valid data
-    if (snapshotUsers.length > 0 || snapshotCourses.length > 0) {
-      console.log(`[Persistence] Hydrating and synchronizing database from persistent snapshot (${snapshotUsers.length} users, ${snapshotCourses.length} courses)...`);
+    if (snapshotUsers.length === 0 && snapshotCourses.length === 0) {
+      console.log('[Persistence] Snapshot is empty. Keeping current database state.');
+      return;
+    }
 
-      const tx = db.transaction(() => {
-        // Clean up stale mock data or deleted users if necessary
-        for (const table of TABLES) {
-          const rows = snapshot[table];
-          if (!rows || !Array.isArray(rows)) continue;
+    console.log(`[Persistence] Hydrating database from snapshot (${snapshotUsers.length} users, ${snapshotCourses.length} courses)...`);
 
-          // For users and courses, delete any row not present in snapshot to prevent ghost accounts
-          if (['users', 'courses'].includes(table) && rows.length > 0) {
-            const validIds = rows.map(r => r.id).filter(id => id !== undefined && id !== null);
-            if (validIds.length > 0) {
-              const placeholders = validIds.map(() => '?').join(',');
-              try {
-                db.prepare(`DELETE FROM ${table} WHERE id NOT IN (${placeholders})`).run(...validIds);
-              } catch (e) {}
-            }
+    const tx = db.transaction(() => {
+      for (const table of TABLES) {
+        const rows = snapshot[table];
+        if (!rows || !Array.isArray(rows)) continue;
+
+        // For users and courses, delete any row not present in snapshot to prevent ghost accounts
+        if (['users', 'courses'].includes(table) && rows.length > 0) {
+          const validIds = rows.map(r => r.id).filter(id => id !== undefined && id !== null);
+          if (validIds.length > 0) {
+            const placeholders = validIds.map(() => '?').join(',');
+            try {
+              db.prepare(`DELETE FROM ${table} WHERE id NOT IN (${placeholders})`).run(...validIds);
+            } catch (e) {}
           }
+        }
 
-          // Insert or update all rows from snapshot
-          for (const row of rows) {
-            const cols = Object.keys(row);
-            const placeholders = cols.map(() => '?').join(', ');
-            const values = Object.values(row);
-
+        // Insert or update all rows from snapshot
+        for (const row of rows) {
+          const cols = Object.keys(row);
+          const placeholders = cols.map(() => '?').join(', ');
+          const values = Object.values(row);
+          try {
             db.prepare(`
               INSERT OR REPLACE INTO ${table} (${cols.join(', ')})
               VALUES (${placeholders})
             `).run(...values);
-          }
+          } catch (e) {}
         }
-      });
-      tx();
+      }
+    });
+    tx();
 
-      // Checkpoint WAL to flush all restored tables to disk immediately
-      try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch (e) {}
-      const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
-      const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
-      console.log(`[Persistence] ✅ Database successfully hydrated and in sync (${usersCount} users, ${coursesCount} courses).`);
-    } else {
-      console.log('[Persistence] Snapshot is empty. Keeping current database.');
-    }
+    // Checkpoint WAL to flush all restored tables to disk immediately
+    try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch (e) {}
+
+    const usersCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
+    const coursesCount = db.prepare('SELECT COUNT(*) as c FROM courses').get().c;
+    console.log(`[Persistence] ✅ Database hydrated and in sync (${usersCount} users, ${coursesCount} courses).`);
   } catch (err) {
-    console.error('Failed to restore persistence:', err.message);
+    console.error('[Persistence] Failed to hydrate database:', err.message);
   }
 }
 

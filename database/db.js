@@ -335,14 +335,9 @@ function initSchema() {
   try { db.exec("ALTER TABLE courses ADD COLUMN faculty TEXT DEFAULT 'General'"); } catch (e) {}
 
   console.log('Database tables verified and initialized successfully.');
-
-  // Hydrate from persistent JSON if needed
-  try {
-    const { restorePersistence } = require('./persistence');
-    restorePersistence(db);
-  } catch (err) {
-    console.error('Persistence restore notice:', err.message);
-  }
+  // NOTE: restorePersistence is called by server/index.js AFTER fetching
+  // the latest data from GitHub. Do NOT call it here to avoid hydrating
+  // from a stale local snapshot before the GitHub fetch completes.
 }
 
 initSchema();
