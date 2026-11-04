@@ -357,6 +357,14 @@
       "description": "Course announcements, syllabus, and introductory resources.",
       "sort_order": 1,
       "is_published": 1
+    },
+    {
+      "id": 12,
+      "course_id": 9,
+      "title": "MODULE 1 : ESSENTIAL CARE AND LABOUR",
+      "description": "",
+      "sort_order": 1,
+      "is_published": 1
     }
   ],
   "lessons": [],
