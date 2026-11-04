@@ -330,6 +330,12 @@
       "user_id": 24,
       "course_id": 9,
       "enrolled_at": "2026-11-04 13:29:34"
+    },
+    {
+      "id": 58,
+      "user_id": 24,
+      "course_id": 8,
+      "enrolled_at": "2026-11-04 16:00:21"
     }
   ],
   "modules": [
