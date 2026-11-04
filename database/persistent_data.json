@@ -595,6 +595,24 @@
       "sort_order": 9,
       "is_published": 1,
       "created_at": "2026-11-04 12:42:33"
+    },
+    {
+      "id": 34,
+      "module_id": 12,
+      "course_id": 9,
+      "title": "PRACTICE OSCE 2 : 300 ML BLOOD LOSS",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793796213610_300_ml_bl_.pdf",
+      "file_name": "300 ml bl .pdf",
+      "file_size_bytes": 415767,
+      "is_required_for_completion": 1,
+      "sort_order": 10,
+      "is_published": 1,
+      "created_at": "2026-11-04 12:43:33"
     }
   ],
   "lesson_progress": [
