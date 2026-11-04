@@ -865,95 +865,9 @@
       "close_date": null,
       "release_results_immediately": 1,
       "created_at": "2026-10-24 06:44:41"
-    },
-    {
-      "id": 5,
-      "course_id": 9,
-      "module_id": null,
-      "title": "ECLB QUIZZ ASSIGNMENT",
-      "description": "",
-      "time_limit_minutes": 30,
-      "max_attempts": 1,
-      "passing_percentage": 60,
-      "weight_percentage": 20,
-      "open_date": null,
-      "close_date": "2026-11-07 20:59",
-      "release_results_immediately": 1,
-      "created_at": "2026-11-04 19:57:43"
     }
   ],
-  "quiz_questions": [
-    {
-      "id": 6,
-      "quiz_id": 5,
-      "question_text": "Which woman below would be classified as a woman in active labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\",\"b) Mrs. B. with cervix dilated 4 cms and painful contractions every 3 minutes\",\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "correct_answer_text": "C",
-      "points": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 7,
-      "quiz_id": 5,
-      "question_text": "How often should the fetal heart rate be checked and recorded during active phase of the 1st stage of labor?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"How often should the fetal heart rate be checked and recorded during active phase of the 1st stage of labor?\"]",
-      "correct_answer_text": "B",
-      "points": 1,
-      "sort_order": 2
-    },
-    {
-      "id": 8,
-      "quiz_id": 5,
-      "question_text": "Which is the correct order of assessments for the typical woman presenting in labor when birth does not appear to be imminent?",
-      "question_type": "multiple_choice",
-      "options_json": "[\") Take history, do a Quick check, conduct an abdominal examination, and conduct a vaginal examination\",\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\",\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal examination, and take history\"]",
-      "correct_answer_text": "B",
-      "points": 1,
-      "sort_order": 3
-    },
-    {
-      "id": 9,
-      "quiz_id": 5,
-      "question_text": "Which of these methods is the most accurate for determining gestational age?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Calculation based on known last normal menstrual period\",\"b) Measurement of fundal height\",\"c) Ultrasonography performed at 25 weeks\"]",
-      "correct_answer_text": "A",
-      "points": 1,
-      "sort_order": 4
-    },
-    {
-      "id": 10,
-      "quiz_id": 5,
-      "question_text": "The first day of Maria’s last menstrual period was on 20 September. What is her estimated date of delivery (EDD)?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) 21 April\",\"b) 12 June\",\"c) 27 June\",\"d) 4 August\"]",
-      "correct_answer_text": "C",
-      "points": 1,
-      "sort_order": 5
-    },
-    {
-      "id": 11,
-      "quiz_id": 5,
-      "question_text": "If the baby is crying and does not need resuscitation, when should you clamp or tie the umbilical cord?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Immediately after birth\",\"b) 5 minutes after birth\",\"c) 1 to 3 minutes after birth\"]",
-      "correct_answer_text": "C",
-      "points": 1,
-      "sort_order": 6
-    },
-    {
-      "id": 12,
-      "quiz_id": 5,
-      "question_text": "Immediate care for a normal newborn includes which of the following actions?",
-      "question_type": "multiple_choice",
-      "options_json": "[\"a) Stimulating the baby by slapping the soles of the baby’s feet\",\"b) Drying the baby\",\"c) Placing baby in a baby warmer\"]",
-      "correct_answer_text": "b",
-      "points": 1,
-      "sort_order": 7
-    }
-  ],
+  "quiz_questions": [],
   "quiz_attempts": [],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
