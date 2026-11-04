@@ -917,6 +917,16 @@
       "correct_answer_text": "C",
       "points": 1,
       "sort_order": 5
+    },
+    {
+      "id": 11,
+      "quiz_id": 5,
+      "question_text": "Immediate care for a normal newborn includes which of the following actions?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Stimulating the baby by slapping the soles of the baby’s feet\",\"b) Drying the baby\",\"c) Placing baby in a baby warmer\"]",
+      "correct_answer_text": "B",
+      "points": 1,
+      "sort_order": 6
     }
   ],
   "quiz_attempts": [],
