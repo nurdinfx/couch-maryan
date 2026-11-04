@@ -451,6 +451,24 @@
       "sort_order": 2,
       "is_published": 1,
       "created_at": "2026-11-04 12:29:59"
+    },
+    {
+      "id": 26,
+      "module_id": 12,
+      "course_id": 9,
+      "title": "ACTION PLAN STEP BY STEP",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793795431830_ACTION_PLAN_.pdf",
+      "file_name": "ACTION PLAN .pdf",
+      "file_size_bytes": 2384729,
+      "is_required_for_completion": 1,
+      "sort_order": 3,
+      "is_published": 1,
+      "created_at": "2026-11-04 12:30:32"
     }
   ],
   "lesson_progress": [
