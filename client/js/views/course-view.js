@@ -253,6 +253,12 @@ const CourseView = {
                       ✓
                     </div>
                     ${isProfessor ? `
+                      <button class="btn btn-outline btn-sm activity-edit-btn"
+                              style="color: var(--primary); border-color: var(--primary-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm); margin-right: 0.35rem;"
+                              title="Wax ka beddel casharkan / Edit lesson"
+                              onclick="event.stopPropagation(); App.showModal('editLessonModal', { lessonId: ${l.id}, courseId: ${course.id} })">
+                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                      </button>
                       <button class="btn btn-outline btn-sm activity-delete-btn"
                               style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
                               title="Tirtir casharkan / Delete lesson"

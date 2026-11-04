@@ -147,7 +147,7 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
   }
 
   const {
-    title, description, content_body, video_url,
+    title, description, content_body, video_url, content_type,
     video_duration_seconds, is_required_for_completion, is_published, sort_order
   } = req.body;
 
@@ -156,7 +156,7 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
   let file_size_bytes = existing.file_size_bytes;
 
   if (req.file) {
-    const isVideo = isVideoFile(req.file, req) || existing.content_type === 'video';
+    const isVideo = isVideoFile(req.file, req) || (content_type || existing.content_type) === 'video';
     const subfolder = isVideo ? 'videos' : 'documents';
     file_url = `/uploads/${subfolder}/${req.file.filename}`;
     file_name = req.file.originalname;
@@ -169,12 +169,16 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
     } catch (e) {}
   }
 
+  const newContentType = content_type || existing.content_type;
+  const finalVideoUrl = (video_url !== undefined && video_url !== null) ? (video_url.trim() || null) : existing.video_url;
+
   db.prepare(`
     UPDATE lessons
     SET title = COALESCE(?, title),
+        content_type = COALESCE(?, content_type),
         description = COALESCE(?, description),
         content_body = COALESCE(?, content_body),
-        video_url = COALESCE(?, video_url),
+        video_url = ?,
         video_duration_seconds = COALESCE(?, video_duration_seconds),
         file_url = ?,
         file_name = ?,
@@ -184,7 +188,7 @@ router.put('/:id', requireProfessor, safeUploadSingle('file'), (req, res) => {
         sort_order = COALESCE(?, sort_order)
     WHERE id = ?
   `).run(
-    title, description, content_body, video_url,
+    title, newContentType, description, content_body, finalVideoUrl,
     video_duration_seconds ? parseInt(video_duration_seconds) : null,
     file_url, file_name, file_size_bytes,
     is_required_for_completion !== undefined ? parseInt(is_required_for_completion) : null,

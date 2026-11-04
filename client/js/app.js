@@ -825,6 +825,54 @@ const App = {
         </div>
       `);
       setTimeout(() => this.handleActivityTypeChange('video'), 30);
+    } else if (name === 'editLessonModal') {
+      const lessonId = context.lessonId;
+      try {
+        const data = await API.getLesson(lessonId);
+        const l = data.lesson || data;
+        const currentType = l.content_type || 'document';
+
+        this.showCustomModal(`
+          <div class="modal-dialog">
+            <div class="modal-header">
+              <h3>✏️ Wax ka beddel Casharka (Edit Activity)</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form onsubmit="App.handleEditLesson(event, ${lessonId}, ${context.courseId || l.course_id})">
+              <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Activity Type</label>
+                  <select name="content_type" id="edit-lesson-content-type" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);" onchange="App.handleEditActivityTypeChange(this.value)">
+                    <option value="video" ${currentType === 'video' ? 'selected' : ''}>🎥 Video Lecture</option>
+                    <option value="document" ${currentType === 'document' ? 'selected' : ''}>📄 PDF / Document</option>
+                    <option value="text" ${currentType === 'text' ? 'selected' : ''}>📝 Reading Notes</option>
+                  </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Cinwaanka Casharka (Title) *</label>
+                  <input type="text" name="title" required value="${(l.title || '').replace(/"/g, '&quot;')}" placeholder="e.g. THEORY AND PRACTICE" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-weight: 600;">
+                </div>
+
+                <div id="edit-activity-dynamic-field"></div>
+
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Sharaxaad / Notes (Optional)</label>
+                  <textarea name="description" rows="2" placeholder="Sharaxaad kooban..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;">${l.description || ''}</textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Keydi Isbeddelada (Save Changes)</button>
+              </div>
+            </form>
+          </div>
+        `);
+
+        this._currentEditingLesson = l;
+        setTimeout(() => this.handleEditActivityTypeChange(currentType, l), 30);
+      } catch (err) {
+        this.showToast('Khalad ayaa dhacay: ' + (err.message || 'Lama heli karo casharka.'), 'error');
+      }
     } else if (name === 'addAttendanceSessionModal') {
       const today = new Date().toISOString().slice(0, 10);
       this.showCustomModal(`
@@ -1384,6 +1432,68 @@ const App = {
     }
   },
 
+  handleEditActivityTypeChange(type, lessonData) {
+    const field = document.getElementById('edit-activity-dynamic-field');
+    if (!field) return;
+    const l = lessonData || this._currentEditingLesson || {};
+
+    if (type === 'video') {
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <div style="font-weight:700;font-size:0.84rem;margin-bottom:0.6rem;color:var(--primary);display:flex;align-items:center;gap:0.4rem;">
+            <span>🎥</span> Xulashada Video-ga:
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              🔗 1. Video Link (YouTube, Vimeo, ama MP4 Link toos ah)
+            </label>
+            <input type="url" name="video_url" value="${(l.video_url || '').replace(/"/g, '&quot;')}" placeholder="https://www.youtube.com/watch?v=... ama https://vimeo.com/..." style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxay taageertaa YouTube iyo Vimeo links.
+            </span>
+          </div>
+          <div style="text-align: center; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin: 0.5rem 0;">— AMA FAYL CUSUB SOO SHUB —</div>
+          <div>
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              💻 2. Ka beddel Video Device-kaaga:
+            </label>
+            <input type="file" name="file" accept="video/*,.mp4,.mov,.mkv,.webm,.avi,.m4v,.3gp,.wmv,.ogv" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+          </div>
+        </div>
+      `;
+    } else if (type === 'document') {
+      const currentFileName = l.file_name || (l.file_url ? l.file_url.split('/').pop() : null);
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          ${currentFileName ? `
+            <div style="margin-bottom:0.75rem; padding:0.5rem 0.75rem; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-sm); font-size:0.82rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>📄</span>
+              <div>
+                <strong>Faylka Hadda Ku Jira:</strong> ${currentFileName}
+              </div>
+            </div>
+          ` : ''}
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.4rem;">
+            ${currentFileName ? '📂 Soo geli Fayl Cusub (PDF, Docx) si aad kan hore ugu beddesho:' : '📄 Soo geli Faylka Document-ka (.pdf, .docx, .pptx) *'}
+          </label>
+          <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" style="font-size: 0.82rem; width: 100%; padding: 0.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+            Haddii aadan rabin inaad beddesho faylka hadda jira, bannaanka uga tag (leave blank to keep current file).
+          </span>
+        </div>
+      `;
+    } else {
+      field.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">
+            📝 Qoraalka Casharka (Reading Body)
+          </label>
+          <textarea name="content_body" rows="6" placeholder="Halkan ku qor qoraalka iyo nuxurka casharka..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;">${l.content_body || ''}</textarea>
+        </div>
+      `;
+    }
+  },
+
   selectCoverPreset(el, url) {
     document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
     el.style.borderColor = 'var(--primary)';
@@ -1789,6 +1899,33 @@ const App = {
       this.refreshCurrentView();
     } catch (err) {
       this.showToast(err.message || 'Khalad ayaa ka dhacay soo gelinta casharka.', 'error');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+      }
+    }
+  },
+
+  async handleEditLesson(e, lessonId, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Save Changes';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Fadlan sug... Waxaa socda keydinta (Saving)...';
+    }
+
+    const formData = new FormData(form);
+
+    try {
+      await API.updateLesson(lessonId, formData);
+      this.closeModal();
+      this.showToast('Casharka si guul leh ayaa wax looga beddelay! ✓');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message || 'Khalad ayaa ka dhacay wax ka beddelka casharka.', 'error');
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = origBtnHtml;

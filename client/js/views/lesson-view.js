@@ -54,6 +54,11 @@ const LessonView = {
             <span>${lesson.student_completed ? '✓ Completed' : '○ Mark as Completed'}</span>
           </button>
           ${(API.currentUser?.role === 'professor' || API.currentUser?.role === 'admin') ? `
+            <button class="btn btn-outline" style="color: var(--primary); border-color: var(--primary-border); display: flex; align-items: center; gap: 0.35rem;"
+                    title="Wax ka beddel casharkan / Edit lesson"
+                    onclick="App.showModal('editLessonModal', { lessonId: ${lesson.id}, courseId: ${lesson.course_id} })">
+              ✏️ <span>Edit Lesson</span>
+            </button>
             <button class="btn btn-outline" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.35rem;"
                     title="Tirtir casharkan / Delete lesson"
                     onclick="App.deleteLesson(${lesson.id}, '${(lesson.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${lesson.course_id}'); })">
