@@ -317,6 +317,24 @@
       "sort_order": 2,
       "is_published": 1,
       "created_at": "2026-11-04 12:22:34"
+    },
+    {
+      "id": 19,
+      "module_id": 11,
+      "course_id": 9,
+      "title": "MAGNESIUM SULFATE MONITORING SHEET",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793794982823_MAGNESIUM_SULFATE_MONITORING_SHEET_.pdf",
+      "file_name": "MAGNESIUM SULFATE MONITORING SHEET .pdf",
+      "file_size_bytes": 80213,
+      "is_required_for_completion": 1,
+      "sort_order": 3,
+      "is_published": 1,
+      "created_at": "2026-11-04 12:23:02"
     }
   ],
   "lesson_progress": [
