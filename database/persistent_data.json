@@ -149,6 +149,21 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science"
+    },
+    {
+      "id": 20,
+      "email": "hodan@student.edu",
+      "password_hash": "$2b$10$j0PNkwSoZBvFAds69qOKuO6JTzs.nJFQgMq50REK6WfCQuVhW/ZVq",
+      "full_name": "Hodan abdicasis",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "BMW2023-2",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-04 13:15:32",
+      "is_active": 1,
+      "academic_year": "Year 5",
+      "faculty": "Health Science"
     }
   ],
   "courses": [
@@ -231,6 +246,12 @@
       "user_id": 19,
       "course_id": 9,
       "enrolled_at": "2026-11-04 13:10:02"
+    },
+    {
+      "id": 54,
+      "user_id": 20,
+      "course_id": 9,
+      "enrolled_at": "2026-11-04 13:15:32"
     }
   ],
   "modules": [
