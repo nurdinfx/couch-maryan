@@ -335,6 +335,24 @@
       "sort_order": 3,
       "is_published": 1,
       "created_at": "2026-11-04 12:23:02"
+    },
+    {
+      "id": 20,
+      "module_id": 11,
+      "course_id": 9,
+      "title": "ACTION PLAN OF PEE",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793795011195_PE_E_-_Action_Plan_1_and_2_-_English_-_Print_file.pdf",
+      "file_name": "PE&E - Action Plan 1 and 2 - English - Print file.pdf",
+      "file_size_bytes": 3999749,
+      "is_required_for_completion": 1,
+      "sort_order": 4,
+      "is_published": 1,
+      "created_at": "2026-11-04 12:23:31"
     }
   ],
   "lesson_progress": [
