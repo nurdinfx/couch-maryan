@@ -235,6 +235,14 @@
       "description": "",
       "sort_order": 1,
       "is_published": 1
+    },
+    {
+      "id": 11,
+      "course_id": 9,
+      "title": "MODULE 2 : PRE-ECLAMPSIA AND ECLAMPSIA",
+      "description": "",
+      "sort_order": 2,
+      "is_published": 1
     }
   ],
   "lessons": [
