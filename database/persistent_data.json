@@ -865,6 +865,36 @@
       "close_date": null,
       "release_results_immediately": 1,
       "created_at": "2026-10-24 06:44:41"
+    },
+    {
+      "id": 4,
+      "course_id": 9,
+      "module_id": null,
+      "title": "ECLB QUIZZ ASSIGNMENT",
+      "description": "",
+      "time_limit_minutes": 30,
+      "max_attempts": 1,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": "2026-11-07 20:59",
+      "release_results_immediately": 1,
+      "created_at": "2026-11-04 19:57:42"
+    },
+    {
+      "id": 5,
+      "course_id": 9,
+      "module_id": null,
+      "title": "ECLB QUIZZ ASSIGNMENT",
+      "description": "",
+      "time_limit_minutes": 30,
+      "max_attempts": 1,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": "2026-11-07 20:59",
+      "release_results_immediately": 1,
+      "created_at": "2026-11-04 19:57:43"
     }
   ],
   "quiz_questions": [],
