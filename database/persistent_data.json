@@ -976,13 +976,13 @@
       "user_id": 18,
       "attempt_number": 1,
       "started_at": "2026-11-04 20:08:05",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-04 20:08:12",
+      "score": 0,
+      "max_score": 0,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [],
