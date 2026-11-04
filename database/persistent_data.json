@@ -243,6 +243,14 @@
       "description": "",
       "sort_order": 2,
       "is_published": 1
+    },
+    {
+      "id": 12,
+      "course_id": 9,
+      "title": "MODULE 3 : BLEEDING AFTER BIRTH",
+      "description": "",
+      "sort_order": 3,
+      "is_published": 1
     }
   ],
   "lessons": [
