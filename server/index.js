@@ -113,9 +113,9 @@ async function startServer() {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
 
-  // Dedicated robust handler for /uploads/*
-  app.get('/uploads/*', async (req, res, next) => {
-    const rawPath = req.params[0] || req.path.replace(/^\/uploads\/?/, '');
+  // Dedicated robust handler for /uploads
+  app.use('/uploads', async (req, res, next) => {
+    const rawPath = req.path || '';
     const cleanRelative = decodeURIComponent(rawPath).replace(/^[\\/]+/, '').replace(/\\/g, '/');
     const fullLocalPath = path.join(uploadsDir, cleanRelative);
 
