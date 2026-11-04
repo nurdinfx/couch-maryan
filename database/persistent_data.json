@@ -853,7 +853,22 @@
     }
   ],
   "quiz_questions": [],
-  "quiz_attempts": [],
+  "quiz_attempts": [
+    {
+      "id": 7,
+      "quiz_id": 3,
+      "user_id": 18,
+      "attempt_number": 1,
+      "started_at": "2026-11-04 20:08:50",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
+    }
+  ],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
   "attendance_records": [],
