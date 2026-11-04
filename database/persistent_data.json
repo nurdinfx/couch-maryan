@@ -887,6 +887,16 @@
       "correct_answer_text": "B",
       "points": 1,
       "sort_order": 2
+    },
+    {
+      "id": 8,
+      "quiz_id": 5,
+      "question_text": "What action is not included in a Quick check?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Determine if birth is imminent\",\"b) Check for danger signs\",\"c) Do a vaginal examination\"]",
+      "correct_answer_text": "C",
+      "points": 1,
+      "sort_order": 3
     }
   ],
   "quiz_attempts": [],
