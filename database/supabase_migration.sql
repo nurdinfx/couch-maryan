@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   faculty TEXT DEFAULT 'General',
   bio TEXT,
   is_active INTEGER DEFAULT 1,
+  is_admin INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

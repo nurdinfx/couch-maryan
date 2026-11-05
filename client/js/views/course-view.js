@@ -7,7 +7,7 @@ const CourseView = {
     const courseId = parseInt(params.id);
     const activeTab = params.tab || 'content';
     const user = API.currentUser;
-    const isProfessor = user.role === 'professor' || user.role === 'admin';
+    const isProfessor = user.role === 'professor' || user.role === 'admin' || user.is_admin === 1;
 
     let courseData = null;
     try {

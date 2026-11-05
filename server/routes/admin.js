@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const { db } = require('../../database/db');
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin, isAdminUser, isProfessorOrAdmin } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
 // 1. System Health & Diagnostics (Admin only)
@@ -170,7 +170,7 @@ router.get('/backup-db', requireAdmin, (req, res) => {
 
 // 5. Admin Accounts Management (Register new Admin, List admins, Delete admin)
 router.get('/admins', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
 
@@ -185,7 +185,7 @@ router.get('/admins', requireAuth, (req, res) => {
 });
 
 router.post('/admins', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied. Only an administrator can register new admins.' });
   }
 
@@ -230,7 +230,7 @@ router.post('/admins', requireAuth, (req, res) => {
 });
 
 router.put('/admins/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
 
@@ -264,7 +264,7 @@ router.put('/admins/:id', requireAuth, (req, res) => {
 });
 
 router.delete('/admins/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
 

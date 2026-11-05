@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { db } = require('../../database/db');
-const { generateToken, requireAuth } = require('../middleware/auth');
+const { generateToken, requireAuth, isAdminUser, isProfessorOrAdmin } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
 // 1. Login (Supports both Email AND Student ID Number, with flexible whitespace & casing)
@@ -247,7 +247,7 @@ router.get('/students', requireAuth, (req, res) => {
 });
 
 router.post('/students', requireAuth, (req, res) => {
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Only the professor or administrator can create student accounts.' });
   }
 
@@ -309,7 +309,7 @@ router.post('/students', requireAuth, (req, res) => {
 
 // Update student details (Year, Course access, Name, Email)
 router.put('/students/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
 
@@ -352,7 +352,7 @@ router.put('/students/:id', requireAuth, (req, res) => {
 });
 
 router.put('/students/:id/status', requireAuth, (req, res) => {
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Only the professor or administrator can modify student access status.' });
   }
 
@@ -373,7 +373,7 @@ router.put('/students/:id/status', requireAuth, (req, res) => {
 });
 
 router.delete('/students/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Only the professor or administrator can remove student accounts.' });
   }
   const studentId = parseInt(req.params.id);
@@ -419,7 +419,7 @@ router.delete('/students/:id', requireAuth, (req, res) => {
 
 // 8. Professor Management (List, Create, Update, Delete)
 router.get('/professors', requireAuth, (req, res) => {
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
   const professors = db.prepare(`
@@ -433,7 +433,7 @@ router.get('/professors', requireAuth, (req, res) => {
 });
 
 router.post('/professors', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (!isAdminUser(req.user)) {
     return res.status(403).json({ error: 'Only an administrator can register new professors.' });
   }
   const { email, password, full_name, department, faculty, avatar_url } = req.body;
@@ -472,7 +472,7 @@ router.post('/professors', requireAuth, (req, res) => {
 });
 
 router.put('/professors/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (!isAdminUser(req.user)) {
     return res.status(403).json({ error: 'Permission denied.' });
   }
   const profId = parseInt(req.params.id);
@@ -504,7 +504,7 @@ router.put('/professors/:id', requireAuth, (req, res) => {
 });
 
 router.delete('/professors/:id', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') {
+  if (!isAdminUser(req.user)) {
     return res.status(403).json({ error: 'Only an administrator can remove professor accounts.' });
   }
   const profId = parseInt(req.params.id);

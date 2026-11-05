@@ -10,7 +10,7 @@ const StudentsView = {
 
   async render() {
     const user = API.currentUser;
-    if (user.role !== 'professor' && user.role !== 'admin') {
+    if (user.role !== 'professor' && user.role !== 'admin' && user.is_admin !== 1) {
       return `
         <div style="text-align: center; padding: 4rem 2rem;">
           <h2 style="color: var(--danger);">${I18N.t('common.error', 'Access Denied')}</h2>

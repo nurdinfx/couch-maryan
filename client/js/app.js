@@ -258,7 +258,7 @@ const App = {
     // Toggle admin link in drawer
     const adminNavItem = document.getElementById('drawer-nav-admin');
     if (adminNavItem) {
-      adminNavItem.style.display = (user.role === 'admin' || user.role === 'professor') ? 'block' : 'none';
+      adminNavItem.style.display = (user.role === 'admin' || user.role === 'professor' || user.is_admin === 1) ? 'block' : 'none';
     }
   },
 
@@ -310,7 +310,7 @@ const App = {
         // Full Course Catalog page
         const cData = await API.getCourses().catch(() => ({ courses: [] }));
         const cList = cData.courses || [];
-        const isProfessor = API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin');
+        const isProfessor = API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin' || API.currentUser.is_admin === 1);
         container.innerHTML = `
           <div class="breadcrumb-trail">
             <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
@@ -422,7 +422,7 @@ const App = {
                 <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
                   ${I18N.t('dashboard.no_courses_desc', 'Fadlan abuur koorso cusub si aad u maamusho buundooyinka, xaadiriska, iyo madasha doodaha.')}
                 </p>
-                ${(API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin')) ? `
+                ${(API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin' || API.currentUser.is_admin === 1)) ? `
                   <button class="btn btn-primary" onclick="App.showModal('createCourseModal')" style="font-weight: 600; padding: 0.65rem 1.25rem;">
                     + ${I18N.t('dashboard.create_course_now', 'Abuur Koorso Cusub')}
                   </button>

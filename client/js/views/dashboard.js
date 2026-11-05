@@ -14,7 +14,7 @@ const DashboardView = {
         </div>
       `;
     }
-    const isProfessor = user.role === 'professor' || user.role === 'admin';
+    const isProfessor = user.role === 'professor' || user.role === 'admin' || user.is_admin === 1;
 
     const coursesData = await API.getCourses();
     const courses = coursesData.courses || [];

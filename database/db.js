@@ -333,6 +333,8 @@ function initSchema() {
   // Faculty system migration
   try { db.exec("ALTER TABLE users ADD COLUMN faculty TEXT DEFAULT 'General'"); } catch (e) {}
   try { db.exec("ALTER TABLE courses ADD COLUMN faculty TEXT DEFAULT 'General'"); } catch (e) {}
+  // Dual-role (professor+admin) migration: is_admin flag
+  try { db.exec("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"); } catch (e) {}
 
   console.log('Database tables verified and initialized successfully.');
   // NOTE: restorePersistence is called by server/index.js AFTER fetching

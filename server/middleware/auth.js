@@ -33,7 +33,7 @@ function requireAuth(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio, academic_year, faculty, is_active FROM users WHERE id = ?').get(decoded.id);
+    const user = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio, academic_year, faculty, is_active, is_admin FROM users WHERE id = ?').get(decoded.id);
 
     if (!user) {
       return res.status(401).json({ error: 'User account no longer exists.' });
@@ -46,17 +46,27 @@ function requireAuth(req, res, next) {
   }
 }
 
+// Helper: returns true if user has admin privileges (role='admin' OR is_admin=1)
+function isAdminUser(user) {
+  return user && (user.role === 'admin' || user.is_admin === 1);
+}
+
+// Helper: returns true if user has professor/admin privileges
+function isProfessorOrAdmin(user) {
+  return user && (user.role === 'professor' || user.role === 'admin' || user.is_admin === 1);
+}
+
 function requireProfessor(req, res, next) {
   if (!req.user) {
     return requireAuth(req, res, () => {
-      if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+      if (!isProfessorOrAdmin(req.user)) {
         return res.status(403).json({ error: 'Access denied. Professor or Administrator permissions required.' });
       }
       next();
     });
   }
 
-  if (req.user.role !== 'professor' && req.user.role !== 'admin') {
+  if (!isProfessorOrAdmin(req.user)) {
     return res.status(403).json({ error: 'Access denied. Professor or Administrator permissions required.' });
   }
 
@@ -66,15 +76,15 @@ function requireProfessor(req, res, next) {
 function requireAdmin(req, res, next) {
   if (!req.user) {
     return requireAuth(req, res, () => {
-      if (req.user.role !== 'admin' && req.user.role !== 'professor') {
-        return res.status(403).json({ error: 'Access denied. System Administrator or Professor permissions required.' });
+      if (!isAdminUser(req.user) && !isProfessorOrAdmin(req.user)) {
+        return res.status(403).json({ error: 'Access denied. System Administrator permissions required.' });
       }
       next();
     });
   }
 
-  if (req.user.role !== 'admin' && req.user.role !== 'professor') {
-    return res.status(403).json({ error: 'Access denied. System Administrator or Professor permissions required.' });
+  if (!isAdminUser(req.user) && !isProfessorOrAdmin(req.user)) {
+    return res.status(403).json({ error: 'Access denied. System Administrator permissions required.' });
   }
 
   next();
@@ -85,6 +95,8 @@ module.exports = {
   generateToken,
   requireAuth,
   requireProfessor,
-  requireAdmin
+  requireAdmin,
+  isAdminUser,
+  isProfessorOrAdmin
 };
 
