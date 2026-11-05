@@ -423,7 +423,7 @@
     {
       "id": 38,
       "email": "zeynab@student.edu",
-      "password_hash": "$2b$10$Ejy94SRcAZ7hfkC7h0YENO.4JadHSnslysQT9D4ZwuHW.6GMnc0Rm",
+      "password_hash": "$2b$10$otSLEaEsdDaSbg5hhwzJ6uaNzPbEgr89Rgk32lFU7aBZmqxUwtkzO",
       "full_name": "Zeynab xasan",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
