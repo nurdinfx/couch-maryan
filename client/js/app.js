@@ -582,13 +582,20 @@ const App = {
 
   async deleteQuiz(quizId, quizTitle) {
     const title = quizTitle ? `"${quizTitle}"` : 'this quiz';
-    if (!confirm(`Ma hubtaa inaad tirtirto imtixaankan/kediskan: ${title}?\nAre you sure you want to delete this quiz?`)) return;
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
+    const msg = isEn
+      ? `Are you sure you want to delete this quiz: ${title}?\nAll student attempts and question bank items will be permanently removed.`
+      : `Ma hubtaa inaad tirtirto imtixaankan/kediskan: ${title}?\nDhammaan natiijooyinka iyo su'aalaha la xiriira waa la tirtiri doonaa.`;
+    if (!confirm(msg)) return false;
     try {
       await API.deleteQuiz(quizId);
-      this.showToast('Imtixaanka/Kediska waa la tirtiray / Quiz deleted successfully.');
+      const toastMsg = isEn ? 'Quiz deleted successfully.' : 'Imtixaanka/Kediska si guul leh ayaa loo tirtiray.';
+      this.showToast(toastMsg);
       this.refreshCurrentView();
+      return true;
     } catch (e) {
       this.showToast(e.message, 'error');
+      return false;
     }
   },
 
@@ -930,41 +937,42 @@ const App = {
       `);
     } else if (name === 'addQuizModal') {
       const courseId = context.courseId || 1;
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
       this.showCustomModal(`
         <div class="modal-dialog" style="max-width:520px;">
           <div class="modal-header">
-            <h3>📋 Create Quiz / Exam</h3>
+            <h3>📋 ${t('quiz.create_title', 'Create Quiz / Exam')}</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
           <form onsubmit="App.handleCreateQuiz(event, ${courseId})">
             <div class="modal-body">
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Quiz Title *</label>
-                <input type="text" name="title" required placeholder="e.g. Midterm Exam – Chapter 3-6" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.title_label', 'Quiz Title *')}</label>
+                <input type="text" name="title" required placeholder="${t('quiz.title_placeholder', 'e.g. Midterm Exam – Chapter 3-6')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Type</label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.type_label', 'Type')}</label>
                 <select name="quiz_type" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
-                  <option value="quiz">📝 Quiz (practice)</option>
-                  <option value="exam">📋 Exam (graded)</option>
-                  <option value="assignment">📌 Assignment Quiz</option>
+                  <option value="quiz">${t('quiz.type_quiz', '📝 Quiz (practice)')}</option>
+                  <option value="exam">${t('quiz.type_exam', '📋 Exam (graded)')}</option>
+                  <option value="assignment">${t('quiz.type_assignment', '📌 Assignment Quiz')}</option>
                 </select>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description / Instructions</label>
-                <textarea name="description" rows="2" placeholder="Instructions shown to students before they start..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.desc_label', 'Description / Instructions')}</label>
+                <textarea name="description" rows="2" placeholder="${t('quiz.desc_placeholder', 'Instructions shown to students before they start...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Time Limit (min)</label>
-                  <input type="number" name="time_limit" min="1" placeholder="e.g. 90" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.time_limit', 'Time Limit (min)')}</label>
+                  <input type="number" name="time_limit" min="1" placeholder="${t('quiz.time_limit_placeholder', 'e.g. 90')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Pass % *</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.pass_percentage', 'Pass % *')}</label>
                   <input type="number" name="pass_percentage" value="60" min="1" max="100" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Attempts</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.max_attempts', 'Max Attempts')}</label>
                   <input type="number" name="max_attempts" value="3" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
               </div>
@@ -973,47 +981,49 @@ const App = {
               <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.45rem;">
                   <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);display:flex;align-items:center;gap:0.35rem;">
-                    📅 Qorsheynta Maalmaha / Active Days Scheduling
+                    ${t('quiz.schedule_section_title', '📅 Active Days Scheduling')}
                   </span>
-                  <span class="badge badge-info" style="font-size:0.72rem;">Schedule</span>
+                  <span class="badge badge-info" style="font-size:0.72rem;">${t('quiz.schedule_badge', 'Schedule')}</span>
                 </div>
                 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.45rem;">
                   <div>
                     <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
-                      Firfircoonow (Cisho Kadib / Days until Active)
+                      ${t('quiz.days_until_active', 'Days until Active')}
                     </label>
-                    <input type="number" name="days_until_active" id="quiz-days-until-active" value="0" min="0" max="365" placeholder="0 = Hadda fur" 
+                    <input type="number" name="days_until_active" id="quiz-days-until-active" value="0" min="0" max="365"
+                           placeholder="${t('quiz.days_until_hint', '0 = Open now')}" 
                            oninput="App.updateQuizSchedulePreview()"
                            style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
-                    <span style="font-size:0.7rem;color:var(--text-muted);">Tusaale: 10 = 10 cisho kadib fur</span>
+                    <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.days_until_example', 'Example: 10 = Opens 10 days after creation')}</span>
                   </div>
 
                   <div>
                     <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
-                      Furnaaw (Imisa Cisho / Active Duration)
+                      ${t('quiz.active_duration', 'Active Duration (Days)')}
                     </label>
-                    <input type="number" name="active_days" id="quiz-active-duration" value="0" min="0" max="365" placeholder="0 = Waligii furan"
+                    <input type="number" name="active_days" id="quiz-active-duration" value="0" min="0" max="365"
+                           placeholder="${t('quiz.active_duration_hint', '0 = Unlimited')}"
                            oninput="App.updateQuizSchedulePreview()"
                            style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
-                    <span style="font-size:0.7rem;color:var(--text-muted);">0 = Ma xirmayo (Unlimited)</span>
+                    <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.active_duration_example', '0 = Unlimited / Always open')}</span>
                   </div>
                 </div>
 
                 <!-- Live Schedule Preview -->
                 <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);margin-bottom:0.4rem;">
-                  <span>🟢 <strong>Xaaladda:</strong> Quiz-kani wuxuu active noqonayaa <strong>hadda (Immediately)</strong></span>
+                  <span>${t('quiz.preview_immediate', '🟢 Status: This quiz will become active immediately.')}</span>
                 </div>
 
                 <details style="font-size:0.75rem;">
-                  <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">⚙️ Taariikh Go'an oo Toos ah (Specific Dates)</summary>
+                  <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">${t('quiz.specific_dates_title', '⚙️ Specific Fixed Dates')}</summary>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.35rem;padding-top:0.35rem;border-top:1px solid var(--border-color);">
                     <div>
-                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Open Date</label>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.open_date', 'Open Date & Time')}</label>
                       <input type="datetime-local" name="open_date" id="quiz-open-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                     </div>
                     <div>
-                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Close Date</label>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.close_date', 'Close Date & Time')}</label>
                       <input type="datetime-local" name="close_date" id="quiz-close-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                     </div>
                   </div>
@@ -1021,14 +1031,16 @@ const App = {
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
-              <button type="submit" class="btn btn-primary">Create & Add Questions →</button>
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('quiz.btn_create', 'Create & Add Questions →')}</button>
             </div>
           </form>
         </div>
       `);
     } else if (name === 'editQuizModal') {
       const quizId = context.quizId;
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
+      const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
       try {
         const data = await API.getQuiz(quizId);
         const quiz = data.quiz || data;
@@ -1049,30 +1061,30 @@ const App = {
         this.showCustomModal(`
           <div class="modal-dialog" style="max-width:540px;">
             <div class="modal-header">
-              <h3>✏️ Edit Quiz & Active Schedule</h3>
+              <h3>✏️ ${t('quiz.edit_title', 'Edit Quiz & Active Schedule')}</h3>
               <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
             </div>
             <form onsubmit="App.handleEditQuiz(event, ${quiz.id})">
               <div class="modal-body">
                 <div style="margin-bottom:0.75rem;">
-                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Quiz Title *</label>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.title_label', 'Quiz Title *')}</label>
                   <input type="text" name="title" required value="${(quiz.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div style="margin-bottom:0.75rem;">
-                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description / Instructions</label>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.desc_label', 'Description / Instructions')}</label>
                   <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${quiz.description || ''}</textarea>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
                   <div>
-                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Time Limit (min)</label>
-                    <input type="number" name="time_limit" min="1" value="${quiz.time_limit_minutes || ''}" placeholder="e.g. 90" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.time_limit', 'Time Limit (min)')}</label>
+                    <input type="number" name="time_limit" min="1" value="${quiz.time_limit_minutes || ''}" placeholder="${t('quiz.time_limit_placeholder', 'e.g. 90')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                   </div>
                   <div>
-                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Pass % *</label>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.pass_percentage', 'Pass % *')}</label>
                     <input type="number" name="pass_percentage" value="${quiz.passing_percentage || 60}" min="1" max="100" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                   </div>
                   <div>
-                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Attempts</label>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.max_attempts', 'Max Attempts')}</label>
                     <input type="number" name="max_attempts" value="${quiz.max_attempts || 3}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                   </div>
                 </div>
@@ -1080,35 +1092,35 @@ const App = {
                 <!-- Active Schedule -->
                 <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-                    <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);">📅 Qorsheynta Maalmaha (Active Days Schedule)</span>
-                    <span class="badge badge-info" style="font-size:0.72rem;">Schedule</span>
+                    <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);">${t('quiz.schedule_section_title', '📅 Active Days Scheduling')}</span>
+                    <span class="badge badge-info" style="font-size:0.72rem;">${t('quiz.schedule_badge', 'Schedule')}</span>
                   </div>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.5rem;">
                     <div>
-                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">Firfircoonow (Cisho Kadib / Days until Active)</label>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${t('quiz.days_until_active', 'Days until Active')}</label>
                       <input type="number" name="days_until_active" id="quiz-days-until-active" value="${diffDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
-                      <span style="font-size:0.7rem;color:var(--text-muted);">0 = Hadda fur (Open now)</span>
+                      <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.days_until_hint', '0 = Open now')}</span>
                     </div>
                     <div>
-                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">Furnaaw (Imisa Cisho / Active Duration)</label>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${t('quiz.active_duration', 'Active Duration (Days)')}</label>
                       <input type="number" name="active_days" id="quiz-active-duration" value="${durationDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
-                      <span style="font-size:0.7rem;color:var(--text-muted);">0 = Waligii furan (Unlimited)</span>
+                      <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.active_duration_hint', '0 = Unlimited')}</span>
                     </div>
                   </div>
 
                   <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);">
-                    <span>${diffDays > 0 ? `⏳ Wuxuu active noqonayaa ${diffDays} cisho kadib (${new Date(quiz.open_date).toLocaleDateString()})` : '🟢 Wuxuu active yahay hadda (Active Now)'}</span>
+                    <span>${diffDays > 0 ? (isEn ? `⏳ Will become active in ${diffDays} days (${new Date(quiz.open_date).toLocaleDateString()})` : `⏳ Wuxuu active noqonayaa ${diffDays} cisho kadib (${new Date(quiz.open_date).toLocaleDateString()})`) : (isEn ? '🟢 Active now' : '🟢 Wuxuu active yahay hadda')}</span>
                   </div>
 
                   <details style="margin-top:0.5rem;font-size:0.76rem;" ${quiz.open_date || quiz.close_date ? 'open' : ''}>
-                    <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">⚙️ Taariikh Go'an (Specific Dates)</summary>
+                    <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">${t('quiz.specific_dates_title', '⚙️ Specific Fixed Dates')}</summary>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-color);">
                       <div>
-                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Open Date</label>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.open_date', 'Open Date & Time')}</label>
                         <input type="datetime-local" name="open_date" id="quiz-open-date" value="${openVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                       </div>
                       <div>
-                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">Close Date</label>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.close_date', 'Close Date & Time')}</label>
                         <input type="datetime-local" name="close_date" id="quiz-close-date" value="${closeVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                       </div>
                     </div>
@@ -1116,8 +1128,8 @@ const App = {
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">💾 Save Quiz Changes</button>
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Cancel')}</button>
+                <button type="submit" class="btn btn-primary">${t('quiz.btn_save', '💾 Save Quiz Changes')}</button>
               </div>
             </form>
           </div>
@@ -1128,52 +1140,53 @@ const App = {
     } else if (name === 'addQuestionModal') {
       const quizId = context.quizId;
       const quizTitle = context.quizTitle || 'Quiz';
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
       this.showCustomModal(`
         <div class="modal-dialog" style="max-width:520px;">
           <div class="modal-header">
-            <h3>➕ Add Question — ${quizTitle}</h3>
+            <h3>${t('quiz.add_question_title', '➕ Add Question')} — ${quizTitle}</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
           <form onsubmit="App.handleAddQuestion(event, ${quizId})">
             <div class="modal-body">
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Question Type</label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.question_type', 'Question Type')}</label>
                 <select name="question_type" required onchange="App.handleQuestionTypeChange(this.value)" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
-                  <option value="multiple_choice">🔘 Multiple Choice</option>
-                  <option value="true_false">✅ True / False</option>
-                  <option value="short_answer">✍️ Short Answer</option>
-                  <option value="essay">📝 Essay</option>
+                  <option value="multiple_choice">${t('quiz.type_multiple_choice', '🔘 Multiple Choice')}</option>
+                  <option value="true_false">${t('quiz.type_true_false', '✅ True / False')}</option>
+                  <option value="short_answer">${t('quiz.type_short_answer', '✍️ Short Answer')}</option>
+                  <option value="essay">${t('quiz.type_essay', '📝 Essay')}</option>
                 </select>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Question Text *</label>
-                <textarea name="question_text" rows="3" required placeholder="Enter the question..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.question_text', 'Question Text *')}</label>
+                <textarea name="question_text" rows="3" required placeholder="${t('quiz.question_text_placeholder', 'Enter the question...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
               </div>
               <div id="question-dynamic-field">
                 <!-- dynamic based on type: MCQ options shown by default -->
                 <div style="margin-bottom:0.75rem;">
-                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Answer Options (one per line)</label>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.options_label', 'Answer Options (one per line)')}</label>
                   <textarea name="options_text" rows="4" required placeholder="Option A\nOption B\nOption C\nOption D" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
                 </div>
                 <div style="margin-bottom:0.75rem;">
-                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Correct Answer (exact text)</label>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.correct_answer', 'Correct Answer (exact text)')}</label>
                   <input type="text" name="correct_answer" required placeholder="e.g. Option A" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Points</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.points', 'Points')}</label>
                   <input type="number" name="points" value="1" min="0.5" step="0.5" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Explanation (optional)</label>
-                  <input type="text" name="explanation" placeholder="Shown after attempt" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.explanation', 'Explanation (optional)')}</label>
+                  <input type="text" name="explanation" placeholder="${t('quiz.explanation_placeholder', 'Shown after attempt')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Done</button>
-              <button type="submit" class="btn btn-primary">Add Question ➕</button>
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Done')}</button>
+              <button type="submit" class="btn btn-primary">${t('quiz.btn_save_question', 'Add Question ➕')}</button>
             </div>
           </form>
         </div>
@@ -1627,20 +1640,25 @@ const App = {
 
     const daysUntil = parseInt(daysUntilInput ? daysUntilInput.value : 0) || 0;
     const duration = parseInt(durationInput ? durationInput.value : 0) || 0;
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
 
     let text = '';
     let openDate = null;
     let closeDate = null;
 
     if (daysUntil <= 0) {
-      text = '🟢 <strong>Xaaladda:</strong> Quiz-kani wuxuu active noqonayaa <strong>hadda (Immediately)</strong>.';
+      text = isEn
+        ? '🟢 <strong>Status:</strong> This quiz will become active <strong>immediately</strong>.'
+        : '🟢 <strong>Xaaladda:</strong> Imtixaankani wuxuu active noqonayaa <strong>hadda</strong>.';
       if (openDateInput) openDateInput.value = '';
     } else {
       openDate = new Date();
       openDate.setDate(openDate.getDate() + daysUntil);
       openDate.setHours(8, 0, 0, 0);
       const dateStr = openDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-      text = `⏳ <strong>Xaaladda:</strong> Wuxuu active noqonayaa <strong>${daysUntil} cisho kadib</strong> (Taariikhda: <strong>${dateStr}</strong>).`;
+      text = isEn
+        ? `⏳ <strong>Status:</strong> Will become active in <strong>${daysUntil} days</strong> (Date: <strong>${dateStr}</strong>).`
+        : `⏳ <strong>Xaaladda:</strong> Wuxuu active noqonayaa <strong>${daysUntil} cisho kadib</strong> (Taariikhda: <strong>${dateStr}</strong>).`;
       if (openDateInput) {
         openDateInput.value = openDate.toISOString().slice(0, 16);
       }
@@ -1651,7 +1669,9 @@ const App = {
       closeDate.setDate(closeDate.getDate() + duration);
       closeDate.setHours(23, 59, 0, 0);
       const closeStr = closeDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-      text += ` Wuxuuna furan doonaa <strong>${duration} cisho</strong> (wuxuu xirmayaa: <strong>${closeStr}</strong>).`;
+      text += isEn
+        ? ` It will remain open for <strong>${duration} days</strong> (closes: <strong>${closeStr}</strong>).`
+        : ` Wuxuuna furan doonaa <strong>${duration} cisho</strong> (wuxuu xirmayaa: <strong>${closeStr}</strong>).`;
       if (closeDateInput) {
         closeDateInput.value = closeDate.toISOString().slice(0, 16);
       }
@@ -1670,6 +1690,7 @@ const App = {
     const previewEl = document.getElementById('quiz-schedule-preview');
     const daysUntilInput = document.getElementById('quiz-days-until-active');
     const durationInput = document.getElementById('quiz-active-duration');
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
 
     if (openInput && openInput.value) {
       const openDate = new Date(openInput.value);
@@ -1677,13 +1698,17 @@ const App = {
       const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
       if (daysUntilInput) daysUntilInput.value = days;
 
-      let msg = `📅 Wuxuu active noqonayaa: <strong>${openDate.toLocaleString()}</strong>`;
+      let msg = isEn
+        ? `📅 Opens: <strong>${openDate.toLocaleString()}</strong>`
+        : `📅 Wuxuu active noqonayaa: <strong>${openDate.toLocaleString()}</strong>`;
       if (closeInput && closeInput.value) {
         const closeDate = new Date(closeInput.value);
         const durMs = closeDate - openDate;
         const durDays = Math.max(0, Math.round(durMs / (1000 * 60 * 60 * 24)));
         if (durationInput) durationInput.value = durDays;
-        msg += ` | Wuxuu xirmayaa: <strong>${closeDate.toLocaleString()}</strong> (${durDays} cisho).`;
+        msg += isEn
+          ? ` | Closes: <strong>${closeDate.toLocaleString()}</strong> (${durDays} days duration).`
+          : ` | Wuxuu xirmayaa: <strong>${closeDate.toLocaleString()}</strong> (${durDays} cisho).`;
       }
       if (previewEl) previewEl.innerHTML = msg;
     }

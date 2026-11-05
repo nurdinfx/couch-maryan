@@ -63,7 +63,7 @@ const QuizView = {
               </button>
               <button class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.25rem;"
                       title="Tirtir imtixaankan / Delete quiz"
-                      onclick="App.deleteQuiz(${quiz.id}, '${(quiz.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${quiz.course_id}'); })">
+                      onclick="App.deleteQuiz(${quiz.id}, '${(quiz.title || '').replace(/'/g, "\\'")}').then((deleted) => { if (deleted) App.navigate('/course/${quiz.course_id}'); })">
                 🗑 <span>Delete Quiz</span>
               </button>
             ` : ''}
