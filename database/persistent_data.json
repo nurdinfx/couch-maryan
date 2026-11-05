@@ -1759,6 +1759,16 @@
       "correct_answer_text": "C",
       "points": 1,
       "sort_order": 4
+    },
+    {
+      "id": 10,
+      "quiz_id": 6,
+      "question_text": "If the woman’s temperature is 38.5° and she has ruptured membranes, what is the most important action to take?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a. Put a cool cloth on her head\",\"b. Begin antibiotics\",\"c. Begin anti-malarial drugs\"]",
+      "correct_answer_text": "b",
+      "points": 1,
+      "sort_order": 5
     }
   ],
   "quiz_attempts": [],
