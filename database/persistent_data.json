@@ -1860,13 +1860,13 @@
       "user_id": 18,
       "attempt_number": 2,
       "started_at": "2026-11-05 20:27:40",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-05 20:28:21",
+      "score": 0,
+      "max_score": 9,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -2103,6 +2103,96 @@
     {
       "id": 104,
       "attempt_id": 11,
+      "question_id": 14,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 105,
+      "attempt_id": 12,
+      "question_id": 6,
+      "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 106,
+      "attempt_id": 12,
+      "question_id": 7,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 107,
+      "attempt_id": 12,
+      "question_id": 8,
+      "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 108,
+      "attempt_id": 12,
+      "question_id": 9,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 109,
+      "attempt_id": 12,
+      "question_id": 10,
+      "user_answer_json": "[\"b. Begin antibiotics\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 110,
+      "attempt_id": 12,
+      "question_id": 11,
+      "user_answer_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 111,
+      "attempt_id": 12,
+      "question_id": 12,
+      "user_answer_json": "[\"b) Drying the baby\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 112,
+      "attempt_id": 12,
+      "question_id": 13,
+      "user_answer_json": "[\"a) Assess whether birth is very close\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 113,
+      "attempt_id": 12,
       "question_id": 14,
       "user_answer_json": "[\"c) Do a vaginal examination\"]",
       "awarded_points": 0,
