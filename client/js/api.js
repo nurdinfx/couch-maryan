@@ -518,3 +518,10 @@ const API = {
     return this.request(`/auth/professors/${profId}`, { method: 'DELETE' });
   }
 };
+
+
+window.Auth = {
+  getUser() {
+    return (typeof API !== 'undefined' && API.currentUser) || JSON.parse(localStorage.getItem('faculty_lms_user') || '{}');
+  }
+};

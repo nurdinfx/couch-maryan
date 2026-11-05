@@ -6,7 +6,7 @@ const CalendarView = {
   async render() {
     const data = await API.getCalendarEvents();
     const events = data.events || [];
-    const user = Auth.getUser();
+    const user = API.currentUser || JSON.parse(localStorage.getItem('faculty_lms_user') || '{}');
     const isStaff = user && (user.role === 'admin' || user.role === 'professor');
     const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
 
