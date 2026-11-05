@@ -314,6 +314,21 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science"
+    },
+    {
+      "id": 31,
+      "email": "nadira@student.edu",
+      "password_hash": "$2b$10$SA0cwGrHdqrzuUz.yFL85O0qSq8Ua.B131.EdvEEmHN9mlSRFhtwu",
+      "full_name": "Nadira",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-422",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-05 07:12:43",
+      "is_active": 1,
+      "academic_year": "Year 3",
+      "faculty": "Health Science"
     }
   ],
   "courses": [
@@ -471,6 +486,12 @@
       "user_id": 30,
       "course_id": 10,
       "enrolled_at": "2026-11-05 07:11:53"
+    },
+    {
+      "id": 73,
+      "user_id": 31,
+      "course_id": 10,
+      "enrolled_at": "2026-11-05 07:12:43"
     }
   ],
   "modules": [
