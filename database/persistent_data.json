@@ -983,6 +983,20 @@
       "is_passed": 0,
       "status": "in_progress",
       "feedback": null
+    },
+    {
+      "id": 8,
+      "quiz_id": 5,
+      "user_id": 18,
+      "attempt_number": 1,
+      "started_at": "2026-11-05 06:19:48",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [],
