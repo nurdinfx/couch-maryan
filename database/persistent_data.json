@@ -483,7 +483,7 @@
     {
       "id": 42,
       "email": "sabah@student.edu",
-      "password_hash": "$2b$10$Sp81XK9zJCttkMB1SvjbSOSO6oh09T8LHGilfA8p5Do/koA07mkNO",
+      "password_hash": "$2b$10$0Ut6ibfd2fjMBnJF8WmptucYd7hF7nC1qJShVqe43lOx9epPgOG0W",
       "full_name": "Sabah cabdicasis",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
