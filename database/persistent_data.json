@@ -13,8 +13,7 @@
       "created_at": "2026-10-19T04:22:27.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "General",
-      "is_admin": 0
+      "faculty": "General"
     },
     {
       "id": 8,
@@ -29,8 +28,7 @@
       "created_at": "2026-10-19T07:55:32.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 9,
@@ -45,8 +43,7 @@
       "created_at": "2026-10-19T07:56:49.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 11,
@@ -61,8 +58,7 @@
       "created_at": "2026-10-19T08:02:53.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 12,
@@ -77,8 +73,7 @@
       "created_at": "2026-10-19T08:04:22.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 13,
@@ -93,8 +88,7 @@
       "created_at": "2026-10-19T08:05:38.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 14,
@@ -109,8 +103,7 @@
       "created_at": "2026-10-19T08:12:32.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 15,
@@ -125,8 +118,7 @@
       "created_at": "2026-10-19T08:14:25.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 18,
@@ -141,8 +133,7 @@
       "created_at": "2026-11-01T14:05:10.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Health Science",
-      "is_admin": 1
+      "faculty": "Health Science"
     },
     {
       "id": 19,
@@ -157,8 +148,7 @@
       "created_at": "2026-11-04T13:10:02.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 20,
@@ -173,8 +163,7 @@
       "created_at": "2026-11-04T13:15:32.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 21,
@@ -189,8 +178,7 @@
       "created_at": "2026-11-04T13:18:23.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 22,
@@ -205,8 +193,7 @@
       "created_at": "2026-11-04T13:23:08.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "General",
-      "is_admin": 1
+      "faculty": "General"
     },
     {
       "id": 23,
@@ -221,8 +208,7 @@
       "created_at": "2026-11-04T13:23:51.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 24,
@@ -237,8 +223,7 @@
       "created_at": "2026-11-04T13:29:34.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 25,
@@ -253,8 +238,7 @@
       "created_at": "2026-11-04T21:05:38.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 26,
@@ -269,8 +253,7 @@
       "created_at": "2026-11-04T21:08:00.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 27,
@@ -285,8 +268,7 @@
       "created_at": "2026-11-04T21:08:58.000Z",
       "is_active": 1,
       "academic_year": "Year 5",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 28,
@@ -301,8 +283,7 @@
       "created_at": "2026-11-05T06:18:41.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 29,
@@ -317,8 +298,7 @@
       "created_at": "2026-11-05T07:10:36.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 30,
@@ -333,8 +313,7 @@
       "created_at": "2026-11-05T07:11:35.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 31,
@@ -349,8 +328,7 @@
       "created_at": "2026-11-05T07:12:43.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 32,
@@ -365,8 +343,7 @@
       "created_at": "2026-11-05T07:13:53.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 33,
@@ -381,8 +358,7 @@
       "created_at": "2026-11-05T08:47:29.000Z",
       "is_active": 1,
       "academic_year": "Year 1",
-      "faculty": "Computer Science",
-      "is_admin": 0
+      "faculty": "Computer Science"
     },
     {
       "id": 34,
@@ -397,8 +373,7 @@
       "created_at": "2026-11-05T08:53:14.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 35,
@@ -413,8 +388,7 @@
       "created_at": "2026-11-05T08:56:22.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 36,
@@ -429,8 +403,7 @@
       "created_at": "2026-11-05T08:58:42.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 37,
@@ -445,8 +418,7 @@
       "created_at": "2026-11-05T09:01:30.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 38,
@@ -461,8 +433,7 @@
       "created_at": "2026-11-05T09:03:06.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 39,
@@ -477,8 +448,7 @@
       "created_at": "2026-11-05T09:04:53.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 40,
@@ -493,8 +463,7 @@
       "created_at": "2026-11-05T09:05:51.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 41,
@@ -509,8 +478,7 @@
       "created_at": "2026-11-05T09:07:16.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 42,
@@ -525,8 +493,7 @@
       "created_at": "2026-11-05T09:08:16.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
     },
     {
       "id": 43,
@@ -541,8 +508,22 @@
       "created_at": "2026-11-05T09:10:16.000Z",
       "is_active": 1,
       "academic_year": "Year 3",
-      "faculty": "Health Science",
-      "is_admin": 0
+      "faculty": "Health Science"
+    },
+    {
+      "id": 44,
+      "email": "nuurdiinxaliimo23@gmail.com",
+      "password_hash": "$2b$10$zGaI6qF1J9R/7hAk7tk6NebtVbw/c1n5jyhtJkX3evF.q563o98g2",
+      "full_name": "Shukri",
+      "role": "admin",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+      "student_id_number": null,
+      "department": "Platform Operations & Security",
+      "bio": null,
+      "created_at": "2026-11-05 13:07:05",
+      "is_active": 1,
+      "academic_year": "Year 1",
+      "faculty": "General"
     }
   ],
   "courses": [
