@@ -89,6 +89,12 @@ function savePersistence(db) {
     // Auto-sync to GitHub so Render re-deploys keep the latest data
     scheduleSyncToGitHub(PERSISTENCE_FILE);
 
+    // Auto-sync to Supabase Cloud PostgreSQL in real-time
+    try {
+      const { syncToSupabase } = require('./supabase-sync');
+      syncToSupabase(snapshot).catch(err => console.warn('[Supabase] Background sync warning:', err.message));
+    } catch (e) {}
+
     return true;
   } catch (err) {
     console.error('Failed to save persistence JSON:', err.message);

@@ -34,6 +34,25 @@ async function startServer() {
   initSchema();
   generateAssets();
 
+  // Step 2a: If DATABASE_URL is provided, fetch latest from Supabase Cloud first
+  if (process.env.DATABASE_URL || process.env.DIRECT_URL) {
+    console.log('[Startup] DATABASE_URL found — fetching live data from Supabase Cloud...');
+    try {
+      const { fetchLatestFromSupabase } = require('../database/supabase-sync');
+      const supabaseSnapshot = await fetchLatestFromSupabase();
+      if (supabaseSnapshot && (supabaseSnapshot.users?.length > 0 || supabaseSnapshot.courses?.length > 0)) {
+        try {
+          fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(supabaseSnapshot, null, 2), 'utf8');
+          console.log('[Startup] ✅ Latest Supabase snapshot saved locally.');
+        } catch (e) {
+          console.warn('[Startup] Could not write Supabase snapshot locally:', e.message);
+        }
+      }
+    } catch (err) {
+      console.warn('[Startup] Supabase fetch error (fallback to GitHub/local):', err.message);
+    }
+  }
+
   // Step 2 & 3: Fetch latest from GitHub if token is available, then hydrate
   const config = getSyncConfig();
   if (config.token) {
