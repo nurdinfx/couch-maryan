@@ -447,8 +447,8 @@
       "bio": null,
       "created_at": "2026-11-05 09:04:53",
       "is_active": 1,
-      "academic_year": "Year 1",
-      "faculty": "Computer Science"
+      "academic_year": "Year 3",
+      "faculty": "Health Science"
     }
   ],
   "courses": [
@@ -677,10 +677,10 @@
       "enrolled_at": "2026-11-05 09:03:06"
     },
     {
-      "id": 84,
+      "id": 85,
       "user_id": 39,
       "course_id": 8,
-      "enrolled_at": "2026-11-05 09:04:53"
+      "enrolled_at": "2026-11-05 09:05:01"
     }
   ],
   "modules": [
