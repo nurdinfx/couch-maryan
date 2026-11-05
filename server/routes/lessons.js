@@ -33,15 +33,12 @@ router.get('/:id', requireAuth, (req, res) => {
     return res.status(404).json({ error: 'Lesson not found.' });
   }
 
-  // Academic year access control for students
+  // Access control for students: must be enrolled in the course
   if (req.user.role === 'student') {
-    const studentYear = req.user.academic_year || 'Year 1';
     const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(userId, lesson.course_id);
-    const isYearAllowed = !lesson.course_target_year || lesson.course_target_year === 'All Years' || lesson.course_target_year === studentYear;
-
-    if (!isEnrolled && !isYearAllowed) {
+    if (!isEnrolled) {
       return res.status(403).json({
-        error: `Ma geli kartid casharkan: Casharkani wuxuu qayb ka yahay koorso u gaar ah ${lesson.course_target_year}. Heerkaagu waa ${studentYear}. (Access Denied: This lesson is restricted to ${lesson.course_target_year} students.)`
+        error: `Ma geli kartid casharkan: Kuma lihid diiwaangelin koorsadan. (Access Denied: You are not enrolled in this course.)`
       });
     }
   }

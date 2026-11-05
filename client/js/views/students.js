@@ -303,18 +303,24 @@ const StudentsView = {
 
             <!-- Course Access Selector -->
             <div style="margin-bottom: 1.25rem; background: var(--bg-surface-alt); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-primary);">
-                📚 ${I18N.t('students.allowed_courses_label', 'Direct Course Access (Select Courses Allowed):')}
-              </label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                  📚 ${I18N.t('students.allowed_courses_label', 'Direct Course Access (Select Courses Allowed):')}
+                </label>
+                <div style="display: flex; gap: 0.35rem;">
+                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; font-weight: 600;" onclick="StudentsView.selectAllCreateCourses(true)">✓ Dooro Dhamaan</button>
+                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; font-weight: 600;" onclick="StudentsView.selectAllCreateCourses(false)">✕ Ka Saar Dhamaan</button>
+                </div>
+              </div>
               <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">
-                ${I18N.t('students.auto_year_note', 'Students will only have access to their assigned year and selected courses. Year 1 students cannot open Year 2 courses unless checked below.')}
+                Dooro koorsooyinka saxda ah ee ardaygan loo fasaxay. Koorsooyinka aad halkan ku calaamayso oo kaliya ayuu ardaygu ku arki doonaa dashboard-kiisa.
               </p>
               
               <div id="course_checkboxes_container" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 180px; overflow-y: auto; padding-right: 0.5rem;">
                 ${courses.map(c => `
                   <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.85rem; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; font-size: 0.85rem;">
                     <span style="display: flex; align-items: center; gap: 0.6rem;">
-                      <input type="checkbox" name="course_ids" value="${c.id}" data-target-year="${c.target_year || 'All Years'}" ${(!c.target_year || c.target_year === 'All Years' || c.target_year === 'Year 1') ? 'checked' : ''}>
+                      <input type="checkbox" name="course_ids" value="${c.id}" data-target-year="${c.target_year || 'All Years'}">
                       <span style="font-weight: 600;">${c.title}</span>
                     </span>
                     <span class="badge" style="font-size: 0.75rem; background: #e0f2fe; color: #0369a1;">${c.target_year || 'All Years'}</span>
@@ -340,15 +346,21 @@ const StudentsView = {
     `);
   },
 
+  selectAllCreateCourses(select) {
+    const checkboxes = document.querySelectorAll('#course_checkboxes_container input[name="course_ids"]');
+    checkboxes.forEach(cb => { cb.checked = select; });
+  },
+
+  selectAllEditCourses(select) {
+    const checkboxes = document.querySelectorAll('#edit_course_checkboxes_container input[name="edit_course_ids"]');
+    checkboxes.forEach(cb => { cb.checked = select; });
+  },
+
   onYearSelectChanged(selectedYear) {
     const checkboxes = document.querySelectorAll('#course_checkboxes_container input[name="course_ids"]');
     checkboxes.forEach(cb => {
       const targetYear = cb.getAttribute('data-target-year');
-      if (targetYear === 'All Years' || targetYear === selectedYear) {
-        cb.checked = true;
-      } else {
-        cb.checked = false;
-      }
+      cb.checked = (targetYear === selectedYear);
     });
   },
 
@@ -470,14 +482,20 @@ const StudentsView = {
 
             <!-- Course Access Restrictions -->
             <div style="margin-bottom: 1.25rem; background: var(--bg-surface-alt); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-primary);">
-                📚 ${I18N.t('students.allowed_courses_label', 'Direct Course Access Permissions:')}
-              </label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                  📚 ${I18N.t('students.allowed_courses_label', 'Direct Course Access Permissions:')}
+                </label>
+                <div style="display: flex; gap: 0.35rem;">
+                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; font-weight: 600;" onclick="StudentsView.selectAllEditCourses(true)">✓ Dooro Dhamaan</button>
+                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; font-weight: 600;" onclick="StudentsView.selectAllEditCourses(false)">✕ Ka Saar Dhamaan</button>
+                </div>
+              </div>
               <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">
-                ${I18N.t('students.auto_year_note', 'Check courses to explicitly allow access. If student is Year 1, Year 2 courses will be blocked unless explicitly checked here.')}
+                Calaamee koorsooyinka aad rabto in ardaygani si toos ah u galo. Koorsooyinka aad halkan ku calaamayso oo kaliya ayuu ardaygu ku arki doonaa dashboard-kiisa.
               </p>
               
-              <div style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 180px; overflow-y: auto; padding-right: 0.5rem;">
+              <div id="edit_course_checkboxes_container" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 180px; overflow-y: auto; padding-right: 0.5rem;">
                 ${courses.map(c => {
                   const isChecked = enrolledIds.includes(c.id);
                   return `

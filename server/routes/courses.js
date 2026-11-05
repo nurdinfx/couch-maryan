@@ -24,24 +24,23 @@ router.get('/', requireAuth, (req, res) => {
       ORDER BY c.created_at DESC
     `).all();
   } else {
-    // For students: retrieve ONLY courses designated for their academic year or specifically enrolled
-    const studentYear = user.academic_year || 'Year 1';
+    // For students: retrieve EXACTLY the courses they are enrolled in by the faculty/admin
     courses = db.prepare(`
       SELECT c.*,
         u.full_name as professor_name,
-        (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id) as enrolled_students_count,
+        (SELECT COUNT(*) FROM enrollments e2 WHERE e2.course_id = c.id) as enrolled_students_count,
         (SELECT COUNT(*) FROM modules m WHERE m.course_id = c.id AND m.is_published = 1) as modules_count,
         (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id AND l.is_published = 1) as lessons_count,
-        EXISTS(SELECT 1 FROM enrollments e WHERE e.course_id = c.id AND e.user_id = ?) as is_enrolled,
+        1 as is_enrolled,
         (SELECT COUNT(*) FROM lesson_progress lp JOIN lessons l ON lp.lesson_id = l.id WHERE lp.user_id = ? AND lp.course_id = c.id AND lp.is_completed = 1) as completed_lessons_count,
         (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id AND l.is_required_for_completion = 1 AND l.is_published = 1) as required_lessons_count,
         (SELECT final_grade FROM certificates cert WHERE cert.course_id = c.id AND cert.user_id = ?) as certificate_grade
       FROM courses c
+      JOIN enrollments e ON c.id = e.course_id AND e.user_id = ?
       LEFT JOIN users u ON c.professor_id = u.id
-      WHERE (c.is_published = 1 AND (c.target_year IS NULL OR c.target_year = 'All Years' OR c.target_year = ?))
-         OR EXISTS(SELECT 1 FROM enrollments e WHERE e.course_id = c.id AND e.user_id = ?)
+      WHERE c.is_published = 1
       ORDER BY c.created_at DESC
-    `).all(user.id, user.id, user.id, studentYear, user.id);
+    `).all(user.id, user.id, user.id);
 
     // Compute progress % accurately
     courses = courses.map(c => {
@@ -75,25 +74,13 @@ router.get('/:id', requireAuth, (req, res) => {
     return res.status(404).json({ error: 'Course not found.' });
   }
 
-  // Check enrollment & strict academic year access control for students
+  // Check enrollment for students — enrolled students have 100% full access
   if (user.role === 'student') {
     const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(user.id, courseId);
-    const studentYear = user.academic_year || 'Year 1';
-    const isYearAllowed = !course.target_year || course.target_year === 'All Years' || course.target_year === studentYear;
-
-    if (!isEnrolled && !isYearAllowed) {
-      return res.status(403).json({
-        error: `Ma geli kartid casharradan: Koorsadani waxay u gaar tahay ardayda ${course.target_year}. Heerkaaga waxbarasho waa ${studentYear}. (Access Denied: This course is restricted to ${course.target_year} students only. Your account is ${studentYear}.)`
-      });
-    }
-
     if (!isEnrolled) {
-      if (course.is_published) {
-        db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)').run(user.id, courseId);
-        try { savePersistence(db); } catch (e) {}
-      } else {
-        return res.status(403).json({ error: 'You are not enrolled in this course.' });
-      }
+      return res.status(403).json({
+        error: 'Ma lihid fasax aad ku gasho koorsadan waayo laguma diiwaangelin. Fadlan la xiriir macallinka si laguu diiwaangeliyo. (Access Denied: You are not enrolled in this course.)'
+      });
     }
   }
 

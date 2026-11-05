@@ -33,7 +33,7 @@ function requireAuth(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio FROM users WHERE id = ?').get(decoded.id);
+    const user = db.prepare('SELECT id, email, full_name, role, avatar_url, student_id_number, department, bio, academic_year, faculty, is_active FROM users WHERE id = ?').get(decoded.id);
 
     if (!user) {
       return res.status(401).json({ error: 'User account no longer exists.' });

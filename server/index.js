@@ -34,6 +34,8 @@ async function startServer() {
   initSchema();
   generateAssets();
 
+  let activeSnapshot = null;
+
   // Step 2a: If DATABASE_URL is provided, fetch latest from Supabase Cloud first
   if (process.env.DATABASE_URL || process.env.DIRECT_URL) {
     console.log('[Startup] DATABASE_URL found — fetching live data from Supabase Cloud...');
@@ -41,42 +43,45 @@ async function startServer() {
       const { fetchLatestFromSupabase } = require('../database/supabase-sync');
       const supabaseSnapshot = await fetchLatestFromSupabase();
       if (supabaseSnapshot && (supabaseSnapshot.users?.length > 0 || supabaseSnapshot.courses?.length > 0)) {
-        try {
-          fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(supabaseSnapshot, null, 2), 'utf8');
-          console.log('[Startup] ✅ Latest Supabase snapshot saved locally.');
-        } catch (e) {
-          console.warn('[Startup] Could not write Supabase snapshot locally:', e.message);
-        }
+        activeSnapshot = supabaseSnapshot;
+        console.log(`[Startup] ✅ Loaded live Supabase snapshot (${(supabaseSnapshot.users || []).length} users, ${(supabaseSnapshot.courses || []).length} courses).`);
       }
     } catch (err) {
       console.warn('[Startup] Supabase fetch error (fallback to GitHub/local):', err.message);
     }
   }
 
-  // Step 2 & 3: Fetch latest from GitHub if token is available, then hydrate
+  // Step 2b: Fetch latest from GitHub if token is available
   const config = getSyncConfig();
   if (config.token) {
-    console.log('[Startup] GITHUB_TOKEN found — fetching latest data from GitHub...');
+    console.log('[Startup] GITHUB_TOKEN found — checking latest data from GitHub...');
     try {
       const remoteSnapshot = await fetchLatestFromGitHub();
-      if (remoteSnapshot) {
-        // Write to local file so restorePersistence can use it
-        try {
-          fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(remoteSnapshot, null, 2), 'utf8');
-          console.log('[Startup] ✅ Latest GitHub snapshot saved locally.');
-        } catch (e) {
-          console.error('[Startup] Could not write local snapshot:', e.message);
+      if (remoteSnapshot && (remoteSnapshot.users || []).length > 0) {
+        // Compare with Supabase: keep whichever has more or equal users/courses
+        const supabaseUserCount = activeSnapshot ? (activeSnapshot.users || []).length : 0;
+        const gitUserCount = (remoteSnapshot.users || []).length;
+        if (!activeSnapshot || gitUserCount > supabaseUserCount) {
+          activeSnapshot = remoteSnapshot;
+          console.log(`[Startup] ✅ GitHub snapshot is newer/larger (${gitUserCount} users vs ${supabaseUserCount} in Supabase). Using GitHub.`);
+        } else {
+          console.log(`[Startup] ✅ Supabase snapshot has ${supabaseUserCount} users (vs ${gitUserCount} in GitHub). Retaining Supabase data.`);
         }
-      } else {
-        console.log('[Startup] Could not fetch from GitHub — using local persistent_data.json.');
       }
     } catch (err) {
       console.error('[Startup] GitHub fetch error:', err.message);
     }
   } else {
     console.log('[Startup] No GITHUB_TOKEN — using local persistent_data.json only.');
-    console.log('[Startup] ⚠️  WARNING: New users created will NOT survive server restarts!');
-    console.log('[Startup] ⚠️  Set GITHUB_TOKEN in Render Environment Variables to fix this.');
+  }
+
+  if (activeSnapshot) {
+    try {
+      fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(activeSnapshot, null, 2), 'utf8');
+      console.log('[Startup] ✅ Master snapshot written to local persistence file.');
+    } catch (e) {
+      console.warn('[Startup] Could not write master snapshot locally:', e.message);
+    }
   }
 
   // Step 3: Hydrate SQLite from local file (which may now be freshly fetched from GitHub)

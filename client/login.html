@@ -67,9 +67,9 @@
       <!-- Login Form -->
       <form id="login-form" autocomplete="on" onsubmit="handleLogin(event)">
 
-        <!-- Email Field -->
+        <!-- Email or Student ID Field -->
         <div class="field-group">
-          <label class="field-label" for="login-email">Email Address</label>
+          <label class="field-label" for="login-email">Cinwaanka Email-ka ama ID-ga Ardayga</label>
           <div class="field-wrap">
             <span class="field-icon" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -80,9 +80,10 @@
             <input
               id="login-email"
               name="email"
-              type="email"
+              type="text"
               class="login-input"
               autocomplete="username"
+              placeholder="e.g. zeynab@student.edu ama BMW2024"
               required
               autofocus
             >
@@ -182,7 +183,7 @@
         if (labelEl) labelEl.textContent = 'Soomaali';
         if (headingEl) headingEl.textContent = 'Gal Akoonkaaga';
         if (subEl) subEl.textContent = 'Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.';
-        if (emailLabel) emailLabel.textContent = 'Cinwaanka Email-ka';
+        if (emailLabel) emailLabel.textContent = 'Cinwaanka Email-ka ama ID-ga Ardayga';
         if (passLabel) passLabel.textContent = 'Furaha Sirta ah (Password)';
         if (btnText) btnText.textContent = 'Gal Nidaamka';
         if (noteEl) noteEl.textContent = 'Akoonka ardayda waxaa sameeya Maamulka Kuliyadda.';
@@ -191,7 +192,7 @@
         if (labelEl) labelEl.textContent = 'English';
         if (headingEl) headingEl.textContent = 'Sign In to Your Account';
         if (subEl) subEl.textContent = 'Please enter your registered credentials to access the academic system.';
-        if (emailLabel) emailLabel.textContent = 'Email Address';
+        if (emailLabel) emailLabel.textContent = 'Email Address or Student ID Number';
         if (passLabel) passLabel.textContent = 'Password';
         if (btnText) btnText.textContent = 'Sign In to Platform';
         if (noteEl) noteEl.textContent = 'Student accounts are created and provisioned by faculty administration.';

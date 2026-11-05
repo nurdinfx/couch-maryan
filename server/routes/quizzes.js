@@ -300,6 +300,14 @@ router.post('/:id/start', requireAuth, (req, res) => {
     return res.status(404).json({ error: 'Quiz not found.' });
   }
 
+  // Access control: student must be enrolled in the quiz course
+  if (req.user.role === 'student') {
+    const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(userId, quiz.course_id);
+    if (!isEnrolled) {
+      return res.status(403).json({ error: 'Kuma lihid diiwaangelin koorsada imtixaankan. (Access Denied: You are not enrolled in the course for this quiz.)' });
+    }
+  }
+
   // If user is a student, enforce active schedule (open_date & close_date)
   if (req.user.role === 'student') {
     const now = new Date();
