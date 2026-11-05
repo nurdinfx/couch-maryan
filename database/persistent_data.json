@@ -1242,11 +1242,11 @@
       "user_id": 30,
       "lesson_id": 39,
       "course_id": 10,
-      "is_completed": 0,
+      "is_completed": 1,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
-      "completed_at": "2026-11-05 07:24:22",
-      "last_accessed_at": "2026-11-05 07:33:44"
+      "completed_at": "2026-11-05 07:44:16",
+      "last_accessed_at": "2026-11-05 07:44:16"
     }
   ],
   "assignments": [],
