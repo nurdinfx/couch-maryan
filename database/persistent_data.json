@@ -1802,16 +1802,77 @@
       "user_id": 18,
       "attempt_number": 1,
       "started_at": "2026-11-05 20:13:12",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-05 20:14:50",
+      "score": 0,
+      "max_score": 6,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
-  "quiz_attempt_answers": [],
+  "quiz_attempt_answers": [
+    {
+      "id": 81,
+      "attempt_id": 10,
+      "question_id": 6,
+      "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 82,
+      "attempt_id": 10,
+      "question_id": 7,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 83,
+      "attempt_id": 10,
+      "question_id": 8,
+      "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 84,
+      "attempt_id": 10,
+      "question_id": 9,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 85,
+      "attempt_id": 10,
+      "question_id": 10,
+      "user_answer_json": "[\"b. Begin antibiotics\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 86,
+      "attempt_id": 10,
+      "question_id": 11,
+      "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    }
+  ],
   "attendance_sessions": [],
   "attendance_records": [],
   "badges": [
