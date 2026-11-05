@@ -1809,6 +1809,16 @@
       "correct_answer_text": "C",
       "points": 1,
       "sort_order": 9
+    },
+    {
+      "id": 15,
+      "quiz_id": 6,
+      "question_text": "Under most circumstances, when should a woman be supported to begin breastfeeding?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) After the baby’s first bath\",\"b) When the baby first starts to cry\",\"c) As soon as possible when the baby is ready within the first hour after birth\",\"d) When her milk comes in\"]",
+      "correct_answer_text": "C",
+      "points": 1,
+      "sort_order": 10
     }
   ],
   "quiz_attempts": [
