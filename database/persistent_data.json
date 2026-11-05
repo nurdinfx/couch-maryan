@@ -378,7 +378,7 @@
     {
       "id": 35,
       "email": "sundus@student.edu",
-      "password_hash": "$2b$10$LHnboL46Wve5ACfFywWiKuxX8FP25PpmDvGsGTRWoIfHMvnsR4vYW",
+      "password_hash": "$2b$10$gRFV1e75cbZLrIGzwKvNAe1eoMfDJU1AuMnHxr1JknbZdYYIZyoay",
       "full_name": "Sundus Cali",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
