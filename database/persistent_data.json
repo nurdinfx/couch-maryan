@@ -1818,13 +1818,13 @@
       "user_id": 20,
       "attempt_number": 1,
       "started_at": "2026-11-05 20:13:04",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-05 20:18:26",
+      "score": 3,
+      "max_score": 9,
+      "percentage": 33.3,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 10,
@@ -1901,6 +1901,96 @@
       "is_auto_graded": 1,
       "graded_manually": 0,
       "feedback": "Incorrect selection"
+    },
+    {
+      "id": 87,
+      "attempt_id": 9,
+      "question_id": 6,
+      "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 88,
+      "attempt_id": 9,
+      "question_id": 7,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 89,
+      "attempt_id": 9,
+      "question_id": 8,
+      "user_answer_json": "[\"c) Ultrasonography performed at 25 weeks\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 90,
+      "attempt_id": 9,
+      "question_id": 9,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 91,
+      "attempt_id": 9,
+      "question_id": 10,
+      "user_answer_json": "[\"b. Begin antibiotics\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 92,
+      "attempt_id": 9,
+      "question_id": 11,
+      "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 93,
+      "attempt_id": 9,
+      "question_id": 12,
+      "user_answer_json": "[]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 94,
+      "attempt_id": 9,
+      "question_id": 13,
+      "user_answer_json": "[]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 95,
+      "attempt_id": 9,
+      "question_id": 14,
+      "user_answer_json": "[]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
     }
   ],
   "attendance_sessions": [],
