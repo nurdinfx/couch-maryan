@@ -582,7 +582,7 @@
       "bio": null,
       "created_at": "2026-11-05 19:29:34",
       "is_active": 1,
-      "academic_year": "Year 1",
+      "academic_year": "Year 5",
       "faculty": "Health Science"
     }
   ],
@@ -890,10 +890,10 @@
       "enrolled_at": "2026-11-05 19:28:44"
     },
     {
-      "id": 101,
+      "id": 102,
       "user_id": 48,
       "course_id": 9,
-      "enrolled_at": "2026-11-05 19:29:34"
+      "enrolled_at": "2026-11-05 19:37:41"
     }
   ],
   "modules": [
