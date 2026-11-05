@@ -1853,6 +1853,20 @@
       "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
+    },
+    {
+      "id": 12,
+      "quiz_id": 6,
+      "user_id": 18,
+      "attempt_number": 2,
+      "started_at": "2026-11-05 20:27:40",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
