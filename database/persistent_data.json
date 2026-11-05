@@ -453,7 +453,7 @@
     {
       "id": 40,
       "email": "zaytun@student.edu",
-      "password_hash": "$2b$10$ZVWSSOzz5NmqETLwwrakSuZYLbNu0J6aTnS/LS1azVctDIpfIZSCu",
+      "password_hash": "$2b$10$Y/g17iH//Zhsm7OGkZ7LB./AeKiJo8wcn/Kj5rUjmRbsDLNiWdjO2",
       "full_name": "Zaytun",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
