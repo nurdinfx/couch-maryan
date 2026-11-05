@@ -773,16 +773,16 @@
       "enrolled_at": "2026-11-05 09:07:16"
     },
     {
-      "id": 93,
-      "user_id": 43,
-      "course_id": 10,
-      "enrolled_at": "2026-11-05 09:10:16"
-    },
-    {
       "id": 94,
       "user_id": 42,
       "course_id": 10,
       "enrolled_at": "2026-11-05 09:12:08"
+    },
+    {
+      "id": 95,
+      "user_id": 43,
+      "course_id": 10,
+      "enrolled_at": "2026-11-05 09:14:32"
     }
   ],
   "modules": [
