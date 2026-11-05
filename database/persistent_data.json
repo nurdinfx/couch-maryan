@@ -449,6 +449,21 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science"
+    },
+    {
+      "id": 40,
+      "email": "zaytun@student.edu",
+      "password_hash": "$2b$10$l4BuhZ1OZJvMEdd./ztApueiW3LmiqB6yc4utc69Ai4IJn5t8sCVm",
+      "full_name": "Zaytun",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-772",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-05 09:05:51",
+      "is_active": 1,
+      "academic_year": "Year 3",
+      "faculty": "Health Science"
     }
   ],
   "courses": [
@@ -681,6 +696,12 @@
       "user_id": 39,
       "course_id": 8,
       "enrolled_at": "2026-11-05 09:05:01"
+    },
+    {
+      "id": 86,
+      "user_id": 40,
+      "course_id": 10,
+      "enrolled_at": "2026-11-05 09:05:51"
     }
   ],
   "modules": [
