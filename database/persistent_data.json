@@ -153,7 +153,7 @@
     {
       "id": 20,
       "email": "hodan@student.edu",
-      "password_hash": "$2b$10$j0PNkwSoZBvFAds69qOKuO6JTzs.nJFQgMq50REK6WfCQuVhW/ZVq",
+      "password_hash": "$2b$10$fQeA0lvZwf5U.DtbXabcMuCRdUCRCc1gzTanvOadqhGudOXPmRFkO",
       "full_name": "Hodan abdicasis",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
