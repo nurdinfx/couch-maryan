@@ -228,7 +228,7 @@
     {
       "id": 25,
       "email": "umayma@student.edu",
-      "password_hash": "$2b$10$DetuwdyD8NLbcyMBmaeiXe9ym7wRqhmmOTqPgqZE8b6qmn77/2/Ay",
+      "password_hash": "$2b$10$PFIg5QRkhivlnN7Kv8k0PuDiVV80zLIYzqayyQ5E4Z7tP2ixNycnG",
       "full_name": "Umayma Ahmed",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
