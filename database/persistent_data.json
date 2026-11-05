@@ -783,6 +783,12 @@
       "user_id": 43,
       "course_id": 10,
       "enrolled_at": "2026-11-05 09:14:32"
+    },
+    {
+      "id": 96,
+      "user_id": 42,
+      "course_id": 8,
+      "enrolled_at": "2026-11-05 09:39:32"
     }
   ],
   "modules": [
