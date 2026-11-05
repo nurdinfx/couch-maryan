@@ -1131,6 +1131,24 @@
       "sort_order": 6,
       "is_published": 1,
       "created_at": "2026-11-05 07:38:13"
+    },
+    {
+      "id": 47,
+      "module_id": 10,
+      "course_id": 9,
+      "title": "PRATICAL EXAM : VAGINAL EXAM",
+      "content_type": "document",
+      "description": "",
+      "content_body": "",
+      "video_url": null,
+      "video_duration_seconds": 0,
+      "file_url": "/uploads/documents/1793864330424_VAGINAL_EXAM.pdf",
+      "file_name": "VAGINAL EXAM.pdf",
+      "file_size_bytes": 226263,
+      "is_required_for_completion": 1,
+      "sort_order": 7,
+      "is_published": 1,
+      "created_at": "2026-11-05 07:38:50"
     }
   ],
   "lesson_progress": [
