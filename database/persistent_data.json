@@ -509,21 +509,6 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science"
-    },
-    {
-      "id": 44,
-      "email": "nuurdiinxaliimo23@gmail.com",
-      "password_hash": "$2b$10$zGaI6qF1J9R/7hAk7tk6NebtVbw/c1n5jyhtJkX3evF.q563o98g2",
-      "full_name": "Shukri",
-      "role": "admin",
-      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-      "student_id_number": null,
-      "department": "Platform Operations & Security",
-      "bio": null,
-      "created_at": "2026-11-05 13:07:05",
-      "is_active": 1,
-      "academic_year": "Year 1",
-      "faculty": "General"
     }
   ],
   "courses": [
