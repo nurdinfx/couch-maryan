@@ -256,13 +256,16 @@ router.post('/students', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Student email and full name are required.' });
   }
 
+  if (!password || !password.trim()) {
+    return res.status(400).json({ error: 'Fadlan buuxi furaha sirta ah (Password-ka lama ogola inuu bannaanaado).' });
+  }
+
   const existing = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get(email.trim());
   if (existing) {
     return res.status(400).json({ error: 'A student account with this email already exists.' });
   }
 
-  const defaultPassword = password || 'student123';
-  const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
+  const hashedPassword = bcrypt.hashSync(password.trim(), 10);
   const activeVal = is_active !== undefined ? (is_active ? 1 : 0) : 1;
   const assignedYear = academic_year || 'Year 1';
   const defaultStudentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';

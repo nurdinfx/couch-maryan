@@ -21,16 +21,19 @@ const StudentsView = {
     }
 
     try {
-      const [studentsData, coursesData] = await Promise.all([
+      const [studentsData, coursesData, profsData] = await Promise.all([
         API.getStudents(),
-        API.getCourses().catch(() => ({ courses: [] }))
+        API.getCourses().catch(() => ({ courses: [] })),
+        API.getProfessors().catch(() => ({ professors: [] }))
       ]);
       this.cachedStudents = studentsData.students || [];
       this.cachedCourses = coursesData.courses || [];
+      this.cachedProfessors = profsData.professors || [];
     } catch (err) {
       console.error('Error fetching students or courses:', err);
       this.cachedStudents = [];
       this.cachedCourses = [];
+      this.cachedProfessors = [];
     }
 
     const students = this.cachedStudents;
@@ -201,6 +204,7 @@ const StudentsView = {
 
   openCreateStudentModal() {
     const courses = this.cachedCourses || [];
+    const profs = this.cachedProfessors || [];
 
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 620px; width: 95%;">
@@ -261,7 +265,7 @@ const StudentsView = {
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
                   ${I18N.t('students.password', 'Initial Password')} *
                 </label>
-                <input type="text" name="password" required value="student123" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+                <input type="text" name="password" required placeholder="Gali furaha sirta ah ee ardayga..." minlength="4" value="" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
               </div>
               <div>
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
@@ -277,28 +281,41 @@ const StudentsView = {
               </div>
             </div>
 
-            <!-- Faculty Assignment -->
-            <div style="margin-bottom: 1.15rem; background: #f0f9ff; border: 2px solid #0284c7; border-radius: var(--radius-md); padding: 1rem;">
-              <label style="display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.5rem; color: #0369a1;">
-                🏛️ Faculty Assignment *
-              </label>
-              <p style="font-size: 0.78rem; color: #0369a1; margin-bottom: 0.75rem; opacity: 0.85;">
-                Assign the student to their faculty. They will only see courses from their assigned faculty.
-              </p>
-              <select name="faculty" required style="width: 100%; padding: 0.75rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; background: white; color: #0369a1;">
-                ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
-                  {value:'Computer Science',label:'💻 Computer Science'},
-                  {value:'Health Science',label:'🏥 Health Science'},
-                  {value:'Engineering',label:'⚙️ Engineering'},
-                  {value:'Business',label:'💼 Business & Management'},
-                  {value:'Education',label:'📚 Education'},
-                  {value:'Mathematics',label:'📐 Mathematics & Statistics'},
-                  {value:'Law',label:'⚖️ Law & Legal Studies'},
-                  {value:'Islamic Studies',label:'🕌 Islamic Studies'},
-                  {value:'Social Sciences',label:'🌍 Social Sciences'},
-                  {value:'General',label:'🏫 General / All Faculties'}
-                ]).map(f => `<option value="${f.value}">${f.label}</option>`).join('')}
-              </select>
+            <!-- Faculty & Professor Assignment -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.15rem;">
+              <div style="background: #f0f9ff; border: 1.5px solid #0284c7; border-radius: var(--radius-md); padding: 0.85rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.4rem; color: #0369a1;">
+                  🏛️ Faculty *
+                </label>
+                <select name="faculty" required style="width: 100%; padding: 0.65rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; background: white; color: #0369a1;">
+                  ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
+                    {value:'Computer Science',label:'💻 Computer Science'},
+                    {value:'Health Science',label:'🏥 Health Science'},
+                    {value:'Engineering',label:'⚙️ Engineering'},
+                    {value:'Business',label:'💼 Business & Management'},
+                    {value:'Education',label:'📚 Education'},
+                    {value:'Mathematics',label:'📐 Mathematics & Statistics'},
+                    {value:'Law',label:'⚖️ Law & Legal Studies'},
+                    {value:'Islamic Studies',label:'🕌 Islamic Studies'},
+                    {value:'Social Sciences',label:'🌍 Social Sciences'},
+                    {value:'General',label:'🏫 General / All Faculties'}
+                  ]).map(f => `<option value="${f.value}">${f.label}</option>`).join('')}
+                </select>
+              </div>
+
+              <div style="background: #fdf4ff; border: 1.5px solid #a855f7; border-radius: var(--radius-md); padding: 0.85rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.4rem; color: #7e22ce;">
+                  👨‍🏫 Bare / Professor Qaabilsan *
+                </label>
+                <select name="instructor_id" style="width: 100%; padding: 0.65rem; border: 1px solid #a855f7; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; background: white; color: #7e22ce;">
+                  <option value="">-- Dooro Professor-ka Ardaygan --</option>
+                  ${profs.map(p => `
+                    <option value="${p.id}" ${p.email === 'maryan@guraysicid.edu' ? 'selected' : ''}>
+                      ${p.full_name} (${p.department || p.faculty || 'Faculty'})
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
             </div>
 
             <!-- Course Access Selector -->
@@ -372,12 +389,19 @@ const StudentsView = {
     const checkedCourseBoxes = form.querySelectorAll('input[name="course_ids"]:checked');
     const course_ids = Array.from(checkedCourseBoxes).map(cb => parseInt(cb.value));
 
+    const enteredPassword = form.password.value ? form.password.value.trim() : '';
+    if (!enteredPassword) {
+      App.showToast('Fadlan buuxi furaha sirta ah (Password-ka lama boodi karo)!', 'error');
+      form.password.focus();
+      return;
+    }
+
     try {
       await API.createStudent({
         full_name: form.full_name.value,
         student_id_number: form.student_id_number.value,
         email: form.email.value,
-        password: form.password.value,
+        password: enteredPassword,
         academic_year: form.academic_year.value,
         faculty: form.faculty.value,
         course_ids: course_ids,

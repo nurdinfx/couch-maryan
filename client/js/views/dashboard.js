@@ -20,14 +20,18 @@ const DashboardView = {
     const courses = coursesData.courses || [];
 
     if (isProfessor) {
-      return this.renderProfessorDashboard(user, courses);
+      return this.renderProfessorDashboard(user, courses, coursesData);
     } else {
       return this.renderStudentDashboard(user, courses);
     }
   },
 
-  renderProfessorDashboard(user, courses) {
-    const totalStudents = courses.reduce((acc, c) => Math.max(acc, c.enrolled_students_count || 0), 0);
+  renderProfessorDashboard(user, courses, coursesData = {}) {
+    const totalStudents = coursesData.total_students !== undefined 
+      ? coursesData.total_students 
+      : (coursesData.total_registered_students !== undefined 
+          ? coursesData.total_registered_students 
+          : courses.reduce((acc, c) => acc + (c.enrolled_students_count || 0), 0));
     const totalLessons = courses.reduce((acc, c) => acc + (c.lessons_count || 0), 0);
     const totalAssignments = courses.reduce((acc, c) => acc + (c.assignments_count || 0), 0);
     const totalQuizzes = courses.reduce((acc, c) => acc + (c.quizzes_count || 0), 0);

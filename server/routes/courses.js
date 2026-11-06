@@ -23,6 +23,15 @@ router.get('/', requireAuth, (req, res) => {
       LEFT JOIN users u ON c.professor_id = u.id
       ORDER BY c.created_at DESC
     `).all();
+
+    const totalDistinctStudents = db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM enrollments').get().count || 0;
+    const totalRegisteredStudents = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'student'").get().count || 0;
+
+    return res.json({ 
+      courses, 
+      total_students: totalDistinctStudents,
+      total_registered_students: totalRegisteredStudents 
+    });
   } else {
     // For students: retrieve EXACTLY the courses they are enrolled in by the faculty/admin
     courses = db.prepare(`
