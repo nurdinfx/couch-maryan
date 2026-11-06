@@ -1544,8 +1544,8 @@
       "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
-      "completed_at": "2026-11-06 04:57:51",
-      "last_accessed_at": "2026-11-06 04:57:52"
+      "completed_at": "2026-11-06T04:57:51.000Z",
+      "last_accessed_at": "2026-11-06T04:57:52.000Z"
     }
   ],
   "assignments": [],
@@ -1803,7 +1803,7 @@
       "quiz_id": 5,
       "user_id": 24,
       "attempt_number": 1,
-      "started_at": "2026-11-06 04:53:46",
+      "started_at": "2026-11-06T04:53:46.000Z",
       "submitted_at": null,
       "score": null,
       "max_score": null,
@@ -1817,8 +1817,8 @@
       "quiz_id": 6,
       "user_id": 21,
       "attempt_number": 1,
-      "started_at": "2026-11-06 05:06:17",
-      "submitted_at": "2026-11-06 05:08:39",
+      "started_at": "2026-11-06T05:06:17.000Z",
+      "submitted_at": "2026-11-06T05:08:39.000Z",
       "score": 0,
       "max_score": 10,
       "percentage": 0,
