@@ -589,8 +589,8 @@ const StudentsView = {
     const student = (this.cachedStudents || []).find(s => s.id === studentId);
     let currentActualPassword = (student && student.password_plain) ? student.password_plain : '';
     if (!currentActualPassword && student) {
-      const fName = (student.full_name || studentName || '').trim().split(' ')[0].toLowerCase();
-      currentActualPassword = fName || 'student123';
+      const fName = (student.full_name || studentName || '').trim().split(' ')[0];
+      currentActualPassword = fName ? (fName.charAt(0).toUpperCase() + fName.slice(1).toLowerCase() + '123') : 'student123';
     }
 
     App.showCustomModal(`

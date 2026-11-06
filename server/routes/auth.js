@@ -247,8 +247,8 @@ router.get('/students', requireAuth, (req, res) => {
 
     // If password_plain is missing, derive smart default so professor can always see and give it to student
     if (isPrivileged && !s.password_plain) {
-      const fName = (s.full_name || '').trim().split(' ')[0].toLowerCase();
-      s.password_plain = fName || 'student123';
+      const fName = (s.full_name || '').trim().split(' ')[0];
+      s.password_plain = fName ? (fName.charAt(0).toUpperCase() + fName.slice(1).toLowerCase() + '123') : 'student123';
     }
   }
 
