@@ -393,7 +393,7 @@
     {
       "id": 36,
       "email": "salma@student.edu",
-      "password_hash": "$2b$10$BSxlIIBjgDEszoW23NmmmehiNe8MaLy8abzPtzLRbWn7fsNsBWHgq",
+      "password_hash": "$2b$10$UjnDE34kpC7VOzYJtosoReZ4tPfNqsaEK15MXDoTdoM.UNJGNV0Eq",
       "full_name": "Salma Abdulqadir",
       "role": "student",
       "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
@@ -1699,9 +1699,9 @@
       "attempt_number": 1,
       "started_at": "2026-11-05T20:13:04.000Z",
       "submitted_at": "2026-11-05T20:18:26.000Z",
-      "score": 5,
+      "score": 3,
       "max_score": 9,
-      "percentage": 55.6,
+      "percentage": 33.3,
       "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
@@ -1713,10 +1713,10 @@
       "attempt_number": 1,
       "started_at": "2026-11-05T20:13:12.000Z",
       "submitted_at": "2026-11-05T20:14:50.000Z",
-      "score": 6,
+      "score": 0,
       "max_score": 6,
-      "percentage": 100,
-      "is_passed": 1,
+      "percentage": 0,
+      "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
     },
@@ -1727,10 +1727,10 @@
       "attempt_number": 2,
       "started_at": "2026-11-05T20:20:35.000Z",
       "submitted_at": "2026-11-05T20:23:54.000Z",
-      "score": 8,
+      "score": 0,
       "max_score": 9,
-      "percentage": 88.9,
-      "is_passed": 1,
+      "percentage": 0,
+      "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
     },
@@ -1741,10 +1741,10 @@
       "attempt_number": 2,
       "started_at": "2026-11-05T20:27:40.000Z",
       "submitted_at": "2026-11-05T20:28:21.000Z",
-      "score": 8,
+      "score": 0,
       "max_score": 9,
-      "percentage": 88.9,
-      "is_passed": 1,
+      "percentage": 0,
+      "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
     },
@@ -1755,10 +1755,10 @@
       "attempt_number": 1,
       "started_at": "2026-11-06T05:06:17.000Z",
       "submitted_at": "2026-11-06T05:08:39.000Z",
-      "score": 12,
+      "score": 0,
       "max_score": 10,
-      "percentage": 120,
-      "is_passed": 1,
+      "percentage": 0,
+      "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
     },
@@ -1769,10 +1769,10 @@
       "attempt_number": 1,
       "started_at": "2026-11-06 07:15:38",
       "submitted_at": "2026-11-06 07:33:09",
-      "score": 7,
+      "score": 0,
       "max_score": 10,
-      "percentage": 70,
-      "is_passed": 1,
+      "percentage": 0,
+      "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
     },
@@ -1797,80 +1797,80 @@
       "attempt_id": 10,
       "question_id": 6,
       "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 82,
       "attempt_id": 10,
       "question_id": 7,
       "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 83,
       "attempt_id": 10,
       "question_id": 8,
       "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 84,
       "attempt_id": 10,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 85,
       "attempt_id": 10,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 86,
       "attempt_id": 10,
       "question_id": 11,
       "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 87,
       "attempt_id": 9,
       "question_id": 6,
       "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 88,
       "attempt_id": 9,
       "question_id": 7,
       "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 89,
@@ -1887,80 +1887,80 @@
       "attempt_id": 9,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 91,
       "attempt_id": 9,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 92,
       "attempt_id": 9,
       "question_id": 11,
       "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 93,
       "attempt_id": 9,
       "question_id": 12,
       "user_answer_json": "[]",
-      "awarded_points": 0,
+      "awarded_points": 1,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "Incorrect selection"
+      "feedback": "All correct selections made."
     },
     {
       "id": 94,
       "attempt_id": 9,
       "question_id": 13,
       "user_answer_json": "[]",
-      "awarded_points": 0,
+      "awarded_points": 1,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "Incorrect selection"
+      "feedback": "All correct selections made."
     },
     {
       "id": 95,
       "attempt_id": 9,
       "question_id": 14,
       "user_answer_json": "[]",
-      "awarded_points": 0,
+      "awarded_points": 1,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "Incorrect selection"
+      "feedback": "All correct selections made."
     },
     {
       "id": 96,
       "attempt_id": 11,
       "question_id": 6,
       "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 97,
       "attempt_id": 11,
       "question_id": 7,
       "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 98,
@@ -1977,110 +1977,110 @@
       "attempt_id": 11,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 100,
       "attempt_id": 11,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 101,
       "attempt_id": 11,
       "question_id": 11,
       "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 102,
       "attempt_id": 11,
       "question_id": 12,
       "user_answer_json": "[\"b) Drying the baby\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 103,
       "attempt_id": 11,
       "question_id": 13,
       "user_answer_json": "[\"a) Assess whether birth is very close\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 104,
       "attempt_id": 11,
       "question_id": 14,
       "user_answer_json": "[\"c) Do a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 105,
       "attempt_id": 12,
       "question_id": 6,
       "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 106,
       "attempt_id": 12,
       "question_id": 7,
       "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 107,
       "attempt_id": 12,
       "question_id": 8,
       "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 108,
       "attempt_id": 12,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 109,
       "attempt_id": 12,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 110,
@@ -2097,30 +2097,30 @@
       "attempt_id": 12,
       "question_id": 12,
       "user_answer_json": "[\"b) Drying the baby\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 112,
       "attempt_id": 12,
       "question_id": 13,
       "user_answer_json": "[\"a) Assess whether birth is very close\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 113,
       "attempt_id": 12,
       "question_id": 14,
       "user_answer_json": "[\"c) Do a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 114,
@@ -2147,30 +2147,30 @@
       "attempt_id": 15,
       "question_id": 8,
       "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 117,
       "attempt_id": 15,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 118,
       "attempt_id": 15,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 119,
@@ -2187,10 +2187,10 @@
       "attempt_id": 15,
       "question_id": 12,
       "user_answer_json": "[\"b) Drying the baby\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 121,
@@ -2207,20 +2207,20 @@
       "attempt_id": 15,
       "question_id": 14,
       "user_answer_json": "[\"c) Do a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 123,
       "attempt_id": 15,
       "question_id": 15,
       "user_answer_json": "[\"c) As soon as possible when the baby is ready within the first hour after birth\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 124,
@@ -2247,30 +2247,30 @@
       "attempt_id": 15,
       "question_id": 8,
       "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 127,
       "attempt_id": 15,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 128,
       "attempt_id": 15,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 129,
@@ -2287,10 +2287,10 @@
       "attempt_id": 15,
       "question_id": 12,
       "user_answer_json": "[\"b) Drying the baby\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 131,
@@ -2307,70 +2307,70 @@
       "attempt_id": 15,
       "question_id": 14,
       "user_answer_json": "[\"c) Do a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 133,
       "attempt_id": 15,
       "question_id": 15,
       "user_answer_json": "[\"c) As soon as possible when the baby is ready within the first hour after birth\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 134,
       "attempt_id": 16,
       "question_id": 6,
       "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 135,
       "attempt_id": 16,
       "question_id": 7,
       "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 136,
       "attempt_id": 16,
       "question_id": 8,
       "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 137,
       "attempt_id": 16,
       "question_id": 9,
       "user_answer_json": "[\"c) 27 June\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 138,
       "attempt_id": 16,
       "question_id": 10,
       "user_answer_json": "[\"b. Begin antibiotics\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 139,
@@ -2387,10 +2387,10 @@
       "attempt_id": 16,
       "question_id": 12,
       "user_answer_json": "[\"b) Drying the baby\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     },
     {
       "id": 141,
@@ -2417,10 +2417,10 @@
       "attempt_id": 16,
       "question_id": 15,
       "user_answer_json": "[\"c) As soon as possible when the baby is ready within the first hour after birth\"]",
-      "awarded_points": 1,
+      "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
-      "feedback": "All correct selections made."
+      "feedback": "Incorrect selection"
     }
   ],
   "attendance_sessions": [],
