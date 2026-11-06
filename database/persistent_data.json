@@ -1906,11 +1906,11 @@
       "user_id": 25,
       "lesson_id": 12,
       "course_id": 9,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-06T11:11:34.000Z",
-      "last_accessed_at": "2026-11-06T11:11:34.000Z"
+      "last_accessed_at": "2026-11-06 13:00:59"
     },
     {
       "id": 87,
