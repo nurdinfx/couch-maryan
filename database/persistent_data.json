@@ -2279,6 +2279,20 @@
       "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
+    },
+    {
+      "id": 20,
+      "quiz_id": 5,
+      "user_id": 19,
+      "attempt_number": 1,
+      "started_at": "2026-11-06 12:27:09",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
