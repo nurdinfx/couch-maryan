@@ -587,7 +587,11 @@ const StudentsView = {
 
   openResetPasswordModal(studentId, studentName) {
     const student = (this.cachedStudents || []).find(s => s.id === studentId);
-    const currentActualPassword = (student && student.password_plain) ? student.password_plain : '';
+    let currentActualPassword = (student && student.password_plain) ? student.password_plain : '';
+    if (!currentActualPassword && student) {
+      const fName = (student.full_name || studentName || '').trim().split(' ')[0].toLowerCase();
+      currentActualPassword = fName || 'student123';
+    }
 
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 480px; width: 95%;">
@@ -598,21 +602,19 @@ const StudentsView = {
         <form onsubmit="StudentsView.submitResetPassword(event, ${studentId})">
           <div class="modal-body" style="padding: 1.5rem;">
             
-            ${currentActualPassword ? `
-              <div style="background: #f0fdf4; border: 1.5px solid #22c55e; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
-                <span style="font-size: 0.8rem; font-weight: 700; color: #166534; display: block; margin-bottom: 0.25rem;">
-                  🔐 Furaha Hadda U Degsan Ardayga (Current Password):
-                </span>
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
-                  <code style="font-size: 1.1rem; font-weight: 800; color: #15803d; letter-spacing: 0.5px; background: white; padding: 0.25rem 0.65rem; border-radius: 4px; border: 1px solid #bbf7d0;">
-                    ${currentActualPassword}
-                  </code>
-                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="navigator.clipboard.writeText('${currentActualPassword}'); App.showToast('Furaha waa la koobiyeeyay!')">
-                    📋 Copy
-                  </button>
-                </div>
+            <div style="background: #f0fdf4; border: 1.5px solid #22c55e; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #166534; display: block; margin-bottom: 0.25rem;">
+                🔐 Furaha Hadda U Degsan Ardayga (Current Password):
+              </span>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                <code style="font-size: 1.15rem; font-weight: 800; color: #15803d; letter-spacing: 0.5px; background: white; padding: 0.35rem 0.75rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+                  ${currentActualPassword}
+                </code>
+                <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.65rem; font-weight: 700;" onclick="navigator.clipboard.writeText('${currentActualPassword}'); App.showToast('Furaha waa la koobiyeeyay!')">
+                  📋 Copy
+                </button>
               </div>
-            ` : ''}
+            </div>
 
             <div style="margin-bottom: 1rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">

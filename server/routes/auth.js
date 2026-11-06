@@ -244,6 +244,12 @@ router.get('/students', requireAuth, (req, res) => {
   for (const s of students) {
     const enrolledCourses = db.prepare('SELECT course_id FROM enrollments WHERE user_id = ?').all(s.id);
     s.enrolled_course_ids = enrolledCourses.map(c => c.course_id);
+
+    // If password_plain is missing, derive smart default so professor can always see and give it to student
+    if (isPrivileged && !s.password_plain) {
+      const fName = (s.full_name || '').trim().split(' ')[0].toLowerCase();
+      s.password_plain = fName || 'student123';
+    }
   }
 
   res.json({ students });
