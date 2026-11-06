@@ -1557,6 +1557,17 @@
       "video_watch_percentage": 0,
       "completed_at": "2026-11-06 07:18:06",
       "last_accessed_at": "2026-11-06 07:18:32"
+    },
+    {
+      "id": 84,
+      "user_id": 24,
+      "lesson_id": 11,
+      "course_id": 9,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-06 07:43:33",
+      "last_accessed_at": "2026-11-06 07:43:33"
     }
   ],
   "assignments": [],
