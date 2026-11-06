@@ -1950,11 +1950,11 @@
       "user_id": 27,
       "lesson_id": 12,
       "course_id": 9,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-06 14:28:50",
-      "last_accessed_at": "2026-11-06 14:28:50"
+      "last_accessed_at": "2026-11-06 14:29:37"
     }
   ],
   "assignments": [],
