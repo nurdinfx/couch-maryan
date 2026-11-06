@@ -1966,6 +1966,17 @@
       "video_watch_percentage": 0,
       "completed_at": "2026-11-06 18:41:19",
       "last_accessed_at": "2026-11-06 18:41:19"
+    },
+    {
+      "id": 92,
+      "user_id": 41,
+      "lesson_id": 40,
+      "course_id": 10,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-06 18:43:21",
+      "last_accessed_at": "2026-11-06 18:43:21"
     }
   ],
   "assignments": [],
