@@ -1779,13 +1779,13 @@
       "user_id": 19,
       "attempt_number": 1,
       "started_at": "2026-11-06 02:29:32",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-06 02:29:42",
+      "score": 0,
+      "max_score": 0,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
