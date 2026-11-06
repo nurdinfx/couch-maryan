@@ -586,24 +586,47 @@ const StudentsView = {
   },
 
   openResetPasswordModal(studentId, studentName) {
+    const student = (this.cachedStudents || []).find(s => s.id === studentId);
+    const currentActualPassword = (student && student.password_plain) ? student.password_plain : '';
+
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 480px; width: 95%;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem; font-weight: 700;">🔑 ${I18N.t('students.reset_key_btn', 'Reset Password')} - ${studentName}</h3>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">🔑 Furaha Sirta ah (Password) - ${studentName}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="StudentsView.submitResetPassword(event, ${studentId})">
           <div class="modal-body" style="padding: 1.5rem;">
+            
+            ${currentActualPassword ? `
+              <div style="background: #f0fdf4; border: 1.5px solid #22c55e; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #166534; display: block; margin-bottom: 0.25rem;">
+                  🔐 Furaha Hadda U Degsan Ardayga (Current Password):
+                </span>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                  <code style="font-size: 1.1rem; font-weight: 800; color: #15803d; letter-spacing: 0.5px; background: white; padding: 0.25rem 0.65rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+                    ${currentActualPassword}
+                  </code>
+                  <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="navigator.clipboard.writeText('${currentActualPassword}'); App.showToast('Furaha waa la koobiyeeyay!')">
+                    📋 Copy
+                  </button>
+                </div>
+              </div>
+            ` : ''}
+
             <div style="margin-bottom: 1rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
-                ${I18N.t('students.password', 'New Password')}
+                Furaha Sirta ah ee Ardayga (Gali ama Baddal) *
               </label>
-              <input type="text" name="new_password" required minlength="6" value="studentPass2026!" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+              <input type="text" name="new_password" required minlength="4" value="${currentActualPassword}" placeholder="Gali furaha cusub..." style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; background: var(--bg-surface); color: var(--text-primary);">
+              <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+                Halkan waxaad toos uga arki kartaa furaha ardayga, haddaad rabtana waad ka baddali kartaa.
+              </span>
             </div>
           </div>
           <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
-            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${I18N.t('common.cancel', 'Cancel')}</button>
-            <button type="submit" class="btn btn-primary" style="font-weight: 700;">${I18N.t('admin.reset_pw_btn', 'Update Password')}</button>
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${I18N.t('common.cancel', 'Xir')}</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">Kaydi Furaha Cusub 💾</button>
           </div>
         </form>
       </div>
@@ -613,10 +636,15 @@ const StudentsView = {
   async submitResetPassword(e, studentId) {
     e.preventDefault();
     const form = e.target;
+    const newPass = form.new_password.value.trim();
     try {
-      await API.resetPassword(studentId, form.new_password.value);
+      await API.resetPassword(studentId, newPass);
       App.closeModal();
-      App.showToast(I18N.t('common.success', 'Password reset successfully!'));
+      App.showToast('Furaha sirta ah ee ardayga si guul leh ayaa loo cusbooneysiiyay!');
+      // Update locally in cachedStudents
+      const st = (this.cachedStudents || []).find(s => s.id === studentId);
+      if (st) st.password_plain = newPass;
+      App.refreshCurrentView();
     } catch (err) {
       App.showToast(err.message, 'error');
     }

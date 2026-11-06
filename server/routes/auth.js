@@ -229,8 +229,11 @@ router.get('/directory', requireAuth, (req, res) => {
 
 // 7. Student User Management (List, Create, Update Access/Year, Deactivate, Delete)
 router.get('/students', requireAuth, (req, res) => {
+  const isPrivileged = req.user.role === 'admin' || req.user.role === 'professor' || req.user.is_admin === 1;
+
   const students = db.prepare(`
     SELECT u.id, u.email, u.full_name, u.student_id_number, u.academic_year, u.department, u.faculty, u.is_active, u.created_at, u.avatar_url,
+      ${isPrivileged ? 'u.password_plain,' : ''}
       (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) as enrolled_count
     FROM users u
     WHERE u.role = 'student'
@@ -265,18 +268,20 @@ router.post('/students', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'A student account with this email already exists.' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password.trim(), 10);
+  const cleanPw = password.trim();
+  const hashedPassword = bcrypt.hashSync(cleanPw, 10);
   const activeVal = is_active !== undefined ? (is_active ? 1 : 0) : 1;
   const assignedYear = academic_year || 'Year 1';
   const defaultStudentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
   const finalAvatar = (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : defaultStudentAvatar;
 
   const result = db.prepare(`
-    INSERT INTO users (email, password_hash, full_name, role, avatar_url, student_id_number, academic_year, department, is_active, faculty)
-    VALUES (?, ?, ?, 'student', ?, ?, ?, 'Guray Sicid Learning Platform', ?, ?)
+    INSERT INTO users (email, password_hash, password_plain, full_name, role, avatar_url, student_id_number, academic_year, department, is_active, faculty)
+    VALUES (?, ?, ?, ?, 'student', ?, ?, ?, 'Guray Sicid Learning Platform', ?, ?)
   `).run(
     email.trim().toLowerCase(),
     hashedPassword,
+    cleanPw,
     full_name.trim(),
     finalAvatar,
     student_id_number || `STU-2026-${Math.floor(100 + Math.random() * 900)}`,

@@ -144,8 +144,9 @@ router.post('/users/:id/reset-password', requireAdmin, (req, res) => {
     return res.status(400).json({ error: 'Password must be at least 6 characters.' });
   }
 
-  const hashedPassword = bcrypt.hashSync(new_password, 10);
-  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashedPassword, userId);
+  const cleanPw = new_password.trim();
+  const hashedPassword = bcrypt.hashSync(cleanPw, 10);
+  db.prepare('UPDATE users SET password_hash = ?, password_plain = ? WHERE id = ?').run(hashedPassword, cleanPw, userId);
 
   const targetUser = db.prepare('SELECT full_name, email FROM users WHERE id = ?').get(userId);
   logAudit(req.user.id, 'PASSWORD_RESET', `Admin reset password for user ${targetUser?.email || userId}`, req);

@@ -30,7 +30,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "ridwan"
     },
     {
       "id": 9,
@@ -46,7 +47,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "fatima"
     },
     {
       "id": 11,
@@ -62,7 +64,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "kiin"
     },
     {
       "id": 12,
@@ -78,7 +81,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "badria"
     },
     {
       "id": 13,
@@ -94,7 +98,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "fadumo"
     },
     {
       "id": 14,
@@ -110,7 +115,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "abshiro"
     },
     {
       "id": 15,
@@ -126,7 +132,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "zuhur"
     },
     {
       "id": 18,
@@ -158,7 +165,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "hafsa"
     },
     {
       "id": 20,
@@ -174,7 +182,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "hodan"
     },
     {
       "id": 21,
@@ -190,7 +199,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "asma"
     },
     {
       "id": 22,
@@ -222,7 +232,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "afnan"
     },
     {
       "id": 24,
@@ -238,7 +249,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "hawa"
     },
     {
       "id": 25,
@@ -254,7 +266,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "umayma"
     },
     {
       "id": 26,
@@ -270,7 +283,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "fatima"
     },
     {
       "id": 27,
@@ -286,7 +300,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "shukri"
     },
     {
       "id": 28,
@@ -302,7 +317,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "kawsar"
     },
     {
       "id": 29,
@@ -318,7 +334,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "bushro"
     },
     {
       "id": 30,
@@ -334,7 +351,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "fatima"
     },
     {
       "id": 31,
@@ -350,7 +368,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "nadira"
     },
     {
       "id": 32,
@@ -366,7 +385,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "sabrin"
     },
     {
       "id": 33,
@@ -382,7 +402,8 @@
       "is_active": 1,
       "academic_year": "Year 1",
       "faculty": "Computer Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "khadar"
     },
     {
       "id": 34,
@@ -398,7 +419,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "luul"
     },
     {
       "id": 35,
@@ -414,7 +436,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "sundus"
     },
     {
       "id": 36,
@@ -430,7 +453,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "salma"
     },
     {
       "id": 37,
@@ -446,7 +470,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "asia"
     },
     {
       "id": 38,
@@ -462,7 +487,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "zeynab"
     },
     {
       "id": 39,
@@ -478,7 +504,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "hafsa"
     },
     {
       "id": 40,
@@ -494,7 +521,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "zaytun"
     },
     {
       "id": 41,
@@ -510,7 +538,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "najma"
     },
     {
       "id": 42,
@@ -526,7 +555,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "sabah"
     },
     {
       "id": 43,
@@ -542,7 +572,8 @@
       "is_active": 1,
       "academic_year": "Year 3",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "xamdi"
     },
     {
       "id": 44,
@@ -558,7 +589,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "ayaan"
     },
     {
       "id": 45,
@@ -574,7 +606,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "halima"
     },
     {
       "id": 46,
@@ -590,7 +623,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "xalima"
     },
     {
       "id": 47,
@@ -606,7 +640,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "aisha"
     },
     {
       "id": 48,
@@ -622,7 +657,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "fadumo"
     },
     {
       "id": 49,
@@ -638,7 +674,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "amina"
     },
     {
       "id": 50,
@@ -654,7 +691,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "salmo"
     },
     {
       "id": 51,
@@ -670,7 +708,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "mumtaz"
     },
     {
       "id": 52,
@@ -686,7 +725,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "afnaan"
     },
     {
       "id": 53,
@@ -702,7 +742,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "sabirin"
     },
     {
       "id": 54,
@@ -718,7 +759,8 @@
       "is_active": 1,
       "academic_year": "Year 5",
       "faculty": "Health Science",
-      "is_admin": 0
+      "is_admin": 0,
+      "password_plain": "najmo"
     }
   ],
   "courses": [
