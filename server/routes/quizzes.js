@@ -4,6 +4,34 @@ const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { logAudit } = require('../middleware/audit');
 
+function extractOptionLetter(str) {
+  if (!str || typeof str !== 'string') return '';
+  const trimmed = str.trim();
+  const match = trimmed.match(/^[\(\[]?([a-zA-Z0-9])[\)\]\.\:\-]/);
+  if (match) return match[1].toLowerCase();
+  if (trimmed.length === 1) return trimmed.toLowerCase();
+  return '';
+}
+
+function matchesAnswerChoice(userChoice, correctText) {
+  if (!userChoice || !correctText) return false;
+  const uStr = String(userChoice).trim().toLowerCase();
+  const cStr = String(correctText).trim().toLowerCase();
+  if (uStr === cStr) return true;
+
+  const uLetter = extractOptionLetter(uStr);
+  const cLetter = extractOptionLetter(cStr);
+
+  if (uLetter && cLetter && uLetter === cLetter) return true;
+  if (uLetter && uLetter === cStr) return true;
+  if (cLetter && cLetter === uStr) return true;
+
+  if (uStr.startsWith(cStr + ')') || uStr.startsWith(cStr + '.') || uStr.startsWith(cStr + ' ')) return true;
+  if (cStr.startsWith(uStr + ')') || cStr.startsWith(uStr + '.') || cStr.startsWith(uStr + ' ')) return true;
+
+  return false;
+}
+
 // 1. Get single quiz info
 router.get('/:id', requireAuth, (req, res) => {
   const quizId = parseInt(req.params.id);
@@ -431,6 +459,7 @@ router.post('/attempts/:attemptId/submit', requireAuth, (req, res) => {
           isCorrect = true;
         } else if (normUser && (
           normUser === normCorrect ||
+          matchesAnswerChoice(userAns, q.correct_answer_text) ||
           (normUser === 'true' && (normCorrect === 'run' || normCorrect === 'true' || normCorrect === '1')) ||
           (normUser === 'false' && (normCorrect === 'been' || normCorrect === 'false' || normCorrect === '0'))
         )) {
@@ -447,23 +476,64 @@ router.post('/attempts/:attemptId/submit', requireAuth, (req, res) => {
       } else if (q.question_type === 'multiple_choice') {
         let opts = [];
         try { opts = JSON.parse(q.options_json || '[]'); } catch (e) {}
-        const correctIds = opts.filter(o => o.isCorrect).map(o => o.id).sort();
-        const selectedIds = Array.isArray(userAns) ? userAns.sort() : [];
+        
+        // Find correct answers: either from options marked isCorrect, or matching correct_answer_text
+        let correctOptions = [];
+        if (Array.isArray(opts)) {
+          correctOptions = opts.filter(o => {
+            if (!o) return false;
+            if (typeof o === 'object' && o.isCorrect) return true;
+            const optVal = typeof o === 'object' ? (o.id || o.text || '') : String(o);
+            return matchesAnswerChoice(optVal, q.correct_answer_text);
+          }).map(o => typeof o === 'object' ? (o.id || o.text || '') : String(o));
+        }
 
-        // Exact match for full points or partial credit
-        const isMatch = correctIds.length === selectedIds.length && correctIds.every((val, idx) => val === selectedIds[idx]);
-        if (isMatch) {
+        // If no options matched yet but correct_answer_text exists, add it directly
+        if (correctOptions.length === 0 && q.correct_answer_text) {
+          correctOptions = [q.correct_answer_text.trim()];
+        }
+
+        // Selected answers by student (normalize single value or array)
+        let selected = [];
+        if (Array.isArray(userAns)) {
+          selected = userAns.filter(Boolean).map(String);
+        } else if (userAns !== null && userAns !== undefined && String(userAns).trim() !== '') {
+          selected = [String(userAns).trim()];
+        }
+
+        // Check if selections match correct answers (flexible letter/option matching)
+        let correctSelectedCount = 0;
+        let incorrectSelectedCount = 0;
+
+        for (const sel of selected) {
+          const isSelCorrect = correctOptions.some(corr => matchesAnswerChoice(sel, corr));
+          if (isSelCorrect) {
+            correctSelectedCount++;
+          } else {
+            incorrectSelectedCount++;
+          }
+        }
+
+        const totalExpected = correctOptions.length || 1;
+        if (correctSelectedCount === totalExpected && incorrectSelectedCount === 0) {
           pointsAwarded = q.points;
           feedback = 'All correct selections made.';
-        } else {
-          // Partial credit calculation
-          let correctSelected = selectedIds.filter(id => correctIds.includes(id)).length;
-          let incorrectSelected = selectedIds.filter(id => !correctIds.includes(id)).length;
-          let fraction = Math.max(0, (correctSelected - incorrectSelected) / correctIds.length);
+        } else if (correctSelectedCount > 0 && incorrectSelectedCount === 0) {
+          // Full or partial credit
+          const fraction = correctSelectedCount / totalExpected;
+          pointsAwarded = Math.round(fraction * q.points * 10) / 10;
+          feedback = `Partial credit: ${pointsAwarded} pts`;
+        } else if (correctSelectedCount > 0 && incorrectSelectedCount > 0) {
+          const net = Math.max(0, correctSelectedCount - incorrectSelectedCount);
+          const fraction = net / totalExpected;
           pointsAwarded = Math.round(fraction * q.points * 10) / 10;
           feedback = pointsAwarded > 0 ? `Partial credit: ${pointsAwarded} pts` : 'Incorrect selection';
+        } else {
+          pointsAwarded = 0;
+          feedback = 'Incorrect selection';
         }
-        insertAnswer.run(attemptId, q.id, JSON.stringify(selectedIds), pointsAwarded, 1, 0, feedback);
+
+        insertAnswer.run(attemptId, q.id, JSON.stringify(selected), pointsAwarded, 1, 0, feedback);
       } else if (q.question_type === 'short_answer') {
         const expected = (q.correct_answer_text || '').trim().toLowerCase();
         const actual = (userAns || '').toString().trim().toLowerCase();
