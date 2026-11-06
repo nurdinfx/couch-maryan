@@ -2255,7 +2255,7 @@
       "user_id": 24,
       "attempt_number": 2,
       "started_at": "2026-11-06T07:35:12.000Z",
-      "submitted_at": "2026-11-06 18:15:41",
+      "submitted_at": "2026-11-06 18:18:57",
       "score": 7,
       "max_score": 10,
       "percentage": 70,
@@ -3029,6 +3029,106 @@
     },
     {
       "id": 153,
+      "attempt_id": 17,
+      "question_id": 15,
+      "user_answer_json": "[\"c) As soon as possible when the baby is ready within the first hour after birth\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 154,
+      "attempt_id": 17,
+      "question_id": 6,
+      "user_answer_json": "[\"c) Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 155,
+      "attempt_id": 17,
+      "question_id": 7,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 156,
+      "attempt_id": 17,
+      "question_id": 8,
+      "user_answer_json": "[\"a) Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 157,
+      "attempt_id": 17,
+      "question_id": 9,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 158,
+      "attempt_id": 17,
+      "question_id": 10,
+      "user_answer_json": "[\"b. Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 159,
+      "attempt_id": 17,
+      "question_id": 11,
+      "user_answer_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 160,
+      "attempt_id": 17,
+      "question_id": 12,
+      "user_answer_json": "[\"b) Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 161,
+      "attempt_id": 17,
+      "question_id": 13,
+      "user_answer_json": "[\"b) Check the woman’s records and ask about the history of her current pregnancy\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 162,
+      "attempt_id": 17,
+      "question_id": 14,
+      "user_answer_json": "[\"a) Determine if birth is imminent\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 163,
       "attempt_id": 17,
       "question_id": 15,
       "user_answer_json": "[\"c) As soon as possible when the baby is ready within the first hour after birth\"]",
