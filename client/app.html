@@ -59,13 +59,16 @@
       </button>
 
       <!-- User Menu -->
-      <div class="user-profile-menu" onclick="App.navigate('/dashboard')">
-        <img id="navbar-user-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="user-avatar" alt="Avatar">
+      <div class="user-profile-menu" onclick="App.openEditProfileModal()" title="Guji si aad sawirkaaga / profile-kaaga u beddesho" style="cursor: pointer;">
+        <div style="position: relative; display: inline-block;">
+          <img id="navbar-user-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" class="user-avatar" alt="Avatar">
+          <span style="position: absolute; bottom: -2px; right: -2px; background: #0284c7; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 1.5px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">📷</span>
+        </div>
         <div class="user-info-text">
           <span id="navbar-user-name" class="user-name">Prof. Maryam Al-Mansoor</span>
           <span id="navbar-user-role" class="user-role-badge">PROFESSOR</span>
         </div>
-      <button class="nav-action-btn" onclick="App.logout()" title="Ka bax (Log Out)" style="color:#ef4444;margin-left:0.5rem;display:inline-flex;align-items:center;justify-content:center;padding:0.45rem;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);cursor:pointer;" aria-label="Log Out"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+      <button class="nav-action-btn" onclick="event.stopPropagation(); App.logout()" title="Ka bax (Log Out)" style="color:#ef4444;margin-left:0.5rem;display:inline-flex;align-items:center;justify-content:center;padding:0.45rem;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);cursor:pointer;" aria-label="Log Out"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
       </div>
 
     </div>

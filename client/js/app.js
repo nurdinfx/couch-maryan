@@ -262,6 +262,88 @@ const App = {
     }
   },
 
+  openEditProfileModal() {
+    const user = API.currentUser;
+    if (!user) return;
+
+    const currentAvatar = user.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+
+    this.showCustomModal(`
+      <div class="modal-dialog" style="max-width: 480px; width: 95%;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.15rem; font-weight: 700;">👤 Baddal Sawirkaaga & Profile-ka</h3>
+          <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <form onsubmit="App.handleSubmitProfile(event)">
+          <div class="modal-body" style="padding: 1.5rem;">
+            
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1.25rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 2px dashed #0284c7; text-align: center;">
+              <div style="position: relative; width: 96px; height: 96px;">
+                <img id="user_profile_avatar_preview" src="${currentAvatar}" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 4px solid #0284c7; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem;">
+                  📷 Dooro Sawir Cusub oo Device-kaaga ah
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                  Soo geli sawir kombiyuutarkaaga ama taleefankaaga ku jira
+                </div>
+                <label class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1.15rem; font-weight: 700;">
+                  <span>📁 Soo Dooro Sawirka</span>
+                  <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'user_profile_avatar_preview', 'user_profile_avatar_url', 'user_profile_avatar_status')">
+                </label>
+                <div id="user_profile_avatar_status" style="font-size: 0.78rem; color: #0284c7; margin-top: 0.4rem; font-weight: 600;"></div>
+              </div>
+              <input type="hidden" name="avatar_url" id="user_profile_avatar_url" value="${user.avatar_url || ''}">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
+                Magacaaga (Full Name)
+              </label>
+              <input type="text" name="full_name" value="${user.full_name || ''}" required style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
+                Xog Kooban / Bio (Optional)
+              </label>
+              <textarea name="bio" rows="2" placeholder="Xog kooban oo kugu saabsan..." style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary); font-family: inherit;">${user.bio || ''}</textarea>
+            </div>
+
+          </div>
+          <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Ka noqo</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">Kaydi Sawirka & Xogta 💾</button>
+          </div>
+        </form>
+      </div>
+    `);
+  },
+
+  async handleSubmitProfile(e) {
+    e.preventDefault();
+    const form = e.target;
+    const avatar_url = form.avatar_url ? form.avatar_url.value : '';
+    const full_name = form.full_name.value.trim();
+    const bio = form.bio.value.trim();
+
+    try {
+      const res = await API.updateProfile({ full_name, bio, avatar_url });
+      if (res && res.user) {
+        API.currentUser = { ...API.currentUser, ...res.user };
+        localStorage.setItem('faculty_lms_user', JSON.stringify(API.currentUser));
+      }
+      this.closeModal();
+      this.updateUserNavbar();
+      this.showToast('Sawirkaaga iyo profile-kaaga si guul leh ayaa loo cusbooneysiiyay! 🎉');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
   async handleRoleSwitch(userId) {
     try {
       const res = await API.switchUser(parseInt(userId));

@@ -149,15 +149,26 @@ const DashboardView = {
     const inProgressCourses = courses.filter(c => c.progress_percentage < 100).length;
 
     return `
-      <div class="page-header-container">
-        <div>
-          <div class="breadcrumb-trail">
-            <span>Faculty LMS</span>
-            <span class="breadcrumb-sep">/</span>
-            <span>Student Dashboard</span>
+      <div class="page-header-container" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.25rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <div style="position: relative; cursor: pointer; flex-shrink: 0;" onclick="App.openEditProfileModal()" title="Guji si aad sawirkaaga u beddesho">
+            <img src="${user.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
+                 style="width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 3px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.12); transition: transform 0.2s;"
+                 onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <span style="position: absolute; bottom: 0; right: 0; background: #0284c7; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📷</span>
           </div>
-          <h1 class="page-title">Welcome, ${user.full_name}</h1>
-          <p class="page-description">Student ID: ${user.student_id_number || 'STU-2026-081'} | Department: ${user.department || 'Faculty of Midwifery'}</p>
+          <div>
+            <div class="breadcrumb-trail">
+              <span>Faculty LMS</span>
+              <span class="breadcrumb-sep">/</span>
+              <span>Student Dashboard</span>
+            </div>
+            <h1 class="page-title" style="margin-bottom: 0.25rem;">Welcome, ${user.full_name}</h1>
+            <p class="page-description">Student ID: ${user.student_id_number || 'STU-2026-081'} | Department: ${user.department || 'Faculty of Midwifery'}</p>
+            <button class="btn btn-sm btn-outline" style="margin-top: 0.5rem; font-size: 0.78rem; padding: 0.25rem 0.65rem;" onclick="App.openEditProfileModal()">
+              📷 Baddal Sawirkaaga (Change Photo)
+            </button>
+          </div>
         </div>
         <div>
           <a href="#/badges" class="btn btn-outline">
