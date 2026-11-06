@@ -1884,11 +1884,11 @@
       "user_id": 24,
       "lesson_id": 11,
       "course_id": 9,
-      "is_completed": 0,
+      "is_completed": 1,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
-      "completed_at": "2026-11-06T07:43:33.000Z",
-      "last_accessed_at": "2026-11-06T07:43:37.000Z"
+      "completed_at": "2026-11-06 18:05:36",
+      "last_accessed_at": "2026-11-06 18:05:36"
     },
     {
       "id": 85,
