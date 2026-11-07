@@ -2032,11 +2032,11 @@
       "user_id": 45,
       "lesson_id": 11,
       "course_id": 9,
-      "is_completed": 0,
+      "is_completed": 1,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
-      "completed_at": "2026-11-07 08:00:10",
-      "last_accessed_at": "2026-11-07 08:00:14"
+      "completed_at": "2026-11-07 08:28:04",
+      "last_accessed_at": "2026-11-07 08:28:04"
     },
     {
       "id": 94,
