@@ -648,7 +648,7 @@
     },
     {
       "id": 48,
-      "email": "fadumo@student.vinci",
+      "email": "fadumo@student.edu",
       "password_hash": "$2b$10$NqfVHXfef9GPsR092A/bH.Mm4cuVY5orR0EdMW7iAeRPA6pjDHRNS",
       "full_name": "Fadumo",
       "role": "student",
@@ -1087,12 +1087,6 @@
       "enrolled_at": "2026-11-05T19:28:44.000Z"
     },
     {
-      "id": 101,
-      "user_id": 48,
-      "course_id": 9,
-      "enrolled_at": "2026-11-05T19:29:34.000Z"
-    },
-    {
       "id": 103,
       "user_id": 49,
       "course_id": 9,
@@ -1133,6 +1127,12 @@
       "user_id": 55,
       "course_id": 9,
       "enrolled_at": "2026-11-07 07:40:13"
+    },
+    {
+      "id": 111,
+      "user_id": 48,
+      "course_id": 9,
+      "enrolled_at": "2026-11-07 07:47:45"
     }
   ],
   "modules": [
