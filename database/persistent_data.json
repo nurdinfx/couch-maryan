@@ -764,6 +764,23 @@
       "faculty": "Health Science",
       "is_admin": 0,
       "password_plain": null
+    },
+    {
+      "id": 55,
+      "email": "hafsa.yasin@student.edu",
+      "password_hash": "$2b$10$Y/8P/O0TM4kGwQyBYrjXy.jhn/qmXK2iNF1v6i0Exn9uY2I5nc0T6",
+      "full_name": "Hafsa Yasin",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "STU-2026-906",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-07 07:40:13",
+      "is_active": 1,
+      "academic_year": "Year 5",
+      "faculty": "Health Science",
+      "is_admin": 0,
+      "password_plain": "Hafsa223"
     }
   ],
   "courses": [
@@ -1110,6 +1127,12 @@
       "user_id": 54,
       "course_id": 9,
       "enrolled_at": "2026-11-05T19:48:30.000Z"
+    },
+    {
+      "id": 110,
+      "user_id": 55,
+      "course_id": 9,
+      "enrolled_at": "2026-11-07 07:40:13"
     }
   ],
   "modules": [
