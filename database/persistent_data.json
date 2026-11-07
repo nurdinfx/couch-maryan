@@ -2054,11 +2054,11 @@
       "user_id": 45,
       "lesson_id": 17,
       "course_id": 9,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-07 08:20:58",
-      "last_accessed_at": "2026-11-07 08:20:58"
+      "last_accessed_at": "2026-11-07 08:27:43"
     }
   ],
   "assignments": [],
