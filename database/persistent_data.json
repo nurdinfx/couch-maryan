@@ -832,6 +832,23 @@
       "faculty": "Health Science",
       "is_admin": 0,
       "password_plain": "Nimco3"
+    },
+    {
+      "id": 59,
+      "email": "amal@student.edu",
+      "password_hash": "$2b$10$STxhf0NO/YVMgfNQ96YCQuiglkYXN1.DB/6nuvYWQss0NcKAyoFWi",
+      "full_name": "Amal",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "BMW2025",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-08 07:33:56",
+      "is_active": 1,
+      "academic_year": "Year 2",
+      "faculty": "Health Science",
+      "is_admin": 0,
+      "password_plain": "Amal5"
     }
   ],
   "courses": [
@@ -1202,6 +1219,12 @@
       "user_id": 58,
       "course_id": 11,
       "enrolled_at": "2026-11-08 07:33:16"
+    },
+    {
+      "id": 115,
+      "user_id": 59,
+      "course_id": 11,
+      "enrolled_at": "2026-11-08 07:33:56"
     }
   ],
   "modules": [
