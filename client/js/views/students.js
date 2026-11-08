@@ -112,20 +112,20 @@ const StudentsView = {
             </thead>
             <tbody>
               ${students.map(s => {
-                const isActive = s.is_active !== 0;
-                const safeName = (s.full_name || '').replace(/'/g, "\\'");
-                const enrolledCount = s.enrolled_count !== undefined ? s.enrolled_count : (s.enrolled_course_ids ? s.enrolled_course_ids.length : 0);
-                const yearLabel = s.academic_year || 'Year 1';
+      const isActive = s.is_active !== 0;
+      const safeName = (s.full_name || '').replace(/'/g, "\\'");
+      const enrolledCount = s.enrolled_count !== undefined ? s.enrolled_count : (s.enrolled_course_ids ? s.enrolled_course_ids.length : 0);
+      const yearLabel = s.academic_year || 'Year 1';
 
-                // Color code years
-                let yearBadgeBg = '#e0f2fe';
-                let yearBadgeColor = '#0369a1';
-                if (yearLabel === 'Year 2') { yearBadgeBg = '#fef3c7'; yearBadgeColor = '#b45309'; }
-                else if (yearLabel === 'Year 3') { yearBadgeBg = '#f3e8ff'; yearBadgeColor = '#7e22ce'; }
-                else if (yearLabel === 'Year 4') { yearBadgeBg = '#dcfce7'; yearBadgeColor = '#15803d'; }
-                else if (yearLabel === 'Year 5') { yearBadgeBg = '#ffe4e6'; yearBadgeColor = '#e11d48'; }
+      // Color code years
+      let yearBadgeBg = '#e0f2fe';
+      let yearBadgeColor = '#0369a1';
+      if (yearLabel === 'Year 2') { yearBadgeBg = '#fef3c7'; yearBadgeColor = '#b45309'; }
+      else if (yearLabel === 'Year 3') { yearBadgeBg = '#f3e8ff'; yearBadgeColor = '#7e22ce'; }
+      else if (yearLabel === 'Year 4') { yearBadgeBg = '#dcfce7'; yearBadgeColor = '#15803d'; }
+      else if (yearLabel === 'Year 5') { yearBadgeBg = '#ffe4e6'; yearBadgeColor = '#e11d48'; }
 
-                return `
+      return `
                   <tr style="border-bottom: 1px solid var(--border-color);">
                     <td style="padding: 1rem;">
                       <div style="display: flex; align-items: center; gap: 0.85rem;">
@@ -139,12 +139,12 @@ const StudentsView = {
                     <td style="padding: 1rem;"><code style="background: var(--bg-surface-alt); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">${s.student_id_number || 'N/A'}</code></td>
                     <td style="padding: 1rem;">
                       ${(() => {
-                        const f = s.faculty || 'General';
-                        const fc = {Computer:['#dbeafe','#1d4ed8'],Health:['#dcfce7','#15803d'],Engineering:['#fef9c3','#a16207'],Business:['#ede9fe','#6d28d9'],Education:['#ffe4e6','#be123c'],Mathematics:['#fce7f3','#9d174d'],Law:['#fdf4ff','#a21caf'],Islamic:['#fff7ed','#c2410c'],Social:['#ecfeff','#0e7490']};
-                        const key = Object.keys(fc).find(k => f.includes(k));
-                        const [bg, color] = key ? fc[key] : ['#f1f5f9','#475569'];
-                        return `<span style="background:${bg};color:${color};padding:0.25rem 0.6rem;border-radius:999px;font-size:0.78rem;font-weight:700;white-space:nowrap;">${f}</span>`;
-                      })()}
+          const f = s.faculty || 'General';
+          const fc = { Computer: ['#dbeafe', '#1d4ed8'], Health: ['#dcfce7', '#15803d'], Engineering: ['#fef9c3', '#a16207'], Business: ['#ede9fe', '#6d28d9'], Education: ['#ffe4e6', '#be123c'], Mathematics: ['#fce7f3', '#9d174d'], Law: ['#fdf4ff', '#a21caf'], Islamic: ['#fff7ed', '#c2410c'], Social: ['#ecfeff', '#0e7490'] };
+          const key = Object.keys(fc).find(k => f.includes(k));
+          const [bg, color] = key ? fc[key] : ['#f1f5f9', '#475569'];
+          return `<span style="background:${bg};color:${color};padding:0.25rem 0.6rem;border-radius:999px;font-size:0.78rem;font-weight:700;white-space:nowrap;">${f}</span>`;
+        })()}
                     </td>
                     <td style="padding: 1rem;">
                       <span class="badge" style="background: ${yearBadgeBg}; color: ${yearBadgeColor}; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 0.3rem;">
@@ -186,7 +186,7 @@ const StudentsView = {
                     </td>
                   </tr>
                 `;
-              }).join('')}
+    }).join('')}
 
               ${students.length === 0 ? `
                 <tr>
@@ -289,17 +289,17 @@ const StudentsView = {
                 </label>
                 <select name="faculty" required style="width: 100%; padding: 0.65rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; background: white; color: #0369a1;">
                   ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
-                    {value:'Computer Science',label:'💻 Computer Science'},
-                    {value:'Health Science',label:'🏥 Health Science'},
-                    {value:'Engineering',label:'⚙️ Engineering'},
-                    {value:'Business',label:'💼 Business & Management'},
-                    {value:'Education',label:'📚 Education'},
-                    {value:'Mathematics',label:'📐 Mathematics & Statistics'},
-                    {value:'Law',label:'⚖️ Law & Legal Studies'},
-                    {value:'Islamic Studies',label:'🕌 Islamic Studies'},
-                    {value:'Social Sciences',label:'🌍 Social Sciences'},
-                    {value:'General',label:'🏫 General / All Faculties'}
-                  ]).map(f => `<option value="${f.value}">${f.label}</option>`).join('')}
+        { value: 'Computer Science', label: '💻 Computer Science' },
+        { value: 'Health Science', label: '🏥 Health Science' },
+        { value: 'Engineering', label: '⚙️ Engineering' },
+        { value: 'Business', label: '💼 Business & Management' },
+        { value: 'Education', label: '📚 Education' },
+        { value: 'Mathematics', label: '📐 Mathematics & Statistics' },
+        { value: 'Law', label: '⚖️ Law & Legal Studies' },
+        { value: 'Islamic Studies', label: '🕌 Islamic Studies' },
+        { value: 'Social Sciences', label: '🌍 Social Sciences' },
+        { value: 'General', label: '🏫 General / All Faculties' }
+      ]).map(f => `<option value="${f.value}">${f.label}</option>`).join('')}
                 </select>
               </div>
 
@@ -384,7 +384,7 @@ const StudentsView = {
   async submitCreateStudent(e) {
     e.preventDefault();
     const form = e.target;
-    
+
     // Collect checked course IDs
     const checkedCourseBoxes = form.querySelectorAll('input[name="course_ids"]:checked');
     const course_ids = Array.from(checkedCourseBoxes).map(cb => parseInt(cb.value));
@@ -490,17 +490,17 @@ const StudentsView = {
               </label>
               <select name="faculty" style="width: 100%; padding: 0.75rem; border: 1px solid #0284c7; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; background: white; color: #0369a1;">
                 ${(typeof FACULTIES !== 'undefined' ? FACULTIES : [
-                  {value:'Computer Science',label:'💻 Computer Science'},
-                  {value:'Health Science',label:'🏥 Health Science'},
-                  {value:'Engineering',label:'⚙️ Engineering'},
-                  {value:'Business',label:'💼 Business & Management'},
-                  {value:'Education',label:'📚 Education'},
-                  {value:'Mathematics',label:'📐 Mathematics & Statistics'},
-                  {value:'Law',label:'⚖️ Law & Legal Studies'},
-                  {value:'Islamic Studies',label:'🕌 Islamic Studies'},
-                  {value:'Social Sciences',label:'🌍 Social Sciences'},
-                  {value:'General',label:'🏫 General / All Faculties'}
-                ]).map(f => `<option value="${f.value}" ${f.value === (student.faculty || 'General') ? 'selected' : ''}>${f.label}</option>`).join('')}
+        { value: 'Computer Science', label: '💻 Computer Science' },
+        { value: 'Health Science', label: '🏥 Health Science' },
+        { value: 'Engineering', label: '⚙️ Engineering' },
+        { value: 'Business', label: '💼 Business & Management' },
+        { value: 'Education', label: '📚 Education' },
+        { value: 'Mathematics', label: '📐 Mathematics & Statistics' },
+        { value: 'Law', label: '⚖️ Law & Legal Studies' },
+        { value: 'Islamic Studies', label: '🕌 Islamic Studies' },
+        { value: 'Social Sciences', label: '🌍 Social Sciences' },
+        { value: 'General', label: '🏫 General / All Faculties' }
+      ]).map(f => `<option value="${f.value}" ${f.value === (student.faculty || 'General') ? 'selected' : ''}>${f.label}</option>`).join('')}
               </select>
             </div>
 
@@ -521,8 +521,8 @@ const StudentsView = {
               
               <div id="edit_course_checkboxes_container" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 180px; overflow-y: auto; padding-right: 0.5rem;">
                 ${courses.map(c => {
-                  const isChecked = enrolledIds.includes(c.id);
-                  return `
+        const isChecked = enrolledIds.includes(c.id);
+        return `
                     <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.85rem; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; font-size: 0.85rem;">
                       <span style="display: flex; align-items: center; gap: 0.6rem;">
                         <input type="checkbox" name="edit_course_ids" value="${c.id}" ${isChecked ? 'checked' : ''}>
@@ -531,7 +531,7 @@ const StudentsView = {
                       <span class="badge" style="font-size: 0.75rem; background: #e0f2fe; color: #0369a1;">${c.target_year || 'All Years'}</span>
                     </label>
                   `;
-                }).join('')}
+      }).join('')}
               </div>
             </div>
 
