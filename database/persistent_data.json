@@ -2357,21 +2357,6 @@
       "created_at": "2026-11-04T20:28:59.000Z"
     },
     {
-      "id": 5,
-      "course_id": 9,
-      "module_id": null,
-      "title": "health",
-      "description": "",
-      "time_limit_minutes": 30,
-      "max_attempts": 3,
-      "passing_percentage": 100,
-      "weight_percentage": 20,
-      "open_date": null,
-      "close_date": "2026-11-15T20:59:00.000Z",
-      "release_results_immediately": 1,
-      "created_at": "2026-11-05T02:44:03.000Z"
-    },
-    {
       "id": 6,
       "course_id": 9,
       "module_id": null,
@@ -2505,20 +2490,6 @@
       "feedback": null
     },
     {
-      "id": 8,
-      "quiz_id": 5,
-      "user_id": 18,
-      "attempt_number": 1,
-      "started_at": "2026-11-05T06:19:48.000Z",
-      "submitted_at": "2026-11-05T06:19:51.000Z",
-      "score": 0,
-      "max_score": 0,
-      "percentage": 0,
-      "is_passed": 0,
-      "status": "completed",
-      "feedback": "Attempt completed."
-    },
-    {
       "id": 9,
       "quiz_id": 6,
       "user_id": 20,
@@ -2589,20 +2560,6 @@
       "feedback": "Attempt completed."
     },
     {
-      "id": 14,
-      "quiz_id": 5,
-      "user_id": 24,
-      "attempt_number": 1,
-      "started_at": "2026-11-06T04:53:46.000Z",
-      "submitted_at": "2026-11-06T07:40:03.000Z",
-      "score": 0,
-      "max_score": 0,
-      "percentage": 0,
-      "is_passed": 0,
-      "status": "completed",
-      "feedback": "Attempt completed."
-    },
-    {
       "id": 15,
       "quiz_id": 6,
       "user_id": 21,
@@ -2657,34 +2614,6 @@
       "is_passed": 0,
       "status": "completed",
       "feedback": "Attempt completed."
-    },
-    {
-      "id": 19,
-      "quiz_id": 5,
-      "user_id": 24,
-      "attempt_number": 2,
-      "started_at": "2026-11-06T07:41:42.000Z",
-      "submitted_at": "2026-11-06T07:41:47.000Z",
-      "score": 0,
-      "max_score": 0,
-      "percentage": 0,
-      "is_passed": 0,
-      "status": "completed",
-      "feedback": "Attempt completed."
-    },
-    {
-      "id": 20,
-      "quiz_id": 5,
-      "user_id": 19,
-      "attempt_number": 1,
-      "started_at": "2026-11-06T12:27:09.000Z",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
     },
     {
       "id": 21,
