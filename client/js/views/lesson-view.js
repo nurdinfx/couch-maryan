@@ -266,7 +266,9 @@ const LessonView = {
 
       // C: HTML5 Video (Uploaded from Device or Direct MP4/WebM/MOV URL)
       let validSrc = videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-      if (validSrc.startsWith('/') && !validSrc.startsWith('//')) {
+      if (typeof API !== 'undefined' && API.getFileUrl) {
+        validSrc = API.getFileUrl(validSrc);
+      } else if (validSrc.startsWith('/') && !validSrc.startsWith('//')) {
         validSrc = (typeof API !== 'undefined' && API.getBaseUrl ? API.getBaseUrl() : '') + validSrc;
       }
       
@@ -358,9 +360,10 @@ const LessonView = {
     }
 
     if (lesson.content_type === 'document' || isActuallyPdf) {
-      const docUrl = lesson.file_url || lesson.video_url || '/uploads/documents/CS301_Course_Syllabus.pdf';
+      const rawDocUrl = lesson.file_url || lesson.video_url || '/uploads/documents/CS301_Course_Syllabus.pdf';
+      const docUrl = typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(rawDocUrl) : rawDocUrl;
       const encodedDocUrl = encodeURI(docUrl);
-      const fileName = lesson.file_name || (docUrl.split('/').pop()) || 'Document Resource';
+      const fileName = lesson.file_name || (rawDocUrl.split('/').pop()) || 'Document Resource';
       return `
         <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div>

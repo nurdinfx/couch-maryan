@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://couch-maryan.onrender.com/api/:match*"
+      "destination": "https://couch-maryan-6bjj.onrender.com/api/:match*"
     },
     {
       "source": "/uploads/:match*",
-      "destination": "https://couch-maryan.onrender.com/uploads/:match*"
+      "destination": "https://couch-maryan-6bjj.onrender.com/uploads/:match*"
     },
     {
       "source": "/features",

@@ -23,6 +23,21 @@ const API = {
     return '';
   },
 
+  getFileUrl(url) {
+    if (!url) return '';
+    if (typeof url !== 'string') return url;
+    // Auto-fix legacy suspended Render URL in older database records
+    let clean = url.replace(/https?:\/\/couch-maryan\.onrender\.com/g, this.getBaseUrl() || 'https://couch-maryan-6bjj.onrender.com');
+    if (/^(?:https?:|\/\/|data:|blob:)/i.test(clean)) {
+      return clean;
+    }
+    const base = this.getBaseUrl();
+    if (clean.startsWith('/')) {
+      return base ? `${base}${clean}` : clean;
+    }
+    return base ? `${base}/${clean}` : `/${clean}`;
+  },
+
   async request(endpoint, options = {}) {
     const url = `${this.getBaseUrl()}/api${endpoint}`;
     const headers = options.headers || {};

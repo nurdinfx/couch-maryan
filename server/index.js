@@ -142,6 +142,11 @@ async function startServer() {
 
   // Dedicated robust handler for /uploads
   app.use('/uploads', async (req, res, next) => {
+    // Enable cross-origin embedding and access so iframes on gureylearning.com can display media/PDFs
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.removeHeader('X-Frame-Options');
+
     const rawPath = req.path || '';
     const cleanRelative = decodeURIComponent(rawPath).replace(/^[\\/]+/, '').replace(/\\/g, '/');
     const fullLocalPath = path.join(uploadsDir, cleanRelative);

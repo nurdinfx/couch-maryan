@@ -53,6 +53,16 @@ const App = {
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
   },
 
+  getCoverUrl(cover_image, code = '', title = '') {
+    if (!cover_image) return this.getCourseFallback(code, title);
+    return typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(cover_image) : cover_image;
+  },
+
+  getAvatarUrl(avatar_url) {
+    if (!avatar_url) return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+    return typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(avatar_url) : avatar_url;
+  },
+
   handleCoverError(img, code = '', title = '') {
     if (!img) return;
     img.onerror = null;
@@ -252,7 +262,7 @@ const App = {
 
     if (nameEl) nameEl.textContent = user.full_name;
     if (roleEl) roleEl.textContent = user.role.toUpperCase();
-    if (avatarEl && user.avatar_url) avatarEl.src = user.avatar_url;
+    if (avatarEl && user.avatar_url) avatarEl.src = this.getAvatarUrl(user.avatar_url);
     if (switcherEl) switcherEl.value = user.id.toString();
 
     // Toggle admin link in drawer
@@ -266,7 +276,7 @@ const App = {
     const user = API.currentUser;
     if (!user) return;
 
-    const currentAvatar = user.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+    const currentAvatar = this.getAvatarUrl(user.avatar_url);
 
     this.showCustomModal(`
       <div class="modal-dialog" style="max-width: 480px; width: 95%;">
@@ -440,7 +450,7 @@ const App = {
                        onclick="App.navigate('/course/${c.id}')"
                        onmouseover="this.style.boxShadow='var(--shadow-lg)'; this.style.transform='translateY(-3px)'"
                        onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)'">
-                    <img src="${c.cover_image || App.getCourseFallback(c.code, c.title)}" 
+                    <img src="${App.getCoverUrl(c.cover_image, c.code, c.title)}" 
                          style="width: 100%; height: 160px; object-fit: cover;" 
                          onerror="App.handleCoverError(this, '${c.code}', '${(c.title || '').replace(/'/g, "\\'")}')">
                     <div style="padding: 1.25rem;">

@@ -145,17 +145,19 @@ const MessagesView = {
                   <!-- Media Attachment Rendering -->
                   ${hasAttachment ? `
                     <div style="margin-top: ${m.content ? '0.75rem' : '0'};">
-                      ${isImage ? `
+                      ${(() => {
+                        const fileUrl = typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(m.attachment_url) : m.attachment_url;
+                        return isImage ? `
                         <div style="border-radius: 10px; overflow: hidden; border: 1px solid ${isMe ? 'rgba(255,255,255,0.2)' : 'var(--border-color)'}; background: #000;">
-                          <a href="${m.attachment_url}" target="_blank" title="View Full Photo" style="display: block;">
-                            <img src="${m.attachment_url}" alt="${m.attachment_name || 'Attached Photo'}" style="width: 100%; max-height: 280px; object-fit: contain; display: block;">
+                          <a href="${fileUrl}" target="_blank" title="View Full Photo" style="display: block;">
+                            <img src="${fileUrl}" alt="${m.attachment_name || 'Attached Photo'}" style="width: 100%; max-height: 280px; object-fit: contain; display: block;">
                           </a>
                         </div>
                         <div style="font-size: 0.72rem; margin-top: 0.35rem; opacity: 0.85; display: flex; align-items: center; gap: 0.3rem;">
                           <span>📷</span> <span>${m.attachment_name || 'Photo'}</span>
                         </div>
                       ` : `
-                        <a href="${m.attachment_url}" target="_blank" download="${m.attachment_name || 'document'}"
+                        <a href="${fileUrl}" target="_blank" download="${m.attachment_name || 'document'}"
                            style="display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.95rem; border-radius: 10px; text-decoration: none; color: ${isMe ? '#ffffff' : 'var(--text-primary)'}; background: ${isMe ? 'rgba(255,255,255,0.15)' : 'var(--bg-surface-alt)'}; border: 1px solid ${isMe ? 'rgba(255,255,255,0.25)' : 'var(--border-color)'}; transition: all 0.2s;">
                           <span style="font-size: 1.5rem; line-height: 1;">📄</span>
                           <div style="flex: 1; min-width: 0; text-align: left;">
@@ -168,7 +170,8 @@ const MessagesView = {
                           </div>
                           <span style="font-size: 1.15rem; margin-left: 0.5rem;">⬇️</span>
                         </a>
-                      `}
+                      `;
+                      })()}
                     </div>
                   ` : ''}
 

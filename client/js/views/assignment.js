@@ -65,7 +65,7 @@ const AssignmentView = {
 
           ${assignment.attachment_url ? `
             <div style="margin-top: 1.25rem;">
-              <a href="${assignment.attachment_url}" target="_blank" download class="btn btn-outline btn-sm">
+              <a href="${typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(assignment.attachment_url) : assignment.attachment_url}" target="_blank" download class="btn btn-outline btn-sm">
                 <span>📎</span> Download Specification (${assignment.attachment_name || 'Assignment Guide.pdf'})
               </a>
             </div>
@@ -125,7 +125,7 @@ const AssignmentView = {
                 <tr>
                   <td style="padding: 0.75rem 0; color: var(--text-muted);">Uploaded File</td>
                   <td style="padding: 0.75rem 0;">
-                    <a href="${submission.file_url}" target="_blank" download style="font-weight: 600;">
+                    <a href="${typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(submission.file_url) : submission.file_url}" target="_blank" download style="font-weight: 600;">
                       📥 ${submission.file_name || 'Download Submitted File'}
                     </a>
                   </td>
@@ -214,7 +214,7 @@ const AssignmentView = {
                       </td>
                       <td>
                         ${s.file_url ? `
-                          <a href="${s.file_url}" target="_blank" download class="btn btn-outline btn-sm" style="font-size: 0.75rem;">
+                          <a href="${typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(s.file_url) : s.file_url}" target="_blank" download class="btn btn-outline btn-sm" style="font-size: 0.75rem;">
                             📥 ${s.file_name || 'Download File'}
                           </a>
                         ` : s.submission_text ? `
