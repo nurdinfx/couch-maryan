@@ -886,7 +886,7 @@
     },
     {
       "id": 62,
-      "email": "iqro@student.edu",
+      "email": "iqro1@student.edu",
       "password_hash": "$2b$10$haPAf04BjgCu.MrCOi85deu/taCb8umtPI0uGru1.ugdUx1E2T1EO",
       "full_name": "Iqro",
       "role": "student",
@@ -1307,16 +1307,16 @@
       "enrolled_at": "2026-11-08 07:35:28"
     },
     {
-      "id": 118,
-      "user_id": 62,
-      "course_id": 11,
-      "enrolled_at": "2026-11-08 07:36:16"
-    },
-    {
       "id": 119,
       "user_id": 63,
       "course_id": 11,
       "enrolled_at": "2026-11-08 07:37:53"
+    },
+    {
+      "id": 120,
+      "user_id": 62,
+      "course_id": 11,
+      "enrolled_at": "2026-11-08 07:38:43"
     }
   ],
   "modules": [
