@@ -2331,11 +2331,11 @@
       "user_id": 58,
       "lesson_id": 50,
       "course_id": 11,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-08 08:35:26",
-      "last_accessed_at": "2026-11-08 08:35:26"
+      "last_accessed_at": "2026-11-08 08:35:30"
     }
   ],
   "assignments": [],
