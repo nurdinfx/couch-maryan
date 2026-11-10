@@ -2458,21 +2458,6 @@
       "max_score": 100,
       "weight_percentage": 20,
       "created_at": "2026-11-10 07:16:08"
-    },
-    {
-      "id": 8,
-      "course_id": 10,
-      "module_id": null,
-      "title": "56566",
-      "instructions": "fffffff",
-      "attachment_url": "/uploads/covers/1794295265651_72b86968-8c7c-4130-8fd9-d1b3b78e4ba4.png",
-      "attachment_name": "72b86968-8c7c-4130-8fd9-d1b3b78e4ba4.png",
-      "due_date": "2026-11-10",
-      "allow_late": 1,
-      "submission_type": "file",
-      "max_score": 100,
-      "weight_percentage": 20,
-      "created_at": "2026-11-10 07:21:06"
     }
   ],
   "assignment_submissions": [],
