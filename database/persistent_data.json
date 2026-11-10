@@ -2557,6 +2557,16 @@
       "correct_answer_text": "woman who is not now and never has been pregnant.",
       "points": 1,
       "sort_order": 4
+    },
+    {
+      "id": 20,
+      "quiz_id": 7,
+      "question_text": "GPLAM",
+      "question_type": "short_answer",
+      "options_json": null,
+      "correct_answer_text": "G-Gravida",
+      "points": 1,
+      "sort_order": 5
     }
   ],
   "quiz_attempts": [
