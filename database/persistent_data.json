@@ -2443,21 +2443,6 @@
       "max_score": 100,
       "weight_percentage": 20,
       "created_at": "2026-11-10 07:12:06"
-    },
-    {
-      "id": 6,
-      "course_id": 8,
-      "module_id": null,
-      "title": "RISK ASSESMENT",
-      "instructions": "Research those diseases",
-      "attachment_url": "/uploads/documents/1794294726661_ASSIGNEMENT_YEAR_1_.pdf",
-      "attachment_name": "ASSIGNEMENT YEAR 1 .pdf",
-      "due_date": "2026-11-16",
-      "allow_late": 1,
-      "submission_type": "both",
-      "max_score": 100,
-      "weight_percentage": 20,
-      "created_at": "2026-11-10 07:12:06"
     }
   ],
   "assignment_submissions": [],
