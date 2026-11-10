@@ -2764,13 +2764,13 @@
       "user_id": 14,
       "attempt_number": 1,
       "started_at": "2026-11-10 06:04:59",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-10 06:20:21",
+      "score": 0,
+      "max_score": 5,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 26,
@@ -3805,6 +3805,756 @@
       "attempt_id": 23,
       "question_id": 21,
       "user_answer_json": "\"Gestation:para,,multigaravide \"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 180,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 181,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 182,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 183,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 184,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 185,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 186,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 187,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 188,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 189,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 190,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 191,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 192,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 193,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 194,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 195,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 196,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 197,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 198,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 199,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 200,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 201,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 202,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 203,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 204,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 205,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 206,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 207,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 208,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 209,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 210,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 211,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 212,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 213,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 214,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 215,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 216,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 217,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 218,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 219,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 220,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 221,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 222,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 223,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 224,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 225,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 226,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 227,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 228,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 229,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 230,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 231,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 232,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 233,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 234,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 235,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 236,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 237,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 238,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 239,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 240,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 241,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 242,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 243,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 244,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 245,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 246,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 247,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 248,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 249,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 250,
+      "attempt_id": 25,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal condition of having developing fatus in the the body\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 251,
+      "attempt_id": 25,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 252,
+      "attempt_id": 25,
+      "question_id": 18,
+      "user_answer_json": "\"Human conception up to the 10th week of gestation  8th week posconception\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 253,
+      "attempt_id": 25,
+      "question_id": 19,
+      "user_answer_json": "\"Woman who is not now and never  has Ben pregnans\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 254,
+      "attempt_id": 25,
+      "question_id": 21,
+      "user_answer_json": null,
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
