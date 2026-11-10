@@ -2567,16 +2567,6 @@
       "correct_answer_text": "G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy",
       "points": 1,
       "sort_order": 5
-    },
-    {
-      "id": 22,
-      "quiz_id": 7,
-      "question_text": "GPLAM",
-      "question_type": "short_answer",
-      "options_json": null,
-      "correct_answer_text": "G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy",
-      "points": 1,
-      "sort_order": 6
     }
   ],
   "quiz_attempts": [
