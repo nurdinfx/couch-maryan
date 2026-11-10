@@ -1322,21 +1322,21 @@ const App = {
                 </div>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Attach Assignment Guide <span style="font-weight:400;color:var(--text-muted);">(PDF, Sawir, Video — optional)</span></label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Attach Assignment Guides <span style="font-weight:400;color:var(--text-muted);">(Sawirro badan, PDF, Video — optional)</span></label>
                 <div id="assign-dropzone"
                   ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#eff6ff';"
                   ondragleave="this.style.borderColor='var(--border-color)';this.style.background='';"
                   ondrop="App.handleAssignDropzone(event)"
                   style="border:2px dashed var(--border-color);border-radius:var(--radius-md);padding:1rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;"
                   onclick="document.getElementById('assign-attach-input').click()">
-                  <input type="file" id="assign-attach-input" name="attachment"
+                  <input type="file" id="assign-attach-input" name="attachment" multiple
                     accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.mp4,.mov,.mkv,.webm,.avi"
                     style="display:none;"
                     onchange="App.handleAssignFileSelect(this)">
                   <div id="assign-dropzone-idle" style="pointer-events:none;">
-                    <div style="font-size:2rem;margin-bottom:0.3rem;">📂</div>
-                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Riix halkan ama u jiidi faylka</div>
-                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">📄 PDF &nbsp;|&nbsp; 🖼️ Sawir &nbsp;|&nbsp; 🎬 Video (MP4, MOV…) &nbsp;|&nbsp; 📝 Word/PPT</div>
+                    <div style="font-size:2rem;margin-bottom:0.3rem;">📸</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Riix halkan ama u soo jiid sawirro badan / faylal</div>
+                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">🖼️ Sawirro badan &nbsp;|&nbsp; 📄 PDF &nbsp;|&nbsp; 🎬 Video &nbsp;|&nbsp; 📝 Word/PPT</div>
                   </div>
                   <div id="assign-dropzone-preview" style="display:none;pointer-events:none;"></div>
                 </div>
@@ -1634,7 +1634,7 @@ const App = {
     if (fileInput) fileInput.value = '';
   },
 
-  // ─── Assignment Guide Dropzone helpers ───────────────────────────────────────
+  // ─── Assignment Guide Dropzone helpers (Supports Multiple Files & Photos) ───
   handleAssignDropzone(event) {
     event.preventDefault();
     const dz = document.getElementById('assign-dropzone');
@@ -1643,69 +1643,74 @@ const App = {
     if (files && files.length > 0) {
       const inp = document.getElementById('assign-attach-input');
       if (inp) {
-        // DataTransfer trick to set files on the real input
         try {
           const dt = new DataTransfer();
-          dt.items.add(files[0]);
+          for (let i = 0; i < files.length; i++) dt.items.add(files[i]);
           inp.files = dt.files;
         } catch(e) {}
-        App.handleAssignFileSelect(inp, files[0]);
+        App.handleAssignFileSelect(inp);
       }
     }
   },
 
-  handleAssignFileSelect(input, overrideFile) {
-    const file = overrideFile || (input.files && input.files[0]);
-    if (!file) return;
+  handleAssignFileSelect(input) {
+    const files = Array.from(input.files || []);
+    if (files.length === 0) return;
     const idle = document.getElementById('assign-dropzone-idle');
     const preview = document.getElementById('assign-dropzone-preview');
     if (!idle || !preview) return;
 
-    const isImg   = file.type.startsWith('image/');
-    const isVideo = file.type.startsWith('video/');
-    const isPdf   = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-    const sizeMB  = (file.size / 1024 / 1024).toFixed(1);
-    const icon    = isImg ? '🖼️' : isVideo ? '🎬' : isPdf ? '📄' : '📎';
-
     idle.style.display = 'none';
     preview.style.display = 'block';
 
-    if (isImg) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        preview.innerHTML = `
-          <img src="${e.target.result}" alt="preview"
-            style="max-height:140px;max-width:100%;border-radius:var(--radius-md);object-fit:contain;margin-bottom:0.4rem;">
-          <div style="font-size:0.8rem;font-weight:600;">${icon} ${file.name}</div>
-          <div style="font-size:0.72rem;color:var(--text-muted);">${sizeMB} MB
-            &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
-          </div>`;
-      };
-      reader.readAsDataURL(file);
-    } else if (isVideo) {
-      const url = URL.createObjectURL(file);
-      preview.innerHTML = `
-        <video src="${url}" controls style="max-height:150px;max-width:100%;border-radius:var(--radius-md);margin-bottom:0.4rem;"></video>
-        <div style="font-size:0.8rem;font-weight:600;">${icon} ${file.name}</div>
-        <div style="font-size:0.72rem;color:var(--text-muted);">${sizeMB} MB
-          &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
-        </div>`;
-    } else {
-      preview.innerHTML = `
-        <div style="font-size:2.5rem;margin-bottom:0.3rem;">${icon}</div>
-        <div style="font-size:0.88rem;font-weight:700;">${file.name}</div>
-        <div style="font-size:0.76rem;color:var(--text-muted);">${sizeMB} MB
-          &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
-        </div>`;
-    }
+    const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0);
+    const totalMB = (totalBytes / 1024 / 1024).toFixed(1);
 
-    // Show simulated progress bar for UX (actual upload happens on submit)
+    preview.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border-color);">
+        <span style="font-size:0.82rem;font-weight:700;color:var(--primary);">
+          📁 ${files.length} ${files.length === 1 ? 'fayl' : 'faylal / sawirro'} la doortay (${totalMB} MB)
+        </span>
+        <button type="button" class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:0.72rem;color:#ef4444;" onclick="event.stopPropagation();App.clearAssignAttachment()">
+          ✕ Tirtir Dhammaan
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:0.5rem;max-height:220px;overflow-y:auto;padding:2px;">
+        ${files.map((file, idx) => {
+          const isImg = file.type.startsWith('image/');
+          const isVideo = file.type.startsWith('video/');
+          const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+          const sizeStr = (file.size / 1024 / 1024).toFixed(1) + ' MB';
+          const icon = isImg ? '🖼️' : isVideo ? '🎬' : isPdf ? '📄' : '📎';
+          const objUrl = (isImg || isVideo) ? URL.createObjectURL(file) : '';
+
+          return `
+            <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;background:var(--bg-surface);display:flex;flex-direction:column;text-align:left;">
+              ${isImg ? `
+                <div style="height:70px;background:#0f172a;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                  <img src="${objUrl}" style="max-height:100%;max-width:100%;object-fit:cover;">
+                </div>
+              ` : isVideo ? `
+                <div style="height:70px;background:#000;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;">🎬</div>
+              ` : `
+                <div style="height:70px;background:var(--bg-surface-alt);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">${icon}</div>
+              `}
+              <div style="padding:0.35rem;font-size:0.7rem;">
+                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${file.name}">${file.name}</div>
+                <div style="color:var(--text-muted);font-size:0.65rem;">${sizeStr}</div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
     const wrap = document.getElementById('assign-upload-bar-wrap');
     const bar  = document.getElementById('assign-upload-bar');
     const lbl  = document.getElementById('assign-upload-bar-label');
     if (wrap && bar) {
       wrap.style.display = 'block';
-      lbl.textContent = `✅ ${file.name} diyaar u ah in la soo galiyoo`;
+      lbl.textContent = `✅ ${files.length} faylal / sawirro diyaar u ah soo gelinta (${totalMB} MB)`;
       bar.style.width = '100%';
       bar.style.background = '#22c55e';
     }

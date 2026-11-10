@@ -5,6 +5,47 @@ const { requireAuth, requireProfessor } = require('../middleware/auth');
 const { upload, safeUploadFlexible } = require('../middleware/upload');
 const { logAudit } = require('../middleware/audit');
 
+// Helper to process single or multiple uploaded files consistently
+function processUploadedFiles(req, defaultSubfolder = 'documents') {
+  const files = (req.files && req.files.length > 0) ? req.files : (req.file ? [req.file] : []);
+  if (files.length === 0) return null;
+
+  const fileList = files.map(file => {
+    const savedPath = file.path || '';
+    let subfolder = defaultSubfolder;
+    if (savedPath.includes('/videos/') || savedPath.includes('\\videos\\')) subfolder = 'videos';
+    else if (savedPath.includes('/covers/') || savedPath.includes('\\covers\\')) subfolder = 'covers';
+    else if (savedPath.includes('/submissions/') || savedPath.includes('\\submissions\\')) subfolder = 'submissions';
+    const url = `/uploads/${subfolder}/${file.filename}`;
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(file.path, url);
+    } catch (e) {}
+    return {
+      url,
+      name: file.originalname,
+      size: file.size,
+      type: file.mimetype
+    };
+  });
+
+  if (fileList.length === 1) {
+    return {
+      url: fileList[0].url,
+      name: fileList[0].name,
+      size: fileList[0].size,
+      list: fileList
+    };
+  }
+
+  return {
+    url: JSON.stringify(fileList),
+    name: `${fileList.length} files attached`,
+    size: fileList.reduce((acc, f) => acc + (f.size || 0), 0),
+    list: fileList
+  };
+}
+
 // 1. Get single assignment with student's submission status
 router.get('/:id', requireAuth, (req, res) => {
   const assignmentId = parseInt(req.params.id);
@@ -64,20 +105,10 @@ router.post('/course/:courseId', requireProfessor, safeUploadFlexible(), (req, r
 
   let attachment_url = null;
   let attachment_name = null;
-  if (req.file) {
-    // Determine subfolder from where multer actually saved the file
-    const savedPath = req.file.path || '';
-    let subfolder = 'documents';
-    if (savedPath.includes('/videos/') || savedPath.includes('\\videos\\')) subfolder = 'videos';
-    else if (savedPath.includes('/covers/') || savedPath.includes('\\covers\\')) subfolder = 'covers';
-    attachment_url = `/uploads/${subfolder}/${req.file.filename}`;
-    attachment_name = req.file.originalname;
-
-    // Background backup of uploaded assignment guide to GitHub
-    try {
-      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
-      pushUploadedFileToGitHub(req.file.path, attachment_url);
-    } catch (e) {}
+  const uploaded = processUploadedFiles(req, 'documents');
+  if (uploaded) {
+    attachment_url = uploaded.url;
+    attachment_name = uploaded.name;
   }
 
   const result = db.prepare(`
@@ -128,18 +159,10 @@ router.put('/:id', requireProfessor, safeUploadFlexible(), (req, res) => {
 
   let attachment_url = existing.attachment_url;
   let attachment_name = existing.attachment_name;
-  if (req.file) {
-    const savedPath = req.file.path || '';
-    let subfolder = 'documents';
-    if (savedPath.includes('/videos/') || savedPath.includes('\\videos\\')) subfolder = 'videos';
-    else if (savedPath.includes('/covers/') || savedPath.includes('\\covers\\')) subfolder = 'covers';
-    attachment_url = `/uploads/${subfolder}/${req.file.filename}`;
-    attachment_name = req.file.originalname;
-
-    try {
-      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
-      pushUploadedFileToGitHub(req.file.path, attachment_url);
-    } catch (e) {}
+  const uploaded = processUploadedFiles(req, 'documents');
+  if (uploaded) {
+    attachment_url = uploaded.url;
+    attachment_name = uploaded.name;
   }
 
   db.prepare(`
@@ -204,15 +227,11 @@ router.post('/:id/submit', requireAuth, safeUploadFlexible(), (req, res) => {
   let file_name = null;
   let file_size_bytes = 0;
 
-  if (req.file) {
-    file_url = `/uploads/submissions/${req.file.filename}`;
-    file_name = req.file.originalname;
-    file_size_bytes = req.file.size;
-
-    try {
-      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
-      pushUploadedFileToGitHub(req.file.path, file_url);
-    } catch (e) {}
+  const uploaded = processUploadedFiles(req, 'submissions');
+  if (uploaded) {
+    file_url = uploaded.url;
+    file_name = uploaded.name;
+    file_size_bytes = uploaded.size;
   }
 
   if (!file_url && (!submission_text || submission_text.trim() === '')) {
