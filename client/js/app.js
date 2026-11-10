@@ -1301,7 +1301,7 @@ const App = {
               </div>
               <div style="margin-bottom:0.75rem;">
                 <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Instructions / Description *</label>
-                <textarea name="description" rows="3" required placeholder="Detailed instructions for students..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+                <textarea name="instructions" rows="3" required placeholder="Detailed instructions for students..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
                 <div>
@@ -1323,7 +1323,7 @@ const App = {
               </div>
               <div style="margin-bottom:0.75rem;">
                 <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">📎 Attach Assignment Guide (PDF/doc — optional)</label>
-                <input type="file" name="file" accept=".pdf,.doc,.docx,.zip" style="font-size:0.82rem;width:100%;">
+                <input type="file" name="attachment" accept=".pdf,.doc,.docx,.zip" style="font-size:0.82rem;width:100%;">
               </div>
               <div style="background:var(--bg-surface-alt);border:1px dashed var(--primary);border-radius:var(--radius-md);padding:0.85rem;text-align:center;">
                 <div style="font-size:1.5rem;margin-bottom:0.3rem;">📥</div>

@@ -17,6 +17,8 @@ const QuizView = {
     const data = await API.getQuiz(quizId);
     const quiz = data.quiz;
     const attempts = data.attempts || [];
+    const studentAttempts = data.student_attempts || [];
+    const stats = data.stats || null;
 
     // If active attempt requested, or user clicked start
     if (params.action === 'run' && params.attemptId) {
@@ -183,56 +185,144 @@ const QuizView = {
 
       <!-- Past Attempts History Table -->
       <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
-        <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Summary of Previous Attempts</h3>
-        
-        <div class="gradebook-table-container">
-          <table class="gradebook-table">
-            <thead>
-              <tr>
-                <th>Attempt #</th>
-                <th>Started</th>
-                <th>Submitted</th>
-                <th>Score</th>
-                <th>Percentage</th>
-                <th>Result</th>
-                <th>Review</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${attempts.map(att => `
-                <tr>
-                  <td><strong>Attempt ${att.attempt_number}</strong></td>
-                  <td style="font-size: 0.8rem;">${new Date(att.started_at).toLocaleString()}</td>
-                  <td style="font-size: 0.8rem;">${att.submitted_at ? new Date(att.submitted_at).toLocaleString() : 'In Progress'}</td>
-                  <td><strong>${att.score !== null ? att.score + ' / ' + att.max_score : '—'}</strong></td>
-                  <td><strong style="color: ${att.percentage >= quiz.passing_percentage ? 'var(--success)' : 'var(--danger)'};">${att.percentage !== null ? att.percentage + '%' : '—'}</strong></td>
-                  <td>
-                    ${att.status === 'in_progress' ? '<span class="badge badge-warning">In Progress</span>' : att.is_passed ? '<span class="badge badge-success">Passed</span>' : '<span class="badge badge-danger">Not Passed</span>'}
-                  </td>
-                  <td>
-                    ${att.submitted_at ? `
-                      <a href="#/course/${quiz.course_id}/quiz/${quiz.id}?action=review&attemptId=${att.id}" class="btn btn-outline btn-sm">
-                        View Review
-                      </a>
-                    ` : `
-                      <a href="#/course/${quiz.course_id}/quiz/${quiz.id}?action=run&attemptId=${att.id}" class="btn btn-primary btn-sm">
-                        Resume Attempt
-                      </a>
-                    `}
-                  </td>
-                </tr>
-              `).join('')}
+        ${isProfessor ? `
+          <!-- PROFESSOR: Show stats + ALL student attempts -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <h3 style="font-size: 1.15rem; margin: 0;">📊 Student Attempts & Results</h3>
+            ${stats ? `
+              <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div style="text-align: center; padding: 0.5rem 1rem; background: var(--bg-surface-alt); border-radius: var(--radius-md);">
+                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">${stats.total_submissions}</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">SUBMISSIONS</div>
+                </div>
+                <div style="text-align: center; padding: 0.5rem 1rem; background: #f0fdf4; border-radius: var(--radius-md);">
+                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--success);">${stats.passed_count}</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">PASSED</div>
+                </div>
+                <div style="text-align: center; padding: 0.5rem 1rem; background: #fef2f2; border-radius: var(--radius-md);">
+                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--danger);">${stats.failed_count}</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">FAILED</div>
+                </div>
+                <div style="text-align: center; padding: 0.5rem 1rem; background: var(--bg-surface-alt); border-radius: var(--radius-md);">
+                  <div style="font-size: 1.3rem; font-weight: 800;">${stats.avg_score}%</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">AVG SCORE</div>
+                </div>
+                <div style="text-align: center; padding: 0.5rem 1rem; background: #fffbeb; border-radius: var(--radius-md);">
+                  <div style="font-size: 1.3rem; font-weight: 800; color: #d97706;">${stats.pass_rate}%</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">PASS RATE</div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
 
-              ${attempts.length === 0 ? `
+          <div class="gradebook-table-container">
+            <table class="gradebook-table">
+              <thead>
                 <tr>
-                  <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                    No attempts recorded yet.
-                  </td>
+                  <th>Student</th>
+                  <th>Attempt #</th>
+                  <th>Submitted</th>
+                  <th>Score</th>
+                  <th>Percentage</th>
+                  <th>Result</th>
+                  <th>Review</th>
                 </tr>
-              ` : ''}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                ${studentAttempts.map(att => `
+                  <tr>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        ${att.student_avatar ? `<img src="${att.student_avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">` : `<div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.75rem;">${(att.student_name||'?')[0].toUpperCase()}</div>`}
+                        <div>
+                          <div style="font-weight:700;font-size:0.88rem;">${att.student_name}</div>
+                          <div style="font-size:0.72rem;color:var(--text-muted);">${att.student_id_number || att.student_email || ''}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>Attempt ${att.attempt_number}</strong></td>
+                    <td style="font-size:0.8rem;">${att.submitted_at ? new Date(att.submitted_at).toLocaleString() : '<span style="color:var(--warning);">In Progress</span>'}</td>
+                    <td><strong>${att.score !== null ? att.score + ' / ' + att.max_score : '—'}</strong></td>
+                    <td><strong style="color:${att.percentage >= quiz.passing_percentage ? 'var(--success)' : att.percentage !== null ? 'var(--danger)' : 'var(--text-muted)'};">${att.percentage !== null ? att.percentage + '%' : '—'}</strong></td>
+                    <td>
+                      ${att.status === 'in_progress'
+                        ? '<span class="badge badge-warning">In Progress</span>'
+                        : att.is_passed
+                          ? '<span class="badge badge-success">✅ Passed</span>'
+                          : att.submitted_at
+                            ? '<span class="badge badge-danger">❌ Failed</span>'
+                            : '<span class="badge" style="background:#e0f2fe;color:#0369a1;">Pending</span>'}
+                    </td>
+                    <td>
+                      ${att.submitted_at ? `
+                        <a href="#/course/${quiz.course_id}/quiz/${quiz.id}?action=review&attemptId=${att.id}" class="btn btn-outline btn-sm" style="font-size:0.75rem;">
+                          👁 Review
+                        </a>
+                      ` : '—'}
+                    </td>
+                  </tr>
+                `).join('')}
+                ${studentAttempts.length === 0 ? `
+                  <tr>
+                    <td colspan="7" style="text-align:center;color:var(--text-muted);padding:2.5rem;">
+                      Ardaydii imtixaanka ma qaadin weli. / No student attempts yet.
+                    </td>
+                  </tr>
+                ` : ''}
+              </tbody>
+            </table>
+          </div>
+        ` : `
+          <!-- STUDENT: Show only their own attempts -->
+          <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">My Previous Attempts</h3>
+          <div class="gradebook-table-container">
+            <table class="gradebook-table">
+              <thead>
+                <tr>
+                  <th>Attempt #</th>
+                  <th>Started</th>
+                  <th>Submitted</th>
+                  <th>Score</th>
+                  <th>Percentage</th>
+                  <th>Result</th>
+                  <th>Review</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${attempts.map(att => `
+                  <tr>
+                    <td><strong>Attempt ${att.attempt_number}</strong></td>
+                    <td style="font-size: 0.8rem;">${new Date(att.started_at).toLocaleString()}</td>
+                    <td style="font-size: 0.8rem;">${att.submitted_at ? new Date(att.submitted_at).toLocaleString() : 'In Progress'}</td>
+                    <td><strong>${att.score !== null ? att.score + ' / ' + att.max_score : '—'}</strong></td>
+                    <td><strong style="color: ${att.percentage >= quiz.passing_percentage ? 'var(--success)' : 'var(--danger)'};">${att.percentage !== null ? att.percentage + '%' : '—'}</strong></td>
+                    <td>
+                      ${att.status === 'in_progress' ? '<span class="badge badge-warning">In Progress</span>' : att.is_passed ? '<span class="badge badge-success">Passed</span>' : '<span class="badge badge-danger">Not Passed</span>'}
+                    </td>
+                    <td>
+                      ${att.submitted_at ? `
+                        <a href="#/course/${quiz.course_id}/quiz/${quiz.id}?action=review&attemptId=${att.id}" class="btn btn-outline btn-sm">
+                          View Review
+                        </a>
+                      ` : `
+                        <a href="#/course/${quiz.course_id}/quiz/${quiz.id}?action=run&attemptId=${att.id}" class="btn btn-primary btn-sm">
+                          Resume Attempt
+                        </a>
+                      `}
+                    </td>
+                  </tr>
+                `).join('')}
+                ${attempts.length === 0 ? `
+                  <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                      No attempts recorded yet.
+                    </td>
+                  </tr>
+                ` : ''}
+              </tbody>
+            </table>
+          </div>
+        `}
       </div>
     `;
   },

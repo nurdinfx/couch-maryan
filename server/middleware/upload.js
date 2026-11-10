@@ -94,4 +94,28 @@ function safeUploadSingle(fieldName) {
   };
 }
 
-module.exports = { upload, safeUploadSingle, isVideoFile };
+// Safe flexible upload middleware that accepts any educational file field
+// (e.g. 'attachment', 'file', 'submission_file', 'cover') without throwing 'Unexpected file field'
+function safeUploadFlexible() {
+  return (req, res, next) => {
+    upload.any()(req, res, (err) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+              error: 'Faylku wuu ka weyn yahay xadka la oggol yahay (ugu badnaan 500MB).'
+            });
+          }
+          return res.status(400).json({ error: `Upload error: ${err.message}` });
+        }
+        return res.status(400).json({ error: err.message || 'Khalad ayaa ka dhacay soo gelinta faylka.' });
+      }
+      if (req.files && req.files.length > 0) {
+        req.file = req.files[0];
+      }
+      next();
+    });
+  };
+}
+
+module.exports = { upload, safeUploadSingle, safeUploadFlexible, isVideoFile };

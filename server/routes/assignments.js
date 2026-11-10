@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db, savePersistence } = require('../../database/db');
 const { requireAuth, requireProfessor } = require('../middleware/auth');
-const { upload } = require('../middleware/upload');
+const { upload, safeUploadFlexible } = require('../middleware/upload');
 const { logAudit } = require('../middleware/audit');
 
 // 1. Get single assignment with student's submission status
@@ -53,9 +53,10 @@ router.get('/:id', requireAuth, (req, res) => {
 });
 
 // 2. Create Assignment (Professor only)
-router.post('/course/:courseId', requireProfessor, upload.single('attachment'), (req, res) => {
+router.post('/course/:courseId', requireProfessor, safeUploadFlexible(), (req, res) => {
   const courseId = parseInt(req.params.courseId);
-  const { title, instructions, due_date, module_id, allow_late, submission_type, max_score, weight_percentage } = req.body;
+  const { title, due_date, module_id, allow_late, submission_type, max_score, weight_percentage } = req.body;
+  const instructions = req.body.instructions || req.body.description || '';
 
   if (!title || !instructions || !due_date) {
     return res.status(400).json({ error: 'Title, instructions, and due date are required.' });
@@ -66,6 +67,12 @@ router.post('/course/:courseId', requireProfessor, upload.single('attachment'), 
   if (req.file) {
     attachment_url = `/uploads/documents/${req.file.filename}`;
     attachment_name = req.file.originalname;
+
+    // Background backup of uploaded assignment guide to GitHub
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(req.file.path, attachment_url);
+    } catch (e) {}
   }
 
   const result = db.prepare(`
@@ -104,20 +111,26 @@ router.post('/course/:courseId', requireProfessor, upload.single('attachment'), 
 });
 
 // 3. Update Assignment (Professor only)
-router.put('/:id', requireProfessor, upload.single('attachment'), (req, res) => {
+router.put('/:id', requireProfessor, safeUploadFlexible(), (req, res) => {
   const assignmentId = parseInt(req.params.id);
   const existing = db.prepare('SELECT * FROM assignments WHERE id = ?').get(assignmentId);
   if (!existing) {
     return res.status(404).json({ error: 'Assignment not found.' });
   }
 
-  const { title, instructions, due_date, module_id, allow_late, submission_type, max_score, weight_percentage } = req.body;
+  const { title, due_date, module_id, allow_late, submission_type, max_score, weight_percentage } = req.body;
+  const instructions = req.body.instructions || req.body.description || existing.instructions;
 
   let attachment_url = existing.attachment_url;
   let attachment_name = existing.attachment_name;
   if (req.file) {
     attachment_url = `/uploads/documents/${req.file.filename}`;
     attachment_name = req.file.originalname;
+
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(req.file.path, attachment_url);
+    } catch (e) {}
   }
 
   db.prepare(`
@@ -159,7 +172,7 @@ router.delete('/:id', requireProfessor, (req, res) => {
 });
 
 // 5. Submit Assignment (Student)
-router.post('/:id/submit', requireAuth, upload.single('submission_file'), (req, res) => {
+router.post('/:id/submit', requireAuth, safeUploadFlexible(), (req, res) => {
   const assignmentId = parseInt(req.params.id);
   const userId = req.user.id;
   const { submission_text } = req.body;
@@ -186,6 +199,11 @@ router.post('/:id/submit', requireAuth, upload.single('submission_file'), (req, 
     file_url = `/uploads/submissions/${req.file.filename}`;
     file_name = req.file.originalname;
     file_size_bytes = req.file.size;
+
+    try {
+      const { pushUploadedFileToGitHub } = require('../../database/github-sync');
+      pushUploadedFileToGitHub(req.file.path, file_url);
+    } catch (e) {}
   }
 
   if (!file_url && (!submission_text || submission_text.trim() === '')) {

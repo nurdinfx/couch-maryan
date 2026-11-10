@@ -56,7 +56,7 @@ router.get('/:id', requireAuth, (req, res) => {
     WHERE quiz_id = ?
   `).get(quizId);
 
-  // Get user's attempts
+  // Get user's personal attempts
   const myAttempts = db.prepare(`
     SELECT id, attempt_number, started_at, submitted_at, score, max_score, percentage, is_passed, status, feedback
     FROM quiz_attempts
@@ -64,13 +64,50 @@ router.get('/:id', requireAuth, (req, res) => {
     ORDER BY attempt_number DESC
   `).all(quizId, userId);
 
+  const isProfessor = req.user.role === 'professor' || req.user.role === 'admin' || req.user.is_admin === 1;
+
+  let studentAttempts = [];
+  let stats = null;
+
+  if (isProfessor) {
+    studentAttempts = db.prepare(`
+      SELECT 
+        qa.id, qa.user_id, qa.attempt_number, qa.started_at, qa.submitted_at,
+        qa.score, qa.max_score, qa.percentage, qa.is_passed, qa.status, qa.feedback,
+        u.full_name as student_name, u.email as student_email, u.student_id_number, u.avatar_url as student_avatar,
+        u.role as user_role
+      FROM quiz_attempts qa
+      JOIN users u ON qa.user_id = u.id
+      WHERE qa.quiz_id = ?
+      ORDER BY qa.submitted_at DESC, qa.id DESC
+    `).all(quizId);
+
+    const validSubmissions = studentAttempts.filter(a => a.submitted_at);
+    const passedCount = validSubmissions.filter(a => a.is_passed === 1).length;
+    const scores = validSubmissions.filter(a => a.percentage !== null).map(a => a.percentage);
+    const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+    const highestScore = scores.length > 0 ? Math.max(...scores) : 0;
+
+    stats = {
+      total_attempts: studentAttempts.length,
+      total_submissions: validSubmissions.length,
+      passed_count: passedCount,
+      failed_count: validSubmissions.length - passedCount,
+      pass_rate: validSubmissions.length > 0 ? Math.round((passedCount / validSubmissions.length) * 100) : 0,
+      avg_score: avgScore,
+      highest_score: highestScore
+    };
+  }
+
   res.json({
     quiz: {
       ...quiz,
       question_count: questionSummary.question_count || 0,
       total_points: questionSummary.total_points || 0
     },
-    attempts: myAttempts
+    attempts: myAttempts,
+    student_attempts: studentAttempts,
+    stats: stats
   });
 });
 
