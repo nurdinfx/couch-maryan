@@ -2698,13 +2698,13 @@
       "user_id": 15,
       "attempt_number": 1,
       "started_at": "2026-11-10 05:57:07",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-10 05:57:45",
+      "score": 0,
+      "max_score": 6,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -3537,6 +3537,66 @@
       "is_auto_graded": 1,
       "graded_manually": 0,
       "feedback": "All correct selections made."
+    },
+    {
+      "id": 164,
+      "attempt_id": 22,
+      "question_id": 16,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 165,
+      "attempt_id": 22,
+      "question_id": 17,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 166,
+      "attempt_id": 22,
+      "question_id": 18,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 167,
+      "attempt_id": 22,
+      "question_id": 19,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 168,
+      "attempt_id": 22,
+      "question_id": 21,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 169,
+      "attempt_id": 22,
+      "question_id": 23,
+      "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
     }
   ],
   "attendance_sessions": [],
