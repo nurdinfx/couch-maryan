@@ -2527,6 +2527,16 @@
       "correct_answer_text": "pregnancy or maternal condition of having a developing fetus in the body.",
       "points": 1,
       "sort_order": 1
+    },
+    {
+      "id": 17,
+      "quiz_id": 7,
+      "question_text": "G1PO",
+      "question_type": "multiple_choice",
+      "options_json": "[\"A) Gravida 1 pava 0\",\"B) Gravida 1 Para 1\",\"C) Grevida 1 Pare 1\"]",
+      "correct_answer_text": "B",
+      "points": 1,
+      "sort_order": 2
     }
   ],
   "quiz_attempts": [
