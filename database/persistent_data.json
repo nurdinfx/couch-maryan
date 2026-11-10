@@ -2817,13 +2817,13 @@
       "user_id": 9,
       "attempt_number": 1,
       "started_at": "2026-11-10 06:09:38",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-10 06:22:38",
+      "score": 0,
+      "max_score": 5,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 29,
@@ -5666,6 +5666,56 @@
       "attempt_id": 29,
       "question_id": 21,
       "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 365,
+      "attempt_id": 28,
+      "question_id": 16,
+      "user_answer_json": "\"Concept 8th weeks 10th\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 366,
+      "attempt_id": 28,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 367,
+      "attempt_id": 28,
+      "question_id": 18,
+      "user_answer_json": "\"8th week \"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 368,
+      "attempt_id": 28,
+      "question_id": 19,
+      "user_answer_json": "\" pregnancy or meteri\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 369,
+      "attempt_id": 28,
+      "question_id": 21,
+      "user_answer_json": "\"Gravida  para living child    multiple \"",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
