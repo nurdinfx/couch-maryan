@@ -529,13 +529,34 @@ router.delete('/professors/:id', requireAuth, (req, res) => {
   if (!prof) {
     return res.status(404).json({ error: 'Professor account not found.' });
   }
-  db.prepare('DELETE FROM users WHERE id = ?').run(profId);
   try {
-    const { savePersistence } = require('../../database/db');
-    savePersistence(db);
-  } catch (e) {}
-  logAudit(req.user.id, 'PROFESSOR_DELETED', `Deleted professor account: ${prof.email}`, req);
-  res.json({ message: `Professor account ${prof.full_name} removed successfully.` });
+    const cleanupAndRemove = db.transaction(() => {
+      // Reassign any courses taught by this professor to the current admin/professor so courses aren't lost
+      db.prepare('UPDATE courses SET professor_id = ? WHERE professor_id = ?').run(req.user.id, profId);
+      // Reassign or clear references in other tables
+      db.prepare('UPDATE assignment_submissions SET graded_by = ? WHERE graded_by = ?').run(req.user.id, profId);
+      db.prepare('UPDATE announcements SET author_id = ? WHERE author_id = ?').run(req.user.id, profId);
+      db.prepare('UPDATE forum_topics SET author_id = ? WHERE author_id = ?').run(req.user.id, profId);
+      db.prepare('UPDATE forum_replies SET author_id = ? WHERE author_id = ?').run(req.user.id, profId);
+      db.prepare('DELETE FROM messages WHERE sender_id = ? OR recipient_id = ?').run(profId, profId);
+      db.prepare('DELETE FROM notifications WHERE user_id = ?').run(profId);
+      db.prepare('UPDATE audit_logs SET user_id = NULL WHERE user_id = ?').run(profId);
+      db.prepare('DELETE FROM enrollments WHERE user_id = ?').run(profId);
+      db.prepare('DELETE FROM users WHERE id = ?').run(profId);
+    });
+    cleanupAndRemove();
+
+    try {
+      const { savePersistence } = require('../../database/db');
+      savePersistence(db);
+    } catch (e) {}
+
+    logAudit(req.user.id, 'PROFESSOR_DELETED', `Deleted professor account: ${prof.email}`, req);
+    res.json({ message: `Professor account ${prof.full_name} removed successfully.` });
+  } catch (err) {
+    console.error('Delete professor error:', err);
+    res.status(500).json({ error: 'Failed to delete professor: ' + err.message });
+  }
 });
 
 module.exports = router;

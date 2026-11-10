@@ -279,16 +279,32 @@ router.delete('/admins/:id', requireAuth, (req, res) => {
     return res.status(404).json({ error: 'Admin account not found.' });
   }
 
-  db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
-
   try {
-    const { savePersistence } = require('../../database/db');
-    savePersistence(db);
-  } catch (e) {}
+    const cleanupAndRemoveAdmin = db.transaction(() => {
+      db.prepare('UPDATE courses SET professor_id = ? WHERE professor_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE assignment_submissions SET graded_by = ? WHERE graded_by = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE announcements SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE forum_topics SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE forum_replies SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('DELETE FROM messages WHERE sender_id = ? OR recipient_id = ?').run(targetId, targetId);
+      db.prepare('DELETE FROM notifications WHERE user_id = ?').run(targetId);
+      db.prepare('UPDATE audit_logs SET user_id = NULL WHERE user_id = ?').run(targetId);
+      db.prepare('DELETE FROM enrollments WHERE user_id = ?').run(targetId);
+      db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
+    });
+    cleanupAndRemoveAdmin();
 
-  logAudit(req.user.id, 'ADMIN_DELETED', `Deleted admin account: ${adminUser.email}`, req);
+    try {
+      const { savePersistence } = require('../../database/db');
+      savePersistence(db);
+    } catch (e) {}
 
-  res.json({ message: `Admin account ${adminUser.full_name} removed successfully.` });
+    logAudit(req.user.id, 'ADMIN_DELETED', `Deleted admin account: ${adminUser.email}`, req);
+    res.json({ message: `Admin account ${adminUser.full_name} removed successfully.` });
+  } catch (err) {
+    console.error('Delete admin error:', err);
+    res.status(500).json({ error: 'Failed to delete admin: ' + err.message });
+  }
 });
 
 module.exports = router;

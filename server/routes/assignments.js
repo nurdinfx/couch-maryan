@@ -33,8 +33,8 @@ router.get('/:id', requireAuth, (req, res) => {
   if (req.user.role === 'professor' || req.user.role === 'admin') {
     const totalEnrolled = db.prepare('SELECT COUNT(*) as c FROM enrollments WHERE course_id = ?').get(assignment.course_id).c;
     const submittedCount = db.prepare('SELECT COUNT(*) as c FROM assignment_submissions WHERE assignment_id = ?').get(assignmentId).c;
-    const gradedCount = db.prepare('SELECT COUNT(*) as c FROM assignment_submissions WHERE assignment_id = ? AND status = "graded"').get(assignmentId).c;
-    const avgGrade = db.prepare('SELECT AVG(grade) as a FROM assignment_submissions WHERE assignment_id = ? AND status = "graded"').get(assignmentId).a || 0;
+    const gradedCount = db.prepare("SELECT COUNT(*) as c FROM assignment_submissions WHERE assignment_id = ? AND status = 'graded'").get(assignmentId).c;
+    const avgGrade = db.prepare("SELECT AVG(grade) as a FROM assignment_submissions WHERE assignment_id = ? AND status = 'graded'").get(assignmentId).a || 0;
 
     stats = {
       totalEnrolled,
