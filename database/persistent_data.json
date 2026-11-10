@@ -2428,23 +2428,7 @@
       "last_accessed_at": "2026-11-10 06:21:08"
     }
   ],
-  "assignments": [
-    {
-      "id": 4,
-      "course_id": 10,
-      "module_id": null,
-      "title": "tttt",
-      "instructions": "dfgfgfgfg",
-      "attachment_url": "/uploads/documents/1794294617773_book_of_datel_system.doc",
-      "attachment_name": "book of datel system.doc",
-      "due_date": "2026-11-10",
-      "allow_late": 1,
-      "submission_type": "file",
-      "max_score": 100,
-      "weight_percentage": 20,
-      "created_at": "2026-11-10 07:10:17"
-    }
-  ],
+  "assignments": [],
   "assignment_submissions": [],
   "quizzes": [
     {
