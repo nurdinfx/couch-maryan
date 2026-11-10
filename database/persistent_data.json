@@ -2442,7 +2442,7 @@
       "title": "Assignment quizz",
       "description": "",
       "time_limit_minutes": 20,
-      "max_attempts": 1,
+      "max_attempts": 2,
       "passing_percentage": 60,
       "weight_percentage": 20,
       "open_date": null,
