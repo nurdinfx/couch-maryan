@@ -63,13 +63,43 @@ const AssignmentView = {
           <h3 style="font-size: 1.05rem; margin-bottom: 0.5rem;">Instructions & Requirements</h3>
           <div style="white-space: pre-wrap; font-size: 0.92rem; color: var(--text-main);">${assignment.instructions}</div>
 
-          ${assignment.attachment_url ? `
-            <div style="margin-top: 1.25rem;">
-              <a href="${typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(assignment.attachment_url) : assignment.attachment_url}" target="_blank" download class="btn btn-outline btn-sm">
-                <span>📎</span> Download Specification (${assignment.attachment_name || 'Assignment Guide.pdf'})
-              </a>
-            </div>
-          ` : ''}
+          ${assignment.attachment_url ? (() => {
+            const rawUrl = assignment.attachment_url;
+            const fileUrl = (typeof API !== 'undefined' && API.getFileUrl) ? API.getFileUrl(rawUrl) : rawUrl;
+            const fname = (assignment.attachment_name || rawUrl.split('/').pop() || 'file').toLowerCase();
+            const isImg   = /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(fname);
+            const isVideo = /\.(mp4|mov|mkv|webm|avi|m4v|3gp|ogv|wmv)$/i.test(fname);
+            const isPdf   = fname.endsWith('.pdf');
+            if (isImg) return `
+              <div style="margin-top:1.25rem;">
+                <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:0.4rem;">📎 Assignment Guide (Image)</div>
+                <img src="${fileUrl}" alt="${assignment.attachment_name || 'guide'}"
+                  style="max-width:100%;max-height:380px;border-radius:var(--radius-md);border:1px solid var(--border-color);cursor:pointer;"
+                  onclick="window.open('${fileUrl}','_blank')">
+                <div style="margin-top:0.5rem;"><a href="${fileUrl}" target="_blank" download class="btn btn-outline btn-sm">📥 Download Image</a></div>
+              </div>`;
+            if (isVideo) return `
+              <div style="margin-top:1.25rem;">
+                <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:0.4rem;">🎬 Assignment Guide (Video)</div>
+                <video src="${fileUrl}" controls style="max-width:100%;border-radius:var(--radius-md);border:1px solid var(--border-color);max-height:340px;"></video>
+                <div style="margin-top:0.5rem;"><a href="${fileUrl}" target="_blank" download class="btn btn-outline btn-sm">📥 Download Video</a></div>
+              </div>`;
+            if (isPdf) return `
+              <div style="margin-top:1.25rem;">
+                <a href="${fileUrl}" target="_blank" download class="btn btn-outline btn-sm">
+                  <span>📄</span> Download Specification (${assignment.attachment_name || 'Assignment Guide.pdf'})
+                </a>
+                <div style="margin-top:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;">
+                  <iframe src="${fileUrl}#toolbar=1" style="width:100%;height:380px;border:none;" allowfullscreen></iframe>
+                </div>
+              </div>`;
+            return `
+              <div style="margin-top:1.25rem;">
+                <a href="${fileUrl}" target="_blank" download class="btn btn-outline btn-sm">
+                  <span>📎</span> Download Specification (${assignment.attachment_name || 'file'})
+                </a>
+              </div>`;
+          })() : ''}
         </div>
       </div>
 

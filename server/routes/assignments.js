@@ -65,7 +65,12 @@ router.post('/course/:courseId', requireProfessor, safeUploadFlexible(), (req, r
   let attachment_url = null;
   let attachment_name = null;
   if (req.file) {
-    attachment_url = `/uploads/documents/${req.file.filename}`;
+    // Determine subfolder from where multer actually saved the file
+    const savedPath = req.file.path || '';
+    let subfolder = 'documents';
+    if (savedPath.includes('/videos/') || savedPath.includes('\\videos\\')) subfolder = 'videos';
+    else if (savedPath.includes('/covers/') || savedPath.includes('\\covers\\')) subfolder = 'covers';
+    attachment_url = `/uploads/${subfolder}/${req.file.filename}`;
     attachment_name = req.file.originalname;
 
     // Background backup of uploaded assignment guide to GitHub
@@ -124,7 +129,11 @@ router.put('/:id', requireProfessor, safeUploadFlexible(), (req, res) => {
   let attachment_url = existing.attachment_url;
   let attachment_name = existing.attachment_name;
   if (req.file) {
-    attachment_url = `/uploads/documents/${req.file.filename}`;
+    const savedPath = req.file.path || '';
+    let subfolder = 'documents';
+    if (savedPath.includes('/videos/') || savedPath.includes('\\videos\\')) subfolder = 'videos';
+    else if (savedPath.includes('/covers/') || savedPath.includes('\\covers\\')) subfolder = 'covers';
+    attachment_url = `/uploads/${subfolder}/${req.file.filename}`;
     attachment_name = req.file.originalname;
 
     try {

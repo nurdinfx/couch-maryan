@@ -1322,8 +1322,30 @@ const App = {
                 </div>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">📎 Attach Assignment Guide (PDF/doc — optional)</label>
-                <input type="file" name="attachment" accept=".pdf,.doc,.docx,.zip" style="font-size:0.82rem;width:100%;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Attach Assignment Guide <span style="font-weight:400;color:var(--text-muted);">(PDF, Sawir, Video — optional)</span></label>
+                <div id="assign-dropzone"
+                  ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#eff6ff';"
+                  ondragleave="this.style.borderColor='var(--border-color)';this.style.background='';"
+                  ondrop="App.handleAssignDropzone(event)"
+                  style="border:2px dashed var(--border-color);border-radius:var(--radius-md);padding:1rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;"
+                  onclick="document.getElementById('assign-attach-input').click()">
+                  <input type="file" id="assign-attach-input" name="attachment"
+                    accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.mp4,.mov,.mkv,.webm,.avi"
+                    style="display:none;"
+                    onchange="App.handleAssignFileSelect(this)">
+                  <div id="assign-dropzone-idle" style="pointer-events:none;">
+                    <div style="font-size:2rem;margin-bottom:0.3rem;">📂</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Riix halkan ama u jiidi faylka</div>
+                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">📄 PDF &nbsp;|&nbsp; 🖼️ Sawir &nbsp;|&nbsp; 🎬 Video (MP4, MOV…) &nbsp;|&nbsp; 📝 Word/PPT</div>
+                  </div>
+                  <div id="assign-dropzone-preview" style="display:none;pointer-events:none;"></div>
+                </div>
+                <div id="assign-upload-bar-wrap" style="display:none;margin-top:0.4rem;">
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;" id="assign-upload-bar-label">Soo gelayaa...</div>
+                  <div style="background:#e2e8f0;border-radius:99px;height:7px;overflow:hidden;">
+                    <div id="assign-upload-bar" style="height:100%;width:0%;background:var(--primary);border-radius:99px;transition:width .3s;"></div>
+                  </div>
+                </div>
               </div>
               <div style="background:var(--bg-surface-alt);border:1px dashed var(--primary);border-radius:var(--radius-md);padding:0.85rem;text-align:center;">
                 <div style="font-size:1.5rem;margin-bottom:0.3rem;">📥</div>
@@ -1611,6 +1633,95 @@ const App = {
     const fileInput = document.querySelector('[name="cover_file"]');
     if (fileInput) fileInput.value = '';
   },
+
+  // ─── Assignment Guide Dropzone helpers ───────────────────────────────────────
+  handleAssignDropzone(event) {
+    event.preventDefault();
+    const dz = document.getElementById('assign-dropzone');
+    if (dz) { dz.style.borderColor = 'var(--border-color)'; dz.style.background = ''; }
+    const files = event.dataTransfer && event.dataTransfer.files;
+    if (files && files.length > 0) {
+      const inp = document.getElementById('assign-attach-input');
+      if (inp) {
+        // DataTransfer trick to set files on the real input
+        try {
+          const dt = new DataTransfer();
+          dt.items.add(files[0]);
+          inp.files = dt.files;
+        } catch(e) {}
+        App.handleAssignFileSelect(inp, files[0]);
+      }
+    }
+  },
+
+  handleAssignFileSelect(input, overrideFile) {
+    const file = overrideFile || (input.files && input.files[0]);
+    if (!file) return;
+    const idle = document.getElementById('assign-dropzone-idle');
+    const preview = document.getElementById('assign-dropzone-preview');
+    if (!idle || !preview) return;
+
+    const isImg   = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    const isPdf   = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const sizeMB  = (file.size / 1024 / 1024).toFixed(1);
+    const icon    = isImg ? '🖼️' : isVideo ? '🎬' : isPdf ? '📄' : '📎';
+
+    idle.style.display = 'none';
+    preview.style.display = 'block';
+
+    if (isImg) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.innerHTML = `
+          <img src="${e.target.result}" alt="preview"
+            style="max-height:140px;max-width:100%;border-radius:var(--radius-md);object-fit:contain;margin-bottom:0.4rem;">
+          <div style="font-size:0.8rem;font-weight:600;">${icon} ${file.name}</div>
+          <div style="font-size:0.72rem;color:var(--text-muted);">${sizeMB} MB
+            &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
+          </div>`;
+      };
+      reader.readAsDataURL(file);
+    } else if (isVideo) {
+      const url = URL.createObjectURL(file);
+      preview.innerHTML = `
+        <video src="${url}" controls style="max-height:150px;max-width:100%;border-radius:var(--radius-md);margin-bottom:0.4rem;"></video>
+        <div style="font-size:0.8rem;font-weight:600;">${icon} ${file.name}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted);">${sizeMB} MB
+          &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
+        </div>`;
+    } else {
+      preview.innerHTML = `
+        <div style="font-size:2.5rem;margin-bottom:0.3rem;">${icon}</div>
+        <div style="font-size:0.88rem;font-weight:700;">${file.name}</div>
+        <div style="font-size:0.76rem;color:var(--text-muted);">${sizeMB} MB
+          &nbsp;·&nbsp; <span style="color:#0ea5e9;cursor:pointer;" onclick="App.clearAssignAttachment()">✕ Tirtir</span>
+        </div>`;
+    }
+
+    // Show simulated progress bar for UX (actual upload happens on submit)
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    const bar  = document.getElementById('assign-upload-bar');
+    const lbl  = document.getElementById('assign-upload-bar-label');
+    if (wrap && bar) {
+      wrap.style.display = 'block';
+      lbl.textContent = `✅ ${file.name} diyaar u ah in la soo galiyoo`;
+      bar.style.width = '100%';
+      bar.style.background = '#22c55e';
+    }
+  },
+
+  clearAssignAttachment() {
+    const inp = document.getElementById('assign-attach-input');
+    if (inp) inp.value = '';
+    const idle = document.getElementById('assign-dropzone-idle');
+    const preview = document.getElementById('assign-dropzone-preview');
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    if (idle) idle.style.display = 'block';
+    if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+    if (wrap) wrap.style.display = 'none';
+  },
+  // ─────────────────────────────────────────────────────────────────────────────
 
   async previewCoverFile(input) {
     if (input.files && input.files[0]) {
@@ -1922,13 +2033,49 @@ const App = {
     e.preventDefault();
     const form = e.target;
     const fd = new FormData(form);
-    try {
-      await API.createAssignment(courseId, fd);
-      this.closeModal();
-      this.showToast('✅ Assignment created!');
-      this.refreshCurrentView();
-    } catch (err) {
-      this.showToast(err.message, 'error');
+
+    // Show live upload progress bar if there is an attachment
+    const bar  = document.getElementById('assign-upload-bar');
+    const lbl  = document.getElementById('assign-upload-bar-label');
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const hasFile = fd.get('attachment') && fd.get('attachment').size > 0;
+
+    if (hasFile && wrap && bar) {
+      wrap.style.display = 'block';
+      bar.style.background = 'var(--primary)';
+      lbl.textContent = 'Faylka soo galinaaya...';
+      let pct = 0;
+      const fakeProgress = setInterval(() => {
+        pct = Math.min(pct + Math.random() * 12, 85);
+        bar.style.width = pct + '%';
+      }, 300);
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Uploading...'; }
+
+      try {
+        await API.createAssignment(courseId, fd);
+        clearInterval(fakeProgress);
+        bar.style.width = '100%';
+        bar.style.background = '#22c55e';
+        lbl.textContent = '✅ Assignment la abuuray!';
+        setTimeout(() => { this.closeModal(); this.showToast('✅ Assignment created!'); this.refreshCurrentView(); }, 600);
+      } catch (err) {
+        clearInterval(fakeProgress);
+        bar.style.background = '#ef4444';
+        lbl.textContent = '❌ ' + (err.message || 'Upload failed');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '📌 Create Assignment'; }
+        this.showToast(err.message, 'error');
+      }
+    } else {
+      try {
+        await API.createAssignment(courseId, fd);
+        this.closeModal();
+        this.showToast('✅ Assignment created!');
+        this.refreshCurrentView();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
     }
   },
 
