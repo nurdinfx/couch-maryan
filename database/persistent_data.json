@@ -2428,7 +2428,38 @@
       "last_accessed_at": "2026-11-10 06:21:08"
     }
   ],
-  "assignments": [],
+  "assignments": [
+    {
+      "id": 5,
+      "course_id": 8,
+      "module_id": null,
+      "title": "RISK ASSESMENT",
+      "instructions": "Research those diseases",
+      "attachment_url": "/uploads/documents/1794294726549_ASSIGNEMENT_YEAR_1_.pdf",
+      "attachment_name": "ASSIGNEMENT YEAR 1 .pdf",
+      "due_date": "2026-11-16",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 100,
+      "weight_percentage": 20,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 6,
+      "course_id": 8,
+      "module_id": null,
+      "title": "RISK ASSESMENT",
+      "instructions": "Research those diseases",
+      "attachment_url": "/uploads/documents/1794294726661_ASSIGNEMENT_YEAR_1_.pdf",
+      "attachment_name": "ASSIGNEMENT YEAR 1 .pdf",
+      "due_date": "2026-11-16",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 100,
+      "weight_percentage": 20,
+      "created_at": "2026-11-10 07:12:06"
+    }
+  ],
   "assignment_submissions": [],
   "quizzes": [
     {
@@ -6352,6 +6383,246 @@
       "link": "#/course/10/assignment/4",
       "is_read": 0,
       "created_at": "2026-11-10 07:10:17"
+    },
+    {
+      "id": 53,
+      "user_id": 8,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 54,
+      "user_id": 9,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 55,
+      "user_id": 11,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 56,
+      "user_id": 12,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 57,
+      "user_id": 13,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 58,
+      "user_id": 14,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 59,
+      "user_id": 15,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 60,
+      "user_id": 30,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 61,
+      "user_id": 33,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 62,
+      "user_id": 39,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 63,
+      "user_id": 42,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 64,
+      "user_id": 67,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/5",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 65,
+      "user_id": 8,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 66,
+      "user_id": 9,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 67,
+      "user_id": 11,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 68,
+      "user_id": 12,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 69,
+      "user_id": 13,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 70,
+      "user_id": 14,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 71,
+      "user_id": 15,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 72,
+      "user_id": 30,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 73,
+      "user_id": 33,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 74,
+      "user_id": 39,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 75,
+      "user_id": 42,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
+    },
+    {
+      "id": 76,
+      "user_id": 67,
+      "title": "New Assignment Published",
+      "message": "Assignment \"RISK ASSESMENT \" has been published. Due: 2026-11-16",
+      "type": "info",
+      "link": "#/course/8/assignment/6",
+      "is_read": 0,
+      "created_at": "2026-11-10 07:12:06"
     }
   ],
   "system_settings": [
