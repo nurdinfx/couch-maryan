@@ -2430,6 +2430,17 @@
       "video_watch_percentage": 0,
       "completed_at": "2026-11-10 08:37:05",
       "last_accessed_at": "2026-11-10 08:37:38"
+    },
+    {
+      "id": 102,
+      "user_id": 64,
+      "lesson_id": 50,
+      "course_id": 11,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-10 15:37:06",
+      "last_accessed_at": "2026-11-10 15:37:06"
     }
   ],
   "assignments": [
@@ -2688,6 +2699,13 @@
       "user_id": 67,
       "course_id": 8,
       "awarded_at": "2026-11-10 08:37:05"
+    },
+    {
+      "id": 116,
+      "badge_id": 5,
+      "user_id": 64,
+      "course_id": 11,
+      "awarded_at": "2026-11-10 15:37:06"
     }
   ],
   "certificates": [
@@ -2722,6 +2740,14 @@
       "course_id": 8,
       "final_grade": 95,
       "issued_at": "2026-11-10 08:37:05"
+    },
+    {
+      "id": 10,
+      "uuid": "CERT-2026-FACULTY-02C7F9A9",
+      "user_id": 64,
+      "course_id": 11,
+      "final_grade": 95,
+      "issued_at": "2026-11-10 15:37:06"
     }
   ],
   "announcements": [],
@@ -3658,6 +3684,16 @@
       "link": "#/certificates",
       "is_read": 0,
       "created_at": "2026-11-10 08:37:05"
+    },
+    {
+      "id": 127,
+      "user_id": 64,
+      "title": "Congratulations! Course Completed",
+      "message": "You have completed all requirements and earned your official Faculty Certificate.",
+      "type": "badge",
+      "link": "#/certificates",
+      "is_read": 0,
+      "created_at": "2026-11-10 15:37:06"
     }
   ],
   "system_settings": [
