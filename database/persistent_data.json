@@ -2750,13 +2750,13 @@
       "user_id": 8,
       "attempt_number": 1,
       "started_at": "2026-11-10 06:03:32",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-10 06:17:18",
+      "score": 0,
+      "max_score": 5,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 25,
@@ -3705,6 +3705,56 @@
       "attempt_id": 22,
       "question_id": 21,
       "user_answer_json": null,
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"G- Gravida , P: preterm , L- living children , A-abortion , M:multiple pregnancy\""
+    },
+    {
+      "id": 170,
+      "attempt_id": 24,
+      "question_id": 16,
+      "user_answer_json": "\"Pregnancy or maternal  condition of having  a developing  fetus in the body \"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"pregnancy or maternal condition of having a developing fetus in the body.\""
+    },
+    {
+      "id": 171,
+      "attempt_id": 24,
+      "question_id": 17,
+      "user_answer_json": "[\"A) Gravida 1 pava 0\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 172,
+      "attempt_id": 24,
+      "question_id": 18,
+      "user_answer_json": "\"Human composition up the 10 weeks of gestation\"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"human conception up to the 10th week of gestation\""
+    },
+    {
+      "id": 173,
+      "attempt_id": 24,
+      "question_id": 19,
+      "user_answer_json": "\"Women who is not now and never has been pregnant \"",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Expected: \"woman who is not now and never has been pregnant.\""
+    },
+    {
+      "id": 174,
+      "attempt_id": 24,
+      "question_id": 21,
+      "user_answer_json": "\"G.gravida,p.para,l.living children, A. Abaratation,M.multi paragnancy \"",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
