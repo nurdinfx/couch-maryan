@@ -2400,6 +2400,21 @@
       "close_date": "2026-11-07T17:59:00.000Z",
       "release_results_immediately": 1,
       "created_at": "2026-11-05T19:51:48.000Z"
+    },
+    {
+      "id": 7,
+      "course_id": 8,
+      "module_id": null,
+      "title": "Assignment quizz",
+      "description": "",
+      "time_limit_minutes": 20,
+      "max_attempts": 1,
+      "passing_percentage": 60,
+      "weight_percentage": 20,
+      "open_date": null,
+      "close_date": null,
+      "release_results_immediately": 1,
+      "created_at": "2026-11-10 05:41:19"
     }
   ],
   "quiz_questions": [
