@@ -2711,7 +2711,24 @@
       "created_at": "2026-11-10 08:33:11"
     }
   ],
-  "assignment_submissions": [],
+  "assignment_submissions": [
+    {
+      "id": 17,
+      "assignment_id": 7,
+      "user_id": 21,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794408675628_image.jpg",
+      "file_name": "image.jpg",
+      "file_size_bytes": 3170924,
+      "status": "submitted",
+      "submitted_at": "2026-11-11 14:51:16",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
+    }
+  ],
   "quizzes": [
     {
       "id": 7,
