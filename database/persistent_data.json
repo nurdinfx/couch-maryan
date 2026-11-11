@@ -2710,6 +2710,34 @@
       "is_passed": 0,
       "status": "in_progress",
       "feedback": null
+    },
+    {
+      "id": 21,
+      "quiz_id": 7,
+      "user_id": 30,
+      "attempt_number": 1,
+      "started_at": "2026-11-11 09:48:26",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
+    },
+    {
+      "id": 22,
+      "quiz_id": 7,
+      "user_id": 31,
+      "attempt_number": 1,
+      "started_at": "2026-11-11 09:48:28",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [],
