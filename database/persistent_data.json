@@ -2441,6 +2441,17 @@
       "video_watch_percentage": 0,
       "completed_at": "2026-11-10 15:37:06",
       "last_accessed_at": "2026-11-10 15:37:06"
+    },
+    {
+      "id": 103,
+      "user_id": 66,
+      "lesson_id": 39,
+      "course_id": 10,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-11 06:47:13",
+      "last_accessed_at": "2026-11-11 06:47:13"
     }
   ],
   "assignments": [
@@ -2706,6 +2717,13 @@
       "user_id": 64,
       "course_id": 11,
       "awarded_at": "2026-11-10 15:37:06"
+    },
+    {
+      "id": 117,
+      "badge_id": 1,
+      "user_id": 66,
+      "course_id": 10,
+      "awarded_at": "2026-11-11 06:47:13"
     }
   ],
   "certificates": [
