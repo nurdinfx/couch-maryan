@@ -2677,11 +2677,11 @@
       "user_id": 36,
       "lesson_id": 39,
       "course_id": 10,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-11 18:53:29",
-      "last_accessed_at": "2026-11-11 18:53:29"
+      "last_accessed_at": "2026-11-11 18:53:54"
     }
   ],
   "assignments": [
