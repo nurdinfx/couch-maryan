@@ -1022,7 +1022,7 @@
     },
     {
       "id": 71,
-      "email": "fuad@student.vinci",
+      "email": "fuad@student.edu",
       "password_hash": "$2b$10$/e7bhoakVlDqBSVUdgMLXeyFX.pjiJJT3xI9xZvg4AjRar6c2X.te",
       "full_name": "Fuad",
       "role": "student",
@@ -1444,10 +1444,10 @@
       "enrolled_at": "2026-11-11 09:09:33"
     },
     {
-      "id": 127,
+      "id": 128,
       "user_id": 71,
       "course_id": 10,
-      "enrolled_at": "2026-11-11 09:30:14"
+      "enrolled_at": "2026-11-11 09:31:04"
     }
   ],
   "modules": [
