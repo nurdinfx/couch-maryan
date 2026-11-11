@@ -3108,6 +3108,20 @@
       "is_passed": 0,
       "status": "in_progress",
       "feedback": null
+    },
+    {
+      "id": 39,
+      "quiz_id": 7,
+      "user_id": 36,
+      "attempt_number": 1,
+      "started_at": "2026-11-11 18:39:24",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
