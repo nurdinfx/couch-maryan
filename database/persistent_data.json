@@ -2594,11 +2594,11 @@
       "user_id": 73,
       "lesson_id": 43,
       "course_id": 10,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-11 10:39:14",
-      "last_accessed_at": "2026-11-11 10:39:14"
+      "last_accessed_at": "2026-11-11 10:46:38"
     },
     {
       "id": 109,
