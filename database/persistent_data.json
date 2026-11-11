@@ -3115,7 +3115,7 @@
       "user_id": 36,
       "attempt_number": 1,
       "started_at": "2026-11-11 18:39:24",
-      "submitted_at": "2026-11-11 18:40:14",
+      "submitted_at": "2026-11-11 18:40:23",
       "score": 0,
       "max_score": 10,
       "percentage": 0,
@@ -4717,6 +4717,106 @@
     },
     {
       "id": 303,
+      "attempt_id": 39,
+      "question_id": 25,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 304,
+      "attempt_id": 39,
+      "question_id": 16,
+      "user_answer_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 305,
+      "attempt_id": 39,
+      "question_id": 17,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 306,
+      "attempt_id": 39,
+      "question_id": 18,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 307,
+      "attempt_id": 39,
+      "question_id": 19,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 308,
+      "attempt_id": 39,
+      "question_id": 20,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 309,
+      "attempt_id": 39,
+      "question_id": 21,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 310,
+      "attempt_id": 39,
+      "question_id": 22,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 311,
+      "attempt_id": 39,
+      "question_id": 23,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 312,
+      "attempt_id": 39,
+      "question_id": 24,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 313,
       "attempt_id": 39,
       "question_id": 25,
       "user_answer_json": "[]",
