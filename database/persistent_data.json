@@ -3058,6 +3058,20 @@
       "is_passed": 1,
       "status": "completed",
       "feedback": "Attempt completed."
+    },
+    {
+      "id": 35,
+      "quiz_id": 7,
+      "user_id": 35,
+      "attempt_number": 1,
+      "started_at": "2026-11-11 17:37:52",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
