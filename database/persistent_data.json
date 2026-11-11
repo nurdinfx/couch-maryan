@@ -2696,7 +2696,22 @@
       "sort_order": 10
     }
   ],
-  "quiz_attempts": [],
+  "quiz_attempts": [
+    {
+      "id": 20,
+      "quiz_id": 7,
+      "user_id": 66,
+      "attempt_number": 1,
+      "started_at": "2026-11-11 09:47:44",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
+    }
+  ],
   "quiz_attempt_answers": [],
   "attendance_sessions": [],
   "attendance_records": [],
