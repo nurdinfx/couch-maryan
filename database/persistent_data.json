@@ -2585,7 +2585,7 @@
       "title": "Quizz practice",
       "description": "Hada sifican uu samaysin , Quizz exam you guys are gonna be ok ",
       "time_limit_minutes": 30,
-      "max_attempts": 1,
+      "max_attempts": 2,
       "passing_percentage": 60,
       "weight_percentage": 20,
       "open_date": null,
