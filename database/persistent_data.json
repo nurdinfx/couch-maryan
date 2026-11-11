@@ -1255,12 +1255,6 @@
       "enrolled_at": "2026-11-05T07:11:45.000Z"
     },
     {
-      "id": 72,
-      "user_id": 30,
-      "course_id": 10,
-      "enrolled_at": "2026-11-05T07:11:53.000Z"
-    },
-    {
       "id": 73,
       "user_id": 31,
       "course_id": 10,
@@ -1271,12 +1265,6 @@
       "user_id": 32,
       "course_id": 10,
       "enrolled_at": "2026-11-05T07:13:53.000Z"
-    },
-    {
-      "id": 75,
-      "user_id": 30,
-      "course_id": 8,
-      "enrolled_at": "2026-11-05T07:32:35.000Z"
     },
     {
       "id": 78,
@@ -1517,6 +1505,12 @@
       "user_id": 74,
       "course_id": 10,
       "enrolled_at": "2026-11-11 14:15:43"
+    },
+    {
+      "id": 134,
+      "user_id": 30,
+      "course_id": 10,
+      "enrolled_at": "2026-11-11 17:50:44"
     }
   ],
   "modules": [
