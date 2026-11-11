@@ -107,6 +107,18 @@ const API = {
     return data;
   },
 
+  async updateProfile(profileData) {
+    const data = await this.request('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData)
+    });
+    if (data && data.user) {
+      this.currentUser = { ...this.currentUser, ...data.user };
+      localStorage.setItem('faculty_lms_user', JSON.stringify(this.currentUser));
+    }
+    return data;
+  },
+
   async register(studentData) {
     const data = await this.request('/auth/register', {
       method: 'POST',

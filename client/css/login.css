@@ -134,7 +134,81 @@ body.login-page {
 .success-sub { color: rgba(255,255,255,0.45); font-size: 0.82rem; animation: fadeInUp 0.5s 0.3s both; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-@media (max-width: 500px) { .login-card { padding: 1.5rem; border-radius: 18px; } .login-wrapper { padding: 1rem; } }
+@media (max-width: 500px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+  .login-wrapper {
+    padding: 1rem;
+    padding-top: 4.5rem; /* make room for top buttons */
+  }
+  .login-logo h1 {
+    font-size: 1.3rem;
+  }
+  .login-logo-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 1.6rem;
+  }
+  .login-logo {
+    margin-bottom: 1.25rem;
+  }
+  .login-btn {
+    padding: 0.82rem;
+    font-size: 0.9rem;
+  }
+  .role-tabs {
+    gap: 0.35rem;
+  }
+  .login-input {
+    font-size: 0.88rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+  /* Fix absolute positioned buttons on small screens */
+  .login-top-left {
+    top: 0.75rem !important;
+    left: 0.75rem !important;
+  }
+  .login-top-right {
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-card {
+    padding: 1.1rem;
+    border-radius: 14px;
+  }
+  .login-wrapper {
+    padding: 0.6rem;
+    padding-top: 4.5rem;
+  }
+  .login-logo h1 {
+    font-size: 1.1rem;
+  }
+  .login-card-title {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-card {
+    padding: 1.1rem;
+    border-radius: 14px;
+  }
+  .login-wrapper {
+    padding: 0.6rem;
+    padding-top: 4.5rem;
+  }
+  .login-logo h1 {
+    font-size: 1.1rem;
+  }
+  .login-card-title {
+    font-size: 1.05rem;
+  }
+}
 
 .field-label-row {
   display: flex;

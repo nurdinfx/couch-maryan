@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="so">
 <head>
   <meta charset="UTF-8">
@@ -22,17 +22,17 @@
   <div class="particles" id="particles"></div>
 
   <!-- Return to Public Website at Top Left -->
-  <div style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 100;">
+  <div class="login-top-left" style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 100;">
     <a href="/" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s ease;">
-      <span>←</span>
+      <span>â†</span>
       <span>Home</span>
     </a>
   </div>
 
   <!-- Language Switcher Bar at Top Right -->
-  <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
+  <div class="login-top-right" style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
     <button type="button" onclick="toggleLoginLanguage()" id="login-lang-btn" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 0.4rem 0.85rem; font-size: 0.82rem; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s ease;">
-      <span id="login-lang-flag">🇸🇴</span>
+      <span id="login-lang-flag">ðŸ‡¸ðŸ‡´</span>
       <span id="login-lang-label">Soomaali</span>
     </button>
   </div>
@@ -179,7 +179,7 @@
       const noteEl = document.getElementById('login-footer-note-text');
 
       if (lang === 'so') {
-        if (flagEl) flagEl.textContent = '🇸🇴';
+        if (flagEl) flagEl.textContent = 'ðŸ‡¸ðŸ‡´';
         if (labelEl) labelEl.textContent = 'Soomaali';
         if (headingEl) headingEl.textContent = 'Gal Akoonkaaga';
         if (subEl) subEl.textContent = 'Fadlan geli xogtaada saxda ah si aad u gasho nidaamka.';
@@ -188,7 +188,7 @@
         if (btnText) btnText.textContent = 'Gal Nidaamka';
         if (noteEl) noteEl.textContent = 'Akoonka ardayda waxaa sameeya Maamulka Kuliyadda.';
       } else {
-        if (flagEl) flagEl.textContent = '🇬🇧';
+        if (flagEl) flagEl.textContent = 'ðŸ‡¬ðŸ‡§';
         if (labelEl) labelEl.textContent = 'English';
         if (headingEl) headingEl.textContent = 'Sign In to Your Account';
         if (subEl) subEl.textContent = 'Please enter your registered credentials to access the academic system.';
@@ -313,3 +313,4 @@
   </script>
 </body>
 </html>
+

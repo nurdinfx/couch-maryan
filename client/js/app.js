@@ -260,9 +260,19 @@ const App = {
     const avatarEl = document.getElementById('navbar-user-avatar');
     const switcherEl = document.getElementById('quick-role-select');
 
+    // Also update mobile drawer user card
+    const drawerNameEl = document.getElementById('drawer-user-name');
+    const drawerRoleEl = document.getElementById('drawer-user-role');
+    const drawerAvatarEl = document.getElementById('drawer-user-avatar');
+
     if (nameEl) nameEl.textContent = user.full_name;
     if (roleEl) roleEl.textContent = user.role.toUpperCase();
     if (avatarEl && user.avatar_url) avatarEl.src = this.getAvatarUrl(user.avatar_url);
+
+    if (drawerNameEl) drawerNameEl.textContent = user.full_name;
+    if (drawerRoleEl) drawerRoleEl.textContent = user.role.toUpperCase();
+    if (drawerAvatarEl && user.avatar_url) drawerAvatarEl.src = this.getAvatarUrl(user.avatar_url);
+
     if (switcherEl) switcherEl.value = user.id.toString();
 
     // Toggle admin link in drawer
