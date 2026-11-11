@@ -3151,13 +3151,13 @@
       "user_id": 74,
       "attempt_number": 2,
       "started_at": "2026-11-11 19:13:48",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-11 19:16:37",
+      "score": 8,
+      "max_score": 10,
+      "percentage": 80,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -4860,6 +4860,106 @@
       "is_auto_graded": 1,
       "graded_manually": 0,
       "feedback": "Incorrect selection"
+    },
+    {
+      "id": 314,
+      "attempt_id": 40,
+      "question_id": 16,
+      "user_answer_json": "[\"c)  Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 315,
+      "attempt_id": 40,
+      "question_id": 17,
+      "user_answer_json": "[\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal examination, and take history\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 316,
+      "attempt_id": 40,
+      "question_id": 18,
+      "user_answer_json": "[\"a) Determine if birth is imminent\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 317,
+      "attempt_id": 40,
+      "question_id": 19,
+      "user_answer_json": "[\"b) Check the woman’s records and ask about the history of her current pregnancy\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 318,
+      "attempt_id": 40,
+      "question_id": 20,
+      "user_answer_json": "[\"a)Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 319,
+      "attempt_id": 40,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 320,
+      "attempt_id": 40,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 321,
+      "attempt_id": 40,
+      "question_id": 23,
+      "user_answer_json": "[\"b)  As soon as possible when the baby is ready within the first hour after birth\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 322,
+      "attempt_id": 40,
+      "question_id": 24,
+      "user_answer_json": "[\"b) Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 323,
+      "attempt_id": 40,
+      "question_id": 25,
+      "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
     }
   ],
   "attendance_sessions": [],
