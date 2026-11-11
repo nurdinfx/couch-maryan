@@ -1002,6 +1002,23 @@
       "faculty": "Health Science",
       "is_admin": 0,
       "password_plain": null
+    },
+    {
+      "id": 70,
+      "email": "sundus.abdi@student.edu",
+      "password_hash": "$2b$10$vjGGtAPEkx.gtwrxR.CLOu/Kw7OQWoomMTSyH5XxhELKCDhICXn3C",
+      "full_name": "Sundus c/risas",
+      "role": "student",
+      "avatar_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "student_id_number": "BMW2024",
+      "department": "Guray Sicid Learning Platform",
+      "bio": null,
+      "created_at": "2026-11-11 09:09:33",
+      "is_active": 1,
+      "academic_year": "Year 3",
+      "faculty": "Health Science",
+      "is_admin": 0,
+      "password_plain": "Sundus24"
     }
   ],
   "courses": [
@@ -1402,6 +1419,12 @@
       "user_id": 67,
       "course_id": 8,
       "enrolled_at": "2026-11-10 06:00:40"
+    },
+    {
+      "id": 126,
+      "user_id": 70,
+      "course_id": 10,
+      "enrolled_at": "2026-11-11 09:09:33"
     }
   ],
   "modules": [
