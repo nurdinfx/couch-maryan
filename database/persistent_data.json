@@ -2684,6 +2684,16 @@
       "correct_answer_text": "B",
       "points": 1,
       "sort_order": 9
+    },
+    {
+      "id": 25,
+      "quiz_id": 7,
+      "question_text": "Once the cervix is fully dilated, which of the following is recommended?",
+      "question_type": "multiple_choice",
+      "options_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\",\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\",\"c) Have her lie flat on her back so you can see if the baby is crowning.\"]",
+      "correct_answer_text": "B",
+      "points": 1,
+      "sort_order": 10
     }
   ],
   "quiz_attempts": [],
