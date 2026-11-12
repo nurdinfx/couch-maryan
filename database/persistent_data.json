@@ -3218,13 +3218,13 @@
       "user_id": 71,
       "attempt_number": 2,
       "started_at": "2026-11-12 01:51:17",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
+      "submitted_at": "2026-11-12 01:51:47",
+      "score": 0,
+      "max_score": 10,
+      "percentage": 0,
       "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -5223,6 +5223,106 @@
       "attempt_id": 42,
       "question_id": 25,
       "user_answer_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 344,
+      "attempt_id": 44,
+      "question_id": 16,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 345,
+      "attempt_id": 44,
+      "question_id": 17,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 346,
+      "attempt_id": 44,
+      "question_id": 18,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 347,
+      "attempt_id": 44,
+      "question_id": 19,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 348,
+      "attempt_id": 44,
+      "question_id": 20,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 349,
+      "attempt_id": 44,
+      "question_id": 21,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 350,
+      "attempt_id": 44,
+      "question_id": 22,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 351,
+      "attempt_id": 44,
+      "question_id": 23,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 352,
+      "attempt_id": 44,
+      "question_id": 24,
+      "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 353,
+      "attempt_id": 44,
+      "question_id": 25,
+      "user_answer_json": "[]",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
