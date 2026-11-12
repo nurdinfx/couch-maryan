@@ -3296,13 +3296,13 @@
       "user_id": 72,
       "attempt_number": 1,
       "started_at": "2026-11-12 05:47:18",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-12 05:51:05",
+      "score": 7,
+      "max_score": 10,
+      "percentage": 70,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -5601,6 +5601,106 @@
       "attempt_id": 47,
       "question_id": 25,
       "user_answer_json": "[\"c) Have her lie flat on her back so you can see if the baby is crowning.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 374,
+      "attempt_id": 48,
+      "question_id": 16,
+      "user_answer_json": "[\"c)  Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 375,
+      "attempt_id": 48,
+      "question_id": 17,
+      "user_answer_json": "[\"c) Do a Quick check, conduct a vaginal examination, conduct an abdominal examination, and take history\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 376,
+      "attempt_id": 48,
+      "question_id": 18,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 377,
+      "attempt_id": 48,
+      "question_id": 19,
+      "user_answer_json": "[\"b) Check the woman’s records and ask about the history of her current pregnancy\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 378,
+      "attempt_id": 48,
+      "question_id": 20,
+      "user_answer_json": "[\"a)Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 379,
+      "attempt_id": 48,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 380,
+      "attempt_id": 48,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 381,
+      "attempt_id": 48,
+      "question_id": 23,
+      "user_answer_json": "[\"a)  When the baby first starts to cry\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 382,
+      "attempt_id": 48,
+      "question_id": 24,
+      "user_answer_json": "[\"b) Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 383,
+      "attempt_id": 48,
+      "question_id": 25,
+      "user_answer_json": "[]",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
