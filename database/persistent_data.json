@@ -3278,6 +3278,20 @@
       "is_passed": 0,
       "status": "in_progress",
       "feedback": null
+    },
+    {
+      "id": 48,
+      "quiz_id": 7,
+      "user_id": 72,
+      "attempt_number": 1,
+      "started_at": "2026-11-12 05:47:18",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
