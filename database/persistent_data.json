@@ -2879,6 +2879,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 21,
+      "assignment_id": 7,
+      "user_id": 24,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794511527271_17945114465022643491100154905858.jpg",
+      "file_name": "17945114465022643491100154905858.jpg",
+      "file_size_bytes": 1792532,
+      "status": "submitted",
+      "submitted_at": "2026-11-12 19:25:27",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
