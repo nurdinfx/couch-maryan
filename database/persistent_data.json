@@ -2895,6 +2895,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 22,
+      "assignment_id": 7,
+      "user_id": 20,
+      "submission_text": "",
+      "file_url": "[{\"url\":\"/uploads/submissions/1794512264419_Assigment__pic2_Hodan.jpeg\",\"name\":\"Assigment _pic2_Hodan.jpeg\",\"size\":45636,\"type\":\"image/jpeg\"},{\"url\":\"/uploads/submissions/1794512264448_Assigment_pic1_Hodan.jpeg\",\"name\":\"Assigment_pic1_Hodan.jpeg\",\"size\":84406,\"type\":\"image/jpeg\"}]",
+      "file_name": "2 files attached",
+      "file_size_bytes": 130042,
+      "status": "submitted",
+      "submitted_at": "2026-11-12 19:37:44",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
