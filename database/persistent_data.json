@@ -3271,13 +3271,13 @@
       "user_id": 32,
       "attempt_number": 1,
       "started_at": "2026-11-12 05:45:03",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-12 05:48:54",
+      "score": 6,
+      "max_score": 10,
+      "percentage": 60,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 48,
@@ -5490,6 +5490,106 @@
       "attempt_id": 32,
       "question_id": 25,
       "user_answer_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 364,
+      "attempt_id": 47,
+      "question_id": 16,
+      "user_answer_json": "[\"b)  Mrs. B. with cervix dilated 4 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 365,
+      "attempt_id": 47,
+      "question_id": 17,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 366,
+      "attempt_id": 47,
+      "question_id": 18,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 367,
+      "attempt_id": 47,
+      "question_id": 19,
+      "user_answer_json": "[\"Assess whether birth is very close\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 368,
+      "attempt_id": 47,
+      "question_id": 20,
+      "user_answer_json": "[\"a)Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 369,
+      "attempt_id": 47,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 370,
+      "attempt_id": 47,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 371,
+      "attempt_id": 47,
+      "question_id": 23,
+      "user_answer_json": "[\"b)  As soon as possible when the baby is ready within the first hour after birth\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 372,
+      "attempt_id": 47,
+      "question_id": 24,
+      "user_answer_json": "[\"a) Put a cool cloth on her head\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 373,
+      "attempt_id": 47,
+      "question_id": 25,
+      "user_answer_json": "[\"c) Have her lie flat on her back so you can see if the baby is crowning.\"]",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
