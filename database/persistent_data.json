@@ -3050,13 +3050,13 @@
       "user_id": 42,
       "attempt_number": 2,
       "started_at": "2026-11-11 16:06:59",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-12 02:57:29",
+      "score": 7,
+      "max_score": 10,
+      "percentage": 70,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     },
     {
       "id": 33,
@@ -5337,6 +5337,106 @@
       "attempt_id": 44,
       "question_id": 25,
       "user_answer_json": "[]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 354,
+      "attempt_id": 32,
+      "question_id": 16,
+      "user_answer_json": "[\"c)  Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 355,
+      "attempt_id": 32,
+      "question_id": 17,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 356,
+      "attempt_id": 32,
+      "question_id": 18,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 357,
+      "attempt_id": 32,
+      "question_id": 19,
+      "user_answer_json": "[\"b) Check the woman’s records and ask about the history of her current pregnancy\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 358,
+      "attempt_id": 32,
+      "question_id": 20,
+      "user_answer_json": "[\"c) Ultrasonography performed at 25 weeks\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 359,
+      "attempt_id": 32,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 360,
+      "attempt_id": 32,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 361,
+      "attempt_id": 32,
+      "question_id": 23,
+      "user_answer_json": "[\"a)  When the baby first starts to cry\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 362,
+      "attempt_id": 32,
+      "question_id": 24,
+      "user_answer_json": "[\"b) Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 363,
+      "attempt_id": 32,
+      "question_id": 25,
+      "user_answer_json": "[\"a) Encourage the woman to push in the position of her choice as soon as the cervix is completely dilated.\"]",
       "awarded_points": 0,
       "is_auto_graded": 1,
       "graded_manually": 0,
