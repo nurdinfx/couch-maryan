@@ -2737,6 +2737,17 @@
       "video_watch_percentage": 0,
       "completed_at": "2026-11-12 05:51:58",
       "last_accessed_at": "2026-11-12 05:51:58"
+    },
+    {
+      "id": 120,
+      "user_id": 74,
+      "lesson_id": 43,
+      "course_id": 10,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-12 05:52:27",
+      "last_accessed_at": "2026-11-12 05:52:27"
     }
   ],
   "assignments": [
@@ -3314,6 +3325,20 @@
       "is_passed": 1,
       "status": "completed",
       "feedback": "Attempt completed."
+    },
+    {
+      "id": 49,
+      "quiz_id": 7,
+      "user_id": 18,
+      "attempt_number": 1,
+      "started_at": "2026-11-12 05:52:29",
+      "submitted_at": null,
+      "score": null,
+      "max_score": null,
+      "percentage": null,
+      "is_passed": 0,
+      "status": "in_progress",
+      "feedback": null
     }
   ],
   "quiz_attempt_answers": [
