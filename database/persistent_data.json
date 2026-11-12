@@ -3357,13 +3357,13 @@
       "user_id": 73,
       "attempt_number": 2,
       "started_at": "2026-11-12 06:05:43",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-12 06:11:04",
+      "score": 7,
+      "max_score": 10,
+      "percentage": 70,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -5766,6 +5766,106 @@
       "is_auto_graded": 1,
       "graded_manually": 0,
       "feedback": "Incorrect selection"
+    },
+    {
+      "id": 384,
+      "attempt_id": 50,
+      "question_id": 16,
+      "user_answer_json": "[\"a) Mrs. A with cervix dilated 3 cm and painful, irregular contractions\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 385,
+      "attempt_id": 50,
+      "question_id": 17,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 386,
+      "attempt_id": 50,
+      "question_id": 18,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 387,
+      "attempt_id": 50,
+      "question_id": 19,
+      "user_answer_json": "[\"Assess whether birth is very close\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 388,
+      "attempt_id": 50,
+      "question_id": 20,
+      "user_answer_json": "[\"c) Ultrasonography performed at 25 weeks\"]",
+      "awarded_points": 0,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "Incorrect selection"
+    },
+    {
+      "id": 389,
+      "attempt_id": 50,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 390,
+      "attempt_id": 50,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 391,
+      "attempt_id": 50,
+      "question_id": 23,
+      "user_answer_json": "[\"b)  As soon as possible when the baby is ready within the first hour after birth\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 392,
+      "attempt_id": 50,
+      "question_id": 24,
+      "user_answer_json": "[\"b) Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 393,
+      "attempt_id": 50,
+      "question_id": 25,
+      "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
     }
   ],
   "attendance_sessions": [],
