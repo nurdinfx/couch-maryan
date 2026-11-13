@@ -3013,6 +3013,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 28,
+      "assignment_id": 7,
+      "user_id": 55,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794556952486_20261113_105802.jpg",
+      "file_name": "20261113_105802.jpg",
+      "file_size_bytes": 1963563,
+      "status": "submitted",
+      "submitted_at": "2026-11-13 08:02:33",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
