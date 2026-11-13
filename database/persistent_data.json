@@ -2926,12 +2926,12 @@
       "file_url": "/uploads/submissions/1794561877320_WhatsApp_Image_2026-11-13_at_2.23.53_PM.jpeg",
       "file_name": "WhatsApp Image 2026-11-13 at 2.23.53 PM.jpeg",
       "file_size_bytes": 154683,
-      "status": "submitted",
+      "status": "graded",
       "submitted_at": "2026-11-13 09:24:37",
-      "grade": null,
-      "feedback": null,
-      "graded_by": null,
-      "graded_at": null,
+      "grade": 80,
+      "feedback": "Your theoretical knowledge is good, and that is certainly a positive point. However, I want you to focus more on analysing and responding to the case study rather than simply explaining the general theory of pre-eclampsia.\n\nRemember, the patient in this scenario has already received the initial loading dose of magnesium sulfate. Therefore, your priority should be to identify the next appropriate steps in management, including administering antihypertensive medication to control her blood pressure.\n\nAfter four hours, reassess the patient's clinical condition and monitor for signs of magnesium sulfate toxicity before deciding whether it is safe to commence the maintenance dose.\n\nAlways remember: In a case study, I expect you to apply your theoretical knowledge to the patient's specific situation, identify the priorities, and explain the appropriate clinical interventions in the correct sequence.",
+      "graded_by": 18,
+      "graded_at": "2026-11-13 10:43:04",
       "is_grades_released": 1
     },
     {
@@ -7594,6 +7594,16 @@
       "link": "#/course/9/assignment/7",
       "is_read": 0,
       "created_at": "2026-11-13 08:36:17"
+    },
+    {
+      "id": 134,
+      "user_id": 20,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"CASE STUDY 1 : BEFORE TRAINING\" has been graded: 80 / 100",
+      "type": "grade",
+      "link": "#/course/9/assignment/7",
+      "is_read": 0,
+      "created_at": "2026-11-13 10:43:04"
     }
   ],
   "system_settings": [
