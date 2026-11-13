@@ -296,6 +296,12 @@ const CourseView = {
                     `}
                     <div class="activity-completion-check ${a.submission_status ? 'completed' : ''}">✓</div>
                     ${isProfessor ? `
+                      <button class="btn btn-outline btn-sm"
+                              style="color: var(--primary); border-color: rgba(59, 130, 246, 0.4); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
+                              title="Wax ka beddel shaqadan / Edit assignment"
+                              onclick="event.stopPropagation(); App.openEditAssignmentModal(${a.id})">
+                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                      </button>
                       <button class="btn btn-outline btn-sm activity-delete-btn"
                               style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
                               title="Tirtir shaqadan / Delete assignment"

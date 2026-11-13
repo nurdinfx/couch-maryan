@@ -2094,6 +2094,85 @@ const App = {
     }
   },
 
+  async openEditAssignmentModal(assignmentId) {
+    try {
+      const data = await API.getAssignment(assignmentId);
+      const a = data.assignment;
+      if (!a) {
+        this.showToast('Assignment not found', 'error');
+        return;
+      }
+      const dueDateVal = a.due_date ? new Date(a.due_date).toISOString().slice(0, 10) : '';
+
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:540px;">
+          <div class="modal-header">
+            <h3>✏️ Wax ka beddel Shaqada (Edit Assignment)</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleUpdateAssignment(event, ${a.id})" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Assignment Title *</label>
+                <input type="text" name="title" required value="${(a.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Instructions / Description *</label>
+                <textarea name="instructions" rows="4" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${a.instructions || ''}</textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Due Date *</label>
+                  <input type="date" name="due_date" required value="${dueDateVal}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Score</label>
+                  <input type="number" name="max_score" value="${a.max_score || 100}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Late Submissions</label>
+                  <select name="allow_late" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    <option value="1" ${a.allow_late ? 'selected' : ''}>Allowed</option>
+                    <option value="0" ${!a.allow_late ? 'selected' : ''}>Not Allowed</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Baddal ama ku dar Faylal / Sawirro <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                <input type="file" name="attachment" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                ${a.attachment_name ? `<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.3rem;">Hadda ku lifaaqan: <strong>${a.attachment_name}</strong></p>` : ''}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } catch (err) {
+      this.showToast(err.message || 'Khalad ayaa dhacay', 'error');
+    }
+  },
+
+  async handleUpdateAssignment(e, assignmentId) {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Kaydinayaa...'; }
+
+    try {
+      await API.updateAssignment(assignmentId, fd);
+      this.closeModal();
+      this.showToast('✅ Shaqada si guul leh ayaa loo cusbooneysiiyay!');
+      this.refreshCurrentView();
+    } catch (err) {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Save Changes'; }
+      this.showToast(err.message || 'Khalad ayaa dhacay', 'error');
+    }
+  },
+
   async handleCreateBadge(e) {
     e.preventDefault();
     const form = e.target;

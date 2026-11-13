@@ -49,11 +49,18 @@ const AssignmentView = {
               <div style="font-size: 0.78rem; color: var(--text-muted);">
                 ${stats?.submittedCount || 0} Submitted • ${stats?.needsGradingCount || 0} Need Grading
               </div>
-              <button class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.25rem;"
-                      title="Tirtir shaqadan / Delete assignment"
-                      onclick="App.deleteAssignment(${assignment.id}, '${(assignment.title || '').replace(/'/g, "\\'")}').then(() => { App.navigate('/course/${assignment.course_id}'); })">
-                🗑 <span>Delete Assignment</span>
-              </button>
+              <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                <button class="btn btn-outline btn-sm" style="color: var(--primary); border-color: rgba(59, 130, 246, 0.4); display: flex; align-items: center; gap: 0.25rem;"
+                        title="Wax ka beddel shaqadan / Edit assignment"
+                        onclick="App.openEditAssignmentModal(${assignment.id})">
+                  ✏️ <span>Edit</span>
+                </button>
+                <button class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger-border); display: flex; align-items: center; gap: 0.25rem;"
+                        title="Tirtir shaqadan / Delete assignment"
+                        onclick="App.deleteAssignment(${assignment.id}).then(() => { App.navigate('/course/${assignment.course_id}'); })">
+                  🗑 <span>Delete</span>
+                </button>
+              </div>
             </div>
           ` : ''}
         </div>
@@ -374,6 +381,15 @@ const AssignmentView = {
         const container = document.getElementById('professor-submissions-container');
         if (!container) return;
 
+        // Store submissions in memory to avoid inline HTML quotes/newline syntax errors
+        AssignmentView._submissionsMap = {};
+        AssignmentView._currentMaxScore = assignment.max_score || 100;
+        (data.students || []).forEach(s => {
+          if (s.submission_id) {
+            AssignmentView._submissionsMap[s.submission_id] = s;
+          }
+        });
+
         container.innerHTML = `
           <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-sm);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
@@ -461,7 +477,7 @@ const AssignmentView = {
                       </td>
                       <td>
                         ${s.submission_id ? `
-                          <button class="btn btn-primary btn-sm" onclick="AssignmentView.openGradingModal(${s.submission_id}, '${s.full_name.replace(/'/g, "\\'")}', ${s.grade || 0}, '${(s.feedback || '').replace(/'/g, "\\'")}', ${assignment.max_score}, '${(s.submission_text || '').replace(/'/g, "\\'").replace(/\n/g, '\\n')}', '${(s.file_url || '').replace(/'/g, "\\'")}', '${(s.file_name || '').replace(/'/g, "\\'")}')">
+                          <button class="btn btn-primary btn-sm" onclick="AssignmentView.openGradingModalById(${s.submission_id})">
                             ${s.submission_status === 'graded' ? 'Regrade' : 'Grade Submission'}
                           </button>
                         ` : `
@@ -531,13 +547,32 @@ const AssignmentView = {
     }
   },
 
+  openGradingModalById(submissionId) {
+    const s = this._submissionsMap ? this._submissionsMap[submissionId] : null;
+    if (!s) {
+      App.showToast('Xogta submission-ka lama helin', 'error');
+      return;
+    }
+    this.openGradingModal(
+      s.submission_id,
+      s.full_name || 'Student',
+      s.grade !== null && s.grade !== undefined ? s.grade : '',
+      s.feedback || '',
+      this._currentMaxScore || 100,
+      s.submission_text || '',
+      s.file_url || '',
+      s.file_name || ''
+    );
+  },
+
   openGradingModal(submissionId, studentName, currentGrade, currentFeedback, maxScore, submissionText, fileUrl, fileName) {
     const submittedFiles = fileUrl ? this.parseAttachmentFiles(fileUrl, fileName) : [];
+    const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 650px;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem;">Grade Submission: ${studentName}</h3>
+          <h3 style="font-size: 1.15rem;">Grade Submission: ${esc(studentName)}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="AssignmentView.submitGrade(event, ${submissionId})">
@@ -570,7 +605,7 @@ const AssignmentView = {
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
                 Pedagogical Feedback & Comments
               </label>
-              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="Explain what was done well and areas for improvement...">${currentFeedback}</textarea>
+              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="Explain what was done well and areas for improvement...">${esc(currentFeedback)}</textarea>
             </div>
 
             <div style="display: flex; align-items: center; gap: 0.5rem;">

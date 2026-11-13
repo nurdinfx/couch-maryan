@@ -225,6 +225,13 @@ const API = {
     });
   },
 
+  async updateAssignment(id, formData) {
+    return this.request(`/assignments/${id}`, {
+      method: 'PUT',
+      body: formData
+    });
+  },
+
   async submitAssignment(assignmentId, formData) {
     return this.request(`/assignments/${assignmentId}/submit`, {
       method: 'POST',

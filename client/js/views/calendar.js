@@ -61,6 +61,14 @@ const CalendarView = {
                     ${t('calendar.view_activity', 'View Activity →')}
                   </a>
                   ${isStaff ? `
+                    ${isAssignment ? `
+                      <button class="btn btn-outline btn-sm"
+                              style="color: var(--primary); border-color: rgba(59, 130, 246, 0.4); display: inline-flex; align-items: center; gap: 0.25rem;"
+                              title="Wax ka beddel shaqadan / Edit assignment"
+                              onclick="App.openEditAssignmentModal(${ev.id})">
+                        ✏️ <span>${t('calendar.edit_btn', 'Edit')}</span>
+                      </button>
+                    ` : ''}
                     <button class="btn btn-outline btn-sm"
                             style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4); display: inline-flex; align-items: center; gap: 0.25rem;"
                             title="${isQuiz ? 'Delete quiz' : 'Delete assignment'}"

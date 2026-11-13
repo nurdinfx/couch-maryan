@@ -190,6 +190,7 @@ router.put('/:id', requireProfessor, safeUploadFlexible(), (req, res) => {
   );
 
   const updated = db.prepare('SELECT * FROM assignments WHERE id = ?').get(assignmentId);
+  try { savePersistence(db); } catch (e) {}
   res.json({ message: 'Assignment updated successfully', assignment: updated });
 });
 
@@ -366,6 +367,7 @@ router.post('/submissions/:id/grade', requireProfessor, (req, res) => {
   logAudit(req.user.id, 'SUBMISSION_GRADED', `Graded ${submission.student_name}'s submission for ${submission.assignment_title}: ${numericGrade}/${submission.max_score}`, req);
 
   const updated = db.prepare('SELECT * FROM assignment_submissions WHERE id = ?').get(submissionId);
+  try { savePersistence(db); } catch (e) {}
   res.json({ message: 'Submission graded successfully', submission: updated });
 });
 
