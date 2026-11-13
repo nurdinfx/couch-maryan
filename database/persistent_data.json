@@ -2997,6 +2997,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 27,
+      "assignment_id": 7,
+      "user_id": 45,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794556906339_DOC-20261113-WA0008.docx",
+      "file_name": "DOC-20261113-WA0008.docx",
+      "file_size_bytes": 18472,
+      "status": "submitted",
+      "submitted_at": "2026-11-13 08:01:46",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
