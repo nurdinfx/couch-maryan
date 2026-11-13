@@ -2933,6 +2933,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 23,
+      "assignment_id": 7,
+      "user_id": 46,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794548906597_Eclampsia_Case_Study-2.pdf",
+      "file_name": "Eclampsia_Case_Study-2.pdf",
+      "file_size_bytes": 4557279,
+      "status": "submitted",
+      "submitted_at": "2026-11-13 05:48:27",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
