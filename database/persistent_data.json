@@ -2942,12 +2942,12 @@
       "file_url": "/uploads/submissions/1794548906597_Eclampsia_Case_Study-2.pdf",
       "file_name": "Eclampsia_Case_Study-2.pdf",
       "file_size_bytes": 4557279,
-      "status": "submitted",
+      "status": "graded",
       "submitted_at": "2026-11-13 05:48:27",
-      "grade": null,
-      "feedback": null,
-      "graded_by": null,
-      "graded_at": null,
+      "grade": 65,
+      "feedback": "Good but you can be more accurate in certain area . You have a case study , you have to respond to the case study while using your theory . ",
+      "graded_by": 18,
+      "graded_at": "2026-11-13 07:59:28",
       "is_grades_released": 1
     },
     {
@@ -7486,6 +7486,16 @@
       "link": "#/certificates",
       "is_read": 0,
       "created_at": "2026-11-10 15:37:06"
+    },
+    {
+      "id": 128,
+      "user_id": 46,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"CASE STUDY 1 : BEFORE TRAINING\" has been graded: 65 / 100",
+      "type": "grade",
+      "link": "#/course/9/assignment/7",
+      "is_read": 0,
+      "created_at": "2026-11-13 07:59:28"
     }
   ],
   "system_settings": [
