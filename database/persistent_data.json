@@ -3024,10 +3024,10 @@
       "file_size_bytes": 1963563,
       "status": "graded",
       "submitted_at": "2026-11-13 08:02:33",
-      "grade": 55,
+      "grade": 5.5,
       "feedback": "Where is the theory on this ? What is the danger signs ? What medication are you gonna use ? You didn't use your theory knowledge to do this case study ",
       "graded_by": 18,
-      "graded_at": "2026-11-13 08:33:56",
+      "graded_at": "2026-11-13 14:53:46",
       "is_grades_released": 1
     },
     {
@@ -7624,6 +7624,16 @@
       "link": "#/course/9/assignment/7",
       "is_read": 0,
       "created_at": "2026-11-13 14:53:29"
+    },
+    {
+      "id": 137,
+      "user_id": 55,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"CASE STUDY 1 : BEFORE TRAINING\" has been graded: 5.5 / 10",
+      "type": "grade",
+      "link": "#/course/9/assignment/7",
+      "is_read": 0,
+      "created_at": "2026-11-13 14:53:46"
     }
   ],
   "system_settings": [
