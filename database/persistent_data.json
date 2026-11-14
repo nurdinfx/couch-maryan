@@ -3045,6 +3045,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 30,
+      "assignment_id": 7,
+      "user_id": 47,
+      "submission_text": "",
+      "file_url": "/uploads/submissions/1794633437067_Snapchat-2086241867.jpg",
+      "file_name": "Snapchat-2086241867.jpg",
+      "file_size_bytes": 1057924,
+      "status": "submitted",
+      "submitted_at": "2026-11-14 05:17:18",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
