@@ -3061,6 +3061,22 @@
       "graded_by": null,
       "graded_at": null,
       "is_grades_released": 1
+    },
+    {
+      "id": 31,
+      "assignment_id": 7,
+      "user_id": 50,
+      "submission_text": "",
+      "file_url": "[{\"url\":\"/uploads/submissions/1794640496898_20261113_165747.jpg\",\"name\":\"20261113_165747.jpg\",\"size\":4481295,\"type\":\"image/jpeg\"},{\"url\":\"/uploads/submissions/1794640497529_20261113_165757.jpg\",\"name\":\"20261113_165757.jpg\",\"size\":3989569,\"type\":\"image/jpeg\"}]",
+      "file_name": "2 files attached",
+      "file_size_bytes": 8470864,
+      "status": "submitted",
+      "submitted_at": "2026-11-14 07:14:57",
+      "grade": null,
+      "feedback": null,
+      "graded_by": null,
+      "graded_at": null,
+      "is_grades_released": 1
     }
   ],
   "quizzes": [
