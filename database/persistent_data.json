@@ -3054,12 +3054,12 @@
       "file_url": "/uploads/submissions/1794633494860_Snapchat-386054904.jpg",
       "file_name": "Snapchat-386054904.jpg",
       "file_size_bytes": 925201,
-      "status": "submitted",
+      "status": "graded",
       "submitted_at": "2026-11-14 05:18:15",
-      "grade": null,
-      "feedback": null,
-      "graded_by": null,
-      "graded_at": null,
+      "grade": 5,
+      "feedback": "Your theory knowledge is weak , you need to improve that ! ",
+      "graded_by": 18,
+      "graded_at": "2026-11-14 15:36:28",
       "is_grades_released": 1
     },
     {
@@ -7836,6 +7836,16 @@
       "link": "#/course/9/assignment/7",
       "is_read": 0,
       "created_at": "2026-11-14 15:34:58"
+    },
+    {
+      "id": 147,
+      "user_id": 47,
+      "title": "Assignment Graded",
+      "message": "Your submission for \"CASE STUDY 1 : BEFORE TRAINING\" has been graded: 5 / 10",
+      "type": "grade",
+      "link": "#/course/9/assignment/7",
+      "is_read": 0,
+      "created_at": "2026-11-14 15:36:28"
     }
   ],
   "system_settings": [
