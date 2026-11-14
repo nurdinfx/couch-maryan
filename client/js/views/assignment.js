@@ -383,8 +383,11 @@ const AssignmentView = {
 
         // Store submissions in memory to avoid inline HTML quotes/newline syntax errors
         AssignmentView._submissionsMap = {};
+        AssignmentView._studentsMap = {};
         AssignmentView._currentMaxScore = assignment.max_score || 100;
+        AssignmentView._currentAssignmentId = assignment.id;
         (data.students || []).forEach(s => {
+          AssignmentView._studentsMap[s.student_id] = s;
           if (s.submission_id) {
             AssignmentView._submissionsMap[s.submission_id] = s;
           }
@@ -481,7 +484,12 @@ const AssignmentView = {
                             ${s.submission_status === 'graded' ? 'Regrade' : 'Grade Submission'}
                           </button>
                         ` : `
-                          <button class="btn btn-outline btn-sm" disabled style="opacity: 0.5;">No submission</button>
+                          <button class="btn btn-outline btn-sm"
+                                  style="color: #dc2626; border-color: rgba(220, 38, 38, 0.45); background: rgba(220, 38, 38, 0.06); font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;"
+                                  title="Ardaygani ma soo gudbin shaqada - dhagsii si aad u siiso 0 ama dhibco kale"
+                                  onclick="AssignmentView.openUnsubmittedGradeModal(${s.student_id})">
+                            <span>Sii Grade (0)</span>
+                          </button>
                         `}
                       </td>
                     </tr>
@@ -544,6 +552,88 @@ const AssignmentView = {
       } catch (err) {
         App.showToast(err.message, 'error');
       }
+    }
+  },
+
+  openUnsubmittedGradeModal(studentId) {
+    const s = this._studentsMap ? this._studentsMap[studentId] : null;
+    if (!s) {
+      App.showToast('Xogta ardayga lama helin', 'error');
+      return;
+    }
+    const maxScore = this._currentMaxScore || 100;
+    const assignmentId = this._currentAssignmentId;
+    const esc = (val) => String(val || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+    App.showCustomModal(`
+      <div class="modal-dialog" style="max-width: 580px;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.15rem;">📝 Sii Grade: ${esc(s.full_name)}</h3>
+          <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <form onsubmit="AssignmentView.submitManualGrade(event, ${assignmentId}, ${studentId})">
+          <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+            
+            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+              <div style="font-weight: 700; color: #dc2626; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                ⚠️ Ma jiro shaqo online ah oo la soo gudbiyay (NOT SUBMITTED)
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">
+                Waxaad ardaygan siin kartaa <strong>0</strong> sababtoo ah ma soo gudbin shaqada, ama dhibco kale haddii uu fasalka ku dhiibay.
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
+                Dhibcaha (Grade Score) - Ugu badnaan: ${maxScore} pts
+              </label>
+              <input type="number" step="0.5" min="0" max="${maxScore}" name="grade" value="0" required
+                     style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1.15rem; font-weight: 800; color: #dc2626;">
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
+                Faallo / Feedback
+              </label>
+              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="Sababta dhibcahan loo siiyay...">Ma soo gudbin shaqada (No submission submitted)</textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" name="is_grades_released" id="release_manual_grade_check" checked>
+              <label for="release_manual_grade_check" style="font-size: 0.85rem; font-weight: 600;">U sii daa dhibcaha ardayga isla markiiba (Release grade)</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Ka noqo / Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: #dc2626; border-color: #dc2626;">💾 Save Grade (0)</button>
+          </div>
+        </form>
+      </div>
+    `);
+  },
+
+  async submitManualGrade(e, assignmentId, studentId) {
+    e.preventDefault();
+    const form = e.target;
+    const grade = form.grade.value;
+    const feedback = form.feedback.value;
+    const isReleased = form.is_grades_released.checked;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Kaydinayaa...'; }
+
+    try {
+      await API.gradeStudent(assignmentId, studentId, {
+        grade,
+        feedback,
+        status: 'graded',
+        is_grades_released: isReleased
+      });
+      App.closeModal();
+      App.showToast('Dhibcaha si guul leh ayaa loo kaydiyay! 🎓');
+      App.refreshCurrentView();
+    } catch (err) {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Save Grade (0)'; }
+      App.showToast(err.message || 'Khalad ayaa dhacay', 'error');
     }
   },
 

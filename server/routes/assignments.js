@@ -371,4 +371,104 @@ router.post('/submissions/:id/grade', requireProfessor, (req, res) => {
   res.json({ message: 'Submission graded successfully', submission: updated });
 });
 
+// 8. Grade Student Directly (Even if NOT SUBMITTED online - e.g. give 0 or in-class score)
+router.post('/:assignmentId/grade-student/:studentId', requireProfessor, (req, res) => {
+  const assignmentId = parseInt(req.params.assignmentId);
+  const studentId = parseInt(req.params.studentId);
+  const { grade, feedback, status, is_grades_released } = req.body;
+
+  const assignment = db.prepare('SELECT * FROM assignments WHERE id = ?').get(assignmentId);
+  if (!assignment) {
+    return res.status(404).json({ error: 'Assignment not found.' });
+  }
+
+  const student = db.prepare('SELECT id, full_name FROM users WHERE id = ?').get(studentId);
+  if (!student) {
+    return res.status(404).json({ error: 'Student not found.' });
+  }
+
+  const numericGrade = parseFloat(grade);
+  if (isNaN(numericGrade) || numericGrade < 0 || numericGrade > assignment.max_score) {
+    return res.status(400).json({ error: `Grade must be a number between 0 and ${assignment.max_score}.` });
+  }
+
+  const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const released = is_grades_released !== undefined ? (is_grades_released ? 1 : 0) : 1;
+  const gradeStatus = status || 'graded';
+  const gradeFeedback = feedback !== undefined ? feedback : '';
+
+  // Check if a submission row already exists
+  const existingSub = db.prepare('SELECT id FROM assignment_submissions WHERE assignment_id = ? AND user_id = ?').get(assignmentId, studentId);
+
+  let submissionId;
+  if (existingSub) {
+    submissionId = existingSub.id;
+    db.prepare(`
+      UPDATE assignment_submissions
+      SET grade = ?,
+          feedback = ?,
+          status = ?,
+          graded_by = ?,
+          graded_at = ?,
+          is_grades_released = ?
+      WHERE id = ?
+    `).run(
+      numericGrade,
+      gradeFeedback,
+      gradeStatus,
+      req.user.id,
+      now,
+      released,
+      submissionId
+    );
+  } else {
+    const insertRes = db.prepare(`
+      INSERT INTO assignment_submissions (
+        assignment_id, user_id, submission_text, status, submitted_at,
+        grade, feedback, graded_by, graded_at, is_grades_released
+      ) VALUES (?, ?, '[No Online Submission - Manual Grade]', ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      assignmentId,
+      studentId,
+      gradeStatus,
+      now,
+      numericGrade,
+      gradeFeedback,
+      req.user.id,
+      now,
+      released
+    );
+    submissionId = insertRes.lastInsertRowid;
+  }
+
+  // If grade >= 90%, award Assignment Excellence badge (badge_id = 3)
+  if ((numericGrade / assignment.max_score) >= 0.90) {
+    try {
+      db.prepare('INSERT OR IGNORE INTO awarded_badges (badge_id, user_id, course_id) VALUES (?, ?, ?)')
+        .run(3, studentId, assignment.course_id);
+    } catch (e) {}
+  }
+
+  // Notify student
+  try {
+    db.prepare(`
+      INSERT INTO notifications (user_id, title, message, type, link)
+      VALUES (?, 'Assignment Graded', ?, 'grade', ?)
+    `).run(
+      studentId,
+      `Your assignment "${assignment.title}" has been graded: ${numericGrade} / ${assignment.max_score}`,
+      `#/course/${assignment.course_id}/assignment/${assignmentId}`
+    );
+  } catch (e) {}
+
+  try {
+    logAudit(req.user.id, 'SUBMISSION_GRADED_MANUAL', `Graded ${student.full_name}'s assignment ${assignment.title}: ${numericGrade}/${assignment.max_score}`, req);
+  } catch (e) {}
+
+  const updated = db.prepare('SELECT * FROM assignment_submissions WHERE id = ?').get(submissionId);
+  try { savePersistence(db); } catch (e) {}
+
+  res.json({ message: 'Grade saved successfully', submission: updated });
+});
+
 module.exports = router;

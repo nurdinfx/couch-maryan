@@ -250,6 +250,13 @@ const API = {
     });
   },
 
+  async gradeStudent(assignmentId, studentId, gradeData) {
+    return this.request(`/assignments/${assignmentId}/grade-student/${studentId}`, {
+      method: 'POST',
+      body: JSON.stringify(gradeData)
+    });
+  },
+
   async deleteAssignment(id) {
     return this.request(`/assignments/${id}`, { method: 'DELETE' });
   },
