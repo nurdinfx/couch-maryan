@@ -2830,7 +2830,7 @@
       "attachment_url": "/uploads/documents/1794299591297_year_1.docx",
       "attachment_name": "year 1.docx",
       "due_date": "2026-11-16",
-      "allow_late": 1,
+      "allow_late": 0,
       "submission_type": "file",
       "max_score": 10,
       "weight_percentage": 20,
