@@ -242,6 +242,15 @@ const App = {
       const el = document.getElementById(id);
       if (el) el.textContent = I18N.t(key);
     }
+
+    const drawerLogout = document.getElementById('drawer-logout-text');
+    if (drawerLogout) drawerLogout.textContent = I18N.t('nav.logout', lang === 'so' ? 'Ka bax' : 'Log Out');
+    const headerLogout = document.getElementById('nav-header-logout-btn');
+    if (headerLogout) headerLogout.title = I18N.t('nav.logout', lang === 'so' ? 'Ka bax' : 'Log Out');
+    const userProfileMenu = document.getElementById('nav-user-profile-menu');
+    if (userProfileMenu) userProfileMenu.title = lang === 'so' ? 'Guji si aad sawirkaaga / profile-kaaga u beddesho' : 'Edit profile & avatar';
+    const drawerUserCard = document.getElementById('drawer-user-card-click');
+    if (drawerUserCard) drawerUserCard.title = lang === 'so' ? 'Baddal profile-kaaga' : 'Edit your profile';
   },
 
   logout() {
@@ -286,12 +295,14 @@ const App = {
     const user = API.currentUser;
     if (!user) return;
 
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (k, fb) => (typeof I18N !== 'undefined') ? I18N.t(k, fb) : fb;
     const currentAvatar = this.getAvatarUrl(user.avatar_url);
 
     this.showCustomModal(`
       <div class="modal-dialog" style="max-width: 480px; width: 95%;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem; font-weight: 700;">👤 Baddal Sawirkaaga & Profile-ka</h3>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">${t('profile_modal.title', isSo ? '👤 Baddal Sawirkaaga & Profile-ka' : '👤 Edit Profile & Avatar')}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="App.handleSubmitProfile(event)">
@@ -304,13 +315,13 @@ const App = {
               </div>
               <div>
                 <label style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem;">
-                  📷 Dooro Sawir Cusub oo Device-kaaga ah
+                  ${t('profile_modal.device_prompt', isSo ? '📷 Dooro Sawir Cusub oo Device-kaaga ah' : '📷 Choose New Image from Device')}
                 </label>
                 <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-                  Soo geli sawir kombiyuutarkaaga ama taleefankaaga ku jira
+                  ${t('profile_modal.device_hint', isSo ? 'Soo geli sawir kombiyuutarkaaga ama taleefankaaga ku jira' : 'Upload an image from your computer or phone')}
                 </div>
                 <label class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1.15rem; font-weight: 700;">
-                  <span>📁 Soo Dooro Sawirka</span>
+                  <span>${t('profile_modal.choose_btn', isSo ? '📁 Soo Dooro Sawirka' : '📁 Choose Image')}</span>
                   <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'user_profile_avatar_preview', 'user_profile_avatar_url', 'user_profile_avatar_status')">
                 </label>
                 <div id="user_profile_avatar_status" style="font-size: 0.78rem; color: #0284c7; margin-top: 0.4rem; font-weight: 600;"></div>
@@ -320,22 +331,22 @@ const App = {
 
             <div style="margin-bottom: 1rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
-                Magacaaga (Full Name)
+                ${t('profile_modal.full_name_label', isSo ? 'Magacaaga (Full Name)' : 'Full Name *')}
               </label>
               <input type="text" name="full_name" value="${user.full_name || ''}" required style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
             </div>
 
             <div>
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
-                Xog Kooban / Bio (Optional)
+                ${t('profile_modal.bio_label', isSo ? 'Xog Kooban / Bio (Optional)' : 'Bio / Short Introduction (Optional)')}
               </label>
-              <textarea name="bio" rows="2" placeholder="Xog kooban oo kugu saabsan..." style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary); font-family: inherit;">${user.bio || ''}</textarea>
+              <textarea name="bio" rows="2" placeholder="${t('profile_modal.bio_placeholder', isSo ? 'Xog kooban oo kugu saabsan...' : 'Short bio about yourself...')}" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary); font-family: inherit;">${user.bio || ''}</textarea>
             </div>
 
           </div>
           <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
-            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Ka noqo</button>
-            <button type="submit" class="btn btn-primary" style="font-weight: 700;">Kaydi Sawirka & Xogta 💾</button>
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('profile_modal.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">${t('profile_modal.save_btn', isSo ? 'Kaydi Sawirka & Xogta 💾' : 'Save Profile & Image 💾')}</button>
           </div>
         </form>
       </div>
@@ -1297,42 +1308,43 @@ const App = {
       const courseId = context.courseId || 1;
       const today = new Date().toISOString().slice(0, 10);
       const modules = context.modules || [];
+      const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
       this.showCustomModal(`
         <div class="modal-dialog" style="max-width:540px;">
           <div class="modal-header">
-            <h3>📌 Create Assignment / Project</h3>
+            <h3>📌 ${t('assignments.create_title', isSo ? 'Abuur Shaqo / Mashruuc' : 'Create Assignment / Project')}</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
           <form onsubmit="App.handleCreateAssignment(event, ${courseId})" enctype="multipart/form-data">
             <div class="modal-body">
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Assignment Title *</label>
-                <input type="text" name="title" required placeholder="e.g. Lab 3: Distributed Hash Table Implementation" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.title_label', isSo ? 'Ciwaanka Shaqada *' : 'Assignment Title *')}</label>
+                <input type="text" name="title" required placeholder="${t('assignments.title_placeholder', isSo ? 'Tusaale: Lab 3: Midwifery Case Study' : 'e.g. Lab 3: Distributed Hash Table Implementation')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Instructions / Description *</label>
-                <textarea name="instructions" rows="3" required placeholder="Detailed instructions for students..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.instructions_label', isSo ? 'Tilmaamaha / Sharraxaadda *' : 'Instructions / Description *')}</label>
+                <textarea name="instructions" rows="3" required placeholder="${t('assignments.instructions_placeholder', isSo ? 'Tilmaamo faahfaahsan oo ardayda loogu talagalay...' : 'Detailed instructions for students...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Due Date *</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.due_date_label', isSo ? 'Taariikhda Gudbinta *' : 'Due Date *')}</label>
                   <input type="date" name="due_date" required value="${today}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Score</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.max_score_label', isSo ? 'Dhibcaha Ugu Sarreeya' : 'Max Score')}</label>
                   <input type="number" name="max_score" value="100" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Type</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.type_label', isSo ? 'Nooca' : 'Type')}</label>
                   <select name="submission_type" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
-                    <option value="file">📁 File Upload</option>
-                    <option value="text">📝 Text Entry</option>
-                    <option value="both">📁+📝 Both</option>
+                    <option value="file">${t('assignments.type_file', isSo ? '📁 Soo Gelinta Faylka' : '📁 File Upload')}</option>
+                    <option value="text">${t('assignments.type_text', isSo ? '📝 Qoraal Toos ah' : '📝 Text Entry')}</option>
+                    <option value="both">${t('assignments.type_both', isSo ? '📁+📝 Labadaba' : '📁+📝 Both')}</option>
                   </select>
                 </div>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Attach Assignment Guides <span style="font-weight:400;color:var(--text-muted);">(Sawirro badan, PDF, Video — optional)</span></label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 ${t('assignments.attach_guides_label', isSo ? 'Ku lifaaq Hagaha Shaqada (Sawirro badan, PDF, Video — ikhtiyaari)' : 'Attach Assignment Guides (Multiple images, PDF, Video — optional)')}</label>
                 <div id="assign-dropzone"
                   ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#eff6ff';"
                   ondragleave="this.style.borderColor='var(--border-color)';this.style.background='';"
@@ -1345,13 +1357,13 @@ const App = {
                     onchange="App.handleAssignFileSelect(this)">
                   <div id="assign-dropzone-idle" style="pointer-events:none;">
                     <div style="font-size:2rem;margin-bottom:0.3rem;">📸</div>
-                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Riix halkan ama u soo jiid sawirro badan / faylal</div>
-                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">🖼️ Sawirro badan &nbsp;|&nbsp; 📄 PDF &nbsp;|&nbsp; 🎬 Video &nbsp;|&nbsp; 📝 Word/PPT</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">${t('assignments.dropzone_prompt', isSo ? 'Riix halkan ama u soo jiid sawirro badan / faylal' : 'Click here or drag files / multiple images')}</div>
+                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">${t('assignments.dropzone_types', isSo ? '🖼️ Sawirro badan | 📄 PDF | 🎬 Video | 📝 Word/PPT' : '🖼️ Multiple images | 📄 PDF | 🎬 Video | 📝 Word/PPT')}</div>
                   </div>
                   <div id="assign-dropzone-preview" style="display:none;pointer-events:none;"></div>
                 </div>
                 <div id="assign-upload-bar-wrap" style="display:none;margin-top:0.4rem;">
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;" id="assign-upload-bar-label">Soo gelayaa...</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;" id="assign-upload-bar-label">${isSo ? 'Soo gelayaa...' : 'Uploading...'}</div>
                   <div style="background:#e2e8f0;border-radius:99px;height:7px;overflow:hidden;">
                     <div id="assign-upload-bar" style="height:100%;width:0%;background:var(--primary);border-radius:99px;transition:width .3s;"></div>
                   </div>
@@ -1359,13 +1371,13 @@ const App = {
               </div>
               <div style="background:var(--bg-surface-alt);border:1px dashed var(--primary);border-radius:var(--radius-md);padding:0.85rem;text-align:center;">
                 <div style="font-size:1.5rem;margin-bottom:0.3rem;">📥</div>
-                <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Student Submission Dropzone</div>
-                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;">Students will upload their work here when this assignment is published</div>
+                <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">${t('assignments.student_dropzone_title', isSo ? 'Meesha Ardaydu Shaqada ku Soo Gudbinayaan' : 'Student Submission Dropzone')}</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;">${t('assignments.student_dropzone_desc', isSo ? 'Ardaydu halkan ayay shaqadooda ku soo gelin doonaan marka la daabaco' : 'Students will upload their work here when this assignment is published')}</div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
-              <button type="submit" class="btn btn-primary">📌 Create Assignment</button>
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('assignments.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('assignments.submit_create', isSo ? '📌 Abuur Shaqada' : '📌 Create Assignment')}</button>
             </div>
           </form>
         </div>
@@ -1675,14 +1687,16 @@ const App = {
 
     const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0);
     const totalMB = (totalBytes / 1024 / 1024).toFixed(1);
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const fileWord = isSo ? (files.length === 1 ? 'fayl' : 'faylal / sawirro') : (files.length === 1 ? 'file' : 'files / images');
 
     preview.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border-color);">
         <span style="font-size:0.82rem;font-weight:700;color:var(--primary);">
-          📁 ${files.length} ${files.length === 1 ? 'fayl' : 'faylal / sawirro'} la doortay (${totalMB} MB)
+          📁 ${files.length} ${fileWord} ${isSo ? 'la doortay' : 'selected'} (${totalMB} MB)
         </span>
         <button type="button" class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:0.72rem;color:#ef4444;" onclick="event.stopPropagation();App.clearAssignAttachment()">
-          ✕ Tirtir Dhammaan
+          ✕ ${isSo ? 'Tirtir Dhammaan' : 'Clear All'}
         </button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:0.5rem;max-height:220px;overflow-y:auto;padding:2px;">
@@ -1720,7 +1734,7 @@ const App = {
     const lbl  = document.getElementById('assign-upload-bar-label');
     if (wrap && bar) {
       wrap.style.display = 'block';
-      lbl.textContent = `✅ ${files.length} faylal / sawirro diyaar u ah soo gelinta (${totalMB} MB)`;
+      lbl.textContent = `✅ ${files.length} ${fileWord} ${isSo ? 'diyaar u ah soo gelinta' : 'ready to upload'} (${totalMB} MB)`;
       bar.style.width = '100%';
       bar.style.background = '#22c55e';
     }
@@ -2102,74 +2116,77 @@ const App = {
         this.showToast('Assignment not found', 'error');
         return;
       }
+      const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+      const t = (k, fb) => (typeof I18N !== 'undefined') ? I18N.t(k, fb) : fb;
       const dueDateVal = a.due_date ? new Date(a.due_date).toISOString().slice(0, 10) : '';
 
       this.showCustomModal(`
         <div class="modal-dialog" style="max-width:540px;">
           <div class="modal-header">
-            <h3>✏️ Wax ka beddel Shaqada (Edit Assignment)</h3>
+            <h3>✏️ ${t('assignments.edit_title', isSo ? 'Wax ka beddel Shaqada' : 'Edit Assignment')}</h3>
             <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
           </div>
           <form onsubmit="App.handleUpdateAssignment(event, ${a.id})" enctype="multipart/form-data">
             <div class="modal-body">
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Assignment Title *</label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.title_label', isSo ? 'Ciwaanka Shaqada *' : 'Assignment Title *')}</label>
                 <input type="text" name="title" required value="${(a.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Instructions / Description *</label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.instructions_label', isSo ? 'Tilmaamaha / Sharraxaadda *' : 'Instructions / Description *')}</label>
                 <textarea name="instructions" rows="4" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${a.instructions || ''}</textarea>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Due Date *</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.due_date_label', isSo ? 'Taariikhda Gudbinta *' : 'Due Date *')}</label>
                   <input type="date" name="due_date" required value="${dueDateVal}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Max Score</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.max_score_label', isSo ? 'Dhibcaha Ugu Sarreeya' : 'Max Score')}</label>
                   <input type="number" name="max_score" value="${a.max_score || 100}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
                 </div>
                 <div>
-                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">Late Submissions</label>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.allow_late_label', isSo ? 'Gudbinta Daahday' : 'Late Submissions')}</label>
                   <select name="allow_late" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
-                    <option value="1" ${a.allow_late ? 'selected' : ''}>Allowed</option>
-                    <option value="0" ${!a.allow_late ? 'selected' : ''}>Not Allowed</option>
+                    <option value="1" ${a.allow_late ? 'selected' : ''}>${t('assignments.allowed', isSo ? 'Waa la ogol yahay' : 'Allowed')}</option>
+                    <option value="0" ${!a.allow_late ? 'selected' : ''}>${t('assignments.not_allowed', isSo ? 'Lama ogola' : 'Not Allowed')}</option>
                   </select>
                 </div>
               </div>
               <div style="margin-bottom:0.75rem;">
-                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 Baddal ama ku dar Faylal / Sawirro <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 ${isSo ? 'Baddal ama ku dar Faylal / Sawirro' : 'Replace or Add Files / Images'} <span style="font-weight:400;color:var(--text-muted);">${isSo ? '(ikhtiyaari)' : '(optional)'}</span></label>
                 <input type="file" name="attachment" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
-                ${a.attachment_name ? `<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.3rem;">Hadda ku lifaaqan: <strong>${a.attachment_name}</strong></p>` : ''}
+                ${a.attachment_name ? `<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.3rem;">${isSo ? 'Hadda ku lifaaqan:' : 'Currently attached:'} <strong>${a.attachment_name}</strong></p>` : ''}
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
-              <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('assignments.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('assignments.submit_update', isSo ? '💾 Kaydi Wax-ka-beddelka' : '💾 Save Changes')}</button>
             </div>
           </form>
         </div>
       `);
     } catch (err) {
-      this.showToast(err.message || 'Khalad ayaa dhacay', 'error');
+      this.showToast(err.message || 'Error loading assignment', 'error');
     }
   },
 
   async handleUpdateAssignment(e, assignmentId) {
     e.preventDefault();
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
     const form = e.target;
     const fd = new FormData(form);
     const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Kaydinayaa...'; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isSo ? 'Kaydinayaa...' : 'Saving...'; }
 
     try {
       await API.updateAssignment(assignmentId, fd);
       this.closeModal();
-      this.showToast('✅ Shaqada si guul leh ayaa loo cusbooneysiiyay!');
+      this.showToast(isSo ? '✅ Shaqada si guul leh ayaa loo cusbooneysiiyay!' : '✅ Assignment updated successfully!');
       this.refreshCurrentView();
     } catch (err) {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Save Changes'; }
-      this.showToast(err.message || 'Khalad ayaa dhacay', 'error');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = isSo ? '💾 Kaydi Wax-ka-beddelka' : '💾 Save Changes'; }
+      this.showToast(err.message || 'Error saving assignment', 'error');
     }
   },
 

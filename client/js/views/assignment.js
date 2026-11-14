@@ -70,7 +70,7 @@ const AssignmentView = {
           <h3 style="font-size: 1.05rem; margin-bottom: 0.5rem;">Instructions & Requirements</h3>
           <div style="white-space: pre-wrap; font-size: 0.92rem; color: var(--text-main);">${assignment.instructions}</div>
 
-          ${assignment.attachment_url ? this.renderFilesGallery(this.parseAttachmentFiles(assignment.attachment_url, assignment.attachment_name), 'Hagaha Shaqada (Assignment Guide / Attached Files)') : ''}
+          ${assignment.attachment_url ? this.renderFilesGallery(this.parseAttachmentFiles(assignment.attachment_url, assignment.attachment_name), (typeof I18N !== 'undefined' && I18N.getLang() === 'so') ? 'Hagaha Shaqada / Faylasha Ku Lifaaqan' : 'Assignment Guide / Attached Files') : ''}
         </div>
       </div>
 
@@ -107,32 +107,38 @@ const AssignmentView = {
   },
 
   // Render a visual gallery of attached or submitted files
-  renderFilesGallery(files, label = 'Attached Files') {
+  renderFilesGallery(files, label = '') {
     if (!files || files.length === 0) return '';
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const resolvedLabel = label || (isSo ? 'Faylasha Ku Lifaaqan' : 'Attached Files');
     return `
       <div style="margin-top: 1.25rem;">
         <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-          <span>📎</span> <span>${label}</span>
+          <span>📎</span> <span>${resolvedLabel}</span>
           <span class="badge" style="background: var(--bg-surface-alt); font-size: 0.72rem;">${files.length}</span>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.75rem;">
           ${files.map(f => {
+            const isSo2 = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
             const fname = (f.name || f.url.split('/').pop() || 'file').toLowerCase();
             const isImg   = /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(fname) || (f.type && f.type.startsWith('image/'));
             const isVideo = /\.(mp4|mov|mkv|webm|avi|m4v|3gp|ogv|wmv)$/i.test(fname) || (f.type && f.type.startsWith('video/'));
             const isPdf   = fname.endsWith('.pdf');
             const sizeStr = f.size ? (f.size > 1024 * 1024 ? (f.size / 1024 / 1024).toFixed(1) + ' MB' : Math.round(f.size / 1024) + ' KB') : '';
+            const openLabel = isSo2 ? '🔍 Fur' : '🔍 Open';
+            const openLinkLabel = isSo2 ? 'Fur ↗' : 'Open ↗';
+            const downloadTitle = isSo2 ? 'Degso' : 'Download';
 
             if (isImg) {
               return `
                 <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-surface); display: flex; flex-direction: column; box-shadow: var(--shadow-sm);">
-                  <a href="${f.url}" target="_blank" rel="noopener noreferrer" style="display: block; height: 130px; background: #0f172a; overflow: hidden; position: relative;" title="Riix si aad shaashad weyn ugu daawato">
+                  <a href="${f.url}" target="_blank" rel="noopener noreferrer" style="display: block; height: 130px; background: #0f172a; overflow: hidden; position: relative;" title="${openLabel}">
                     <img src="${f.url}" alt="${f.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <span style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px;">🔍 Fur</span>
+                    <span style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px;">${openLabel}</span>
                   </a>
                   <div style="padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.25rem;">
                     <div style="font-size: 0.76rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${f.name}">${f.name}</div>
-                    <a href="${f.url}" download="${f.name}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 0.72rem; flex-shrink: 0;" title="Degso">📥</a>
+                    <a href="${f.url}" download="${f.name}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 0.72rem; flex-shrink: 0;" title="${downloadTitle}">📥</a>
                   </div>
                 </div>
               `;
@@ -144,7 +150,7 @@ const AssignmentView = {
                   <video src="${f.url}" controls style="width: 100%; height: 130px; background: #000; object-fit: contain;"></video>
                   <div style="padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.25rem;">
                     <div style="font-size: 0.76rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${f.name}">${f.name}</div>
-                    <a href="${f.url}" download="${f.name}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 0.72rem; flex-shrink: 0;" title="Degso">📥</a>
+                    <a href="${f.url}" download="${f.name}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 0.72rem; flex-shrink: 0;" title="${downloadTitle}">📥</a>
                   </div>
                 </div>
               `;
@@ -160,8 +166,8 @@ const AssignmentView = {
                   </div>
                 </div>
                 <div style="display: flex; gap: 0.4rem; margin-top: 0.6rem;">
-                  <a href="${f.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="flex: 1; padding: 3px 6px; font-size: 0.72rem; text-align: center;">Fur ↗</a>
-                  <a href="${f.url}" download="${f.name}" class="btn btn-primary btn-sm" style="padding: 3px 8px; font-size: 0.72rem;" title="Degso">📥</a>
+                  <a href="${f.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="flex: 1; padding: 3px 6px; font-size: 0.72rem; text-align: center;">${openLinkLabel}</a>
+                  <a href="${f.url}" download="${f.name}" class="btn btn-primary btn-sm" style="padding: 3px 8px; font-size: 0.72rem;" title="${downloadTitle}">📥</a>
                 </div>
               </div>
             `;
@@ -172,6 +178,8 @@ const AssignmentView = {
   },
 
   renderStudentSubmissionStatus(assignment, submission) {
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (key, fb) => (typeof I18N !== 'undefined') ? I18N.t(key, fb) : fb;
     const isGraded = submission && submission.status === 'graded' && submission.is_grades_released;
     const submittedFiles = submission?.file_url ? this.parseAttachmentFiles(submission.file_url, submission.file_name, submission.file_size_bytes) : [];
 
@@ -180,36 +188,36 @@ const AssignmentView = {
         
         <!-- Status Card -->
         <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-sm);">
-          <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Submission Status</h3>
+          <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">${t('assignments.student_status_title', isSo ? 'Xaaladda Gudbintaada' : 'Submission Status')}</h3>
           
           <table style="width: 100%; font-size: 0.88rem; border-collapse: collapse;">
             <tbody>
               <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 0.75rem 0; color: var(--text-muted); width: 140px;">Status</td>
+                <td style="padding: 0.75rem 0; color: var(--text-muted); width: 140px;">${isSo ? 'Xaaladda' : 'Status'}</td>
                 <td style="padding: 0.75rem 0;">
                   <span class="badge ${submission?.status === 'graded' ? 'badge-success' : submission?.status === 'submitted' ? 'badge-warning' : 'badge-danger'}">
-                    ${submission?.status ? submission.status.toUpperCase() : 'NO SUBMISSION'}
+                    ${submission?.status ? submission.status.toUpperCase() : (isSo ? 'MA SOO GUDBIN' : 'NO SUBMISSION')}
                   </span>
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 0.75rem 0; color: var(--text-muted);">Submitted At</td>
+                <td style="padding: 0.75rem 0; color: var(--text-muted);">${isSo ? 'Waqtiga la Gudbiyay' : 'Submitted At'}</td>
                 <td style="padding: 0.75rem 0; font-weight: 600;">
                   ${submission?.submitted_at ? new Date(submission.submitted_at).toLocaleString() : '—'}
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 0.75rem 0; color: var(--text-muted);">Grade</td>
+                <td style="padding: 0.75rem 0; color: var(--text-muted);">${isSo ? 'Dhibcaha' : 'Grade'}</td>
                 <td style="padding: 0.75rem 0;">
                   ${isGraded ? `
                     <strong style="font-size: 1.1rem; color: var(--success);">${submission.grade} / ${assignment.max_score}</strong>
                     <span style="font-size: 0.8rem; color: var(--text-muted);">(${Math.round((submission.grade / assignment.max_score) * 100)}%)</span>
-                  ` : '<span style="color: var(--text-muted);">Not graded yet</span>'}
+                  ` : `<span style="color: var(--text-muted);">${isSo ? 'Weli lama saxin' : 'Not graded yet'}</span>`}
                 </td>
               </tr>
               ${isGraded && submission.feedback ? `
                 <tr style="border-bottom: 1px solid var(--border-color);">
-                  <td style="padding: 0.75rem 0; color: var(--text-muted); vertical-align: top;">Feedback</td>
+                  <td style="padding: 0.75rem 0; color: var(--text-muted); vertical-align: top;">${isSo ? 'Faallada' : 'Feedback'}</td>
                   <td style="padding: 0.75rem 0; font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
                     ${submission.feedback}
                   </td>
@@ -217,7 +225,7 @@ const AssignmentView = {
               ` : ''}
               ${submission?.submission_text ? `
                 <tr style="border-bottom: 1px solid var(--border-color);">
-                  <td style="padding: 0.75rem 0; color: var(--text-muted); vertical-align: top;">Online Text</td>
+                  <td style="padding: 0.75rem 0; color: var(--text-muted); vertical-align: top;">${isSo ? 'Qoraalka' : 'Online Text'}</td>
                   <td style="padding: 0.75rem 0; font-size: 0.85rem; white-space: pre-wrap;">
                     ${submission.submission_text}
                   </td>
@@ -226,25 +234,25 @@ const AssignmentView = {
             </tbody>
           </table>
 
-          ${submittedFiles.length > 0 ? this.renderFilesGallery(submittedFiles, 'Faylasha / Sawirrada aad soo gudbisay') : ''}
+          ${submittedFiles.length > 0 ? this.renderFilesGallery(submittedFiles, isSo ? 'Faylasha / Sawirrada aad soo gudbisay' : 'Your Submitted Files / Images') : ''}
         </div>
 
         <!-- Submission Upload Form -->
         <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-sm);">
-          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">${submission ? 'Update Your Submission' : 'Submit Assignment'}</h3>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">${submission ? t('assignments.student_update_title', isSo ? 'Cusbooneysii Shaqadaada' : 'Update Your Submission') : t('assignments.student_submit_title', isSo ? 'Gudbi Shaqada' : 'Submit Assignment')}</h3>
           <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Waxaad soo gelin kartaa sawirro badan oo hawshaada ah, warbixin PDF, ama qoraalkaaga online-ka ah.
+            ${t('assignments.student_submit_desc', isSo ? 'Waxaad soo gelin kartaa sawirro badan oo hawshaada ah, warbixin PDF, ama qoraalkaaga online-ka ah.' : 'You can upload multiple photos of your work, a PDF report, or your online text response.')}
           </p>
 
           <form id="assignment-submit-form" onsubmit="AssignmentView.handleStudentSubmit(event, ${assignment.id})">
             <div style="margin-bottom: 1.25rem;">
-              <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">Online Text / Summary Response</label>
-              <textarea name="submission_text" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem; outline: none; background: var(--bg-surface-alt);" placeholder="Qor sharraxaad ama jawaabtaada...">${submission?.submission_text || ''}</textarea>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">${t('assignments.online_text_label', isSo ? 'Qoraalka Jawaabtaada (Online Text)' : 'Online Text / Summary Response')}</label>
+              <textarea name="submission_text" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem; outline: none; background: var(--bg-surface-alt);" placeholder="${t('assignments.online_text_placeholder', isSo ? 'Qor sharraxaad ama jawaabtaada halkan...' : 'Write your explanation or answer here...')}">${submission?.submission_text || ''}</textarea>
             </div>
 
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
-                📎 Soo geli Sawirro badan, PDF, ama Documents <span style="font-weight: 400; color: var(--text-muted);">(Dooro sawirro badan hal mar)</span>
+                ${t('assignments.student_upload_label', isSo ? '📎 Soo geli Sawirro badan, PDF, ama Documents (Dooro sawirro badan hal mar)' : '📎 Upload Multiple Images, PDF, or Documents (Select multiple files at once)')}
               </label>
 
               <div id="student-dropzone"
@@ -260,17 +268,17 @@ const AssignmentView = {
                 <div id="student-drop-idle">
                   <div style="font-size: 2.2rem; margin-bottom: 0.3rem;">📸</div>
                   <div style="font-weight: 700; font-size: 0.92rem; color: var(--primary);">
-                    Riix halkan si aad u soo doorato sawirro badan ama faylal
+                    ${t('assignments.student_dropzone_prompt', isSo ? 'Riix halkan si aad u soo doorato sawirro badan ama faylal' : 'Click here to select multiple photos or files')}
                   </div>
                   <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem;">
-                    Waxaad dooran kartaa sawirro badan hal mar (Hold Ctrl / Shift ama dooro gallery-gaaga)
+                    ${t('assignments.student_dropzone_hint', isSo ? 'Waxaad dooran kartaa sawirro badan hal mar (Hold Ctrl / Shift ama ka dooro gallery-gaaga)' : 'You can select multiple files at once (Hold Ctrl / Shift or select from your gallery)')}
                   </div>
                 </div>
                 <div id="student-files-preview" style="display: none; margin-top: 0.75rem; text-align: left;" onclick="event.stopPropagation()"></div>
               </div>
 
               <div id="student-upload-bar-wrap" style="display: none; margin-top: 0.6rem;">
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.2rem;" id="student-upload-bar-label">Soo gelayaa...</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.2rem;" id="student-upload-bar-label">${isSo ? 'Soo gelayaa...' : 'Uploading...'}</div>
                 <div style="background: #e2e8f0; border-radius: 99px; height: 7px; overflow: hidden;">
                   <div id="student-upload-bar" style="height: 100%; width: 0%; background: var(--primary); border-radius: 99px; transition: width .3s;"></div>
                 </div>
@@ -278,7 +286,7 @@ const AssignmentView = {
             </div>
 
             <button type="submit" id="student-submit-btn" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 700;">
-              ${submission ? '📤 Submit Updated Version' : '🚀 Confirm & Submit Assignment'}
+              ${submission ? t('assignments.student_update_btn', isSo ? '📤 Gudbi Nuqul Cusub' : '📤 Submit Updated Version') : t('assignments.student_confirm_btn', isSo ? '🚀 Xaqiiji & Gudbi Shaqada' : '🚀 Confirm & Submit Assignment')}
             </button>
           </form>
         </div>
@@ -308,6 +316,7 @@ const AssignmentView = {
   handleStudentFilesSelect(input) {
     const files = Array.from(input.files || []);
     if (files.length === 0) return;
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
     const idle = document.getElementById('student-drop-idle');
     const preview = document.getElementById('student-files-preview');
     if (!idle || !preview) return;
@@ -317,14 +326,15 @@ const AssignmentView = {
 
     const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0);
     const totalMB = (totalBytes / 1024 / 1024).toFixed(1);
+    const fileWord = isSo ? (files.length === 1 ? 'sawir/fayl' : 'sawirro/faylal') : (files.length === 1 ? 'file' : 'files');
 
     preview.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border-color);">
         <span style="font-size:0.8rem;font-weight:700;color:var(--primary);">
-          📸 ${files.length} ${files.length === 1 ? 'sawir/fayl' : 'sawirro/faylal'} la doortay (${totalMB} MB)
+          📸 ${files.length} ${fileWord} ${isSo ? 'la doortay' : 'selected'} (${totalMB} MB)
         </span>
         <button type="button" class="btn btn-outline btn-sm" style="padding:2px 7px;font-size:0.7rem;color:#ef4444;" onclick="event.stopPropagation();AssignmentView.clearStudentFiles()">
-          ✕ Tirtir
+          ✕ ${isSo ? 'Tirtir' : 'Remove'}
         </button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(90px, 1fr));gap:0.4rem;max-height:180px;overflow-y:auto;">
@@ -357,7 +367,7 @@ const AssignmentView = {
     const lbl  = document.getElementById('student-upload-bar-label');
     if (wrap && bar) {
       wrap.style.display = 'block';
-      lbl.textContent = `✅ ${files.length} sawirro/faylal diyaar u ah gudbinta (${totalMB} MB)`;
+      lbl.textContent = `✅ ${files.length} ${fileWord} ${isSo ? 'diyaar u ah gudbinta' : 'ready to submit'} (${totalMB} MB)`;
       bar.style.width = '100%';
       bar.style.background = '#22c55e';
     }
@@ -380,6 +390,8 @@ const AssignmentView = {
         const data = await API.getSubmissions(assignment.id);
         const container = document.getElementById('professor-submissions-container');
         if (!container) return;
+        const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+        const t = (key, fb) => (typeof I18N !== 'undefined') ? I18N.t(key, fb) : fb;
 
         // Store submissions in memory to avoid inline HTML quotes/newline syntax errors
         AssignmentView._submissionsMap = {};
@@ -397,8 +409,8 @@ const AssignmentView = {
           <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-sm);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
               <div>
-                <h3 style="font-size: 1.2rem;">Student Submissions & Grading Console</h3>
-                <p style="font-size: 0.84rem; color: var(--text-muted);">Review submitted files, assign marks, and provide detailed pedagogical feedback</p>
+                <h3 style="font-size: 1.2rem;">${t('assignments.console_title', isSo ? 'Miiska Saxidda Shaqooyinka Ardayda' : 'Student Submissions & Grading Console')}</h3>
+                <p style="font-size: 0.84rem; color: var(--text-muted);">${t('assignments.console_sub', isSo ? 'Dib u eeg shaqooyinka la soo gudbiyay, bixi dhibco iyo faallo faahfaahsan' : 'Review submitted files, assign marks, and provide detailed pedagogical feedback')}</p>
               </div>
             </div>
 
@@ -406,13 +418,13 @@ const AssignmentView = {
               <table class="gradebook-table">
                 <thead>
                   <tr>
-                    <th>Student Name</th>
-                    <th>Status</th>
-                    <th>Submitted Time</th>
-                    <th>Attached Work</th>
-                    <th>Grade / Max</th>
-                    <th>Feedback</th>
-                    <th>Action</th>
+                    <th>${t('assignments.col_student', isSo ? 'Magaca Ardayga' : 'Student Name')}</th>
+                    <th>${t('assignments.col_status', isSo ? 'Xaaladda' : 'Status')}</th>
+                    <th>${t('assignments.col_submitted_time', isSo ? 'Waqtiga la Gudbiyay' : 'Submitted Time')}</th>
+                    <th>${t('assignments.col_attached_work', isSo ? 'Shaqada Ku Lifaaqan' : 'Attached Work')}</th>
+                    <th>${t('assignments.col_grade', isSo ? 'Dhibcaha / Max' : 'Grade / Max')}</th>
+                    <th>${t('assignments.col_feedback', isSo ? 'Faallada' : 'Feedback')}</th>
+                    <th>${t('assignments.col_action', isSo ? 'Ficilka' : 'Action')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -429,7 +441,7 @@ const AssignmentView = {
                       </td>
                       <td>
                         <span class="badge ${s.submission_status === 'graded' ? 'badge-success' : s.submission_status === 'submitted' ? 'badge-warning' : 'badge-danger'}">
-                          ${s.submission_status ? s.submission_status.toUpperCase() : 'NOT SUBMITTED'}
+                          ${s.submission_status ? (isSo ? (s.submission_status === 'graded' ? 'LA SAXAY' : s.submission_status === 'submitted' ? 'LA GUDBIYAY' : 'MA SOO GUDBIN') : s.submission_status.toUpperCase()) : (isSo ? 'MA SOO GUDBIN' : 'NOT SUBMITTED')}
                         </span>
                       </td>
                       <td style="font-size: 0.8rem;">
@@ -439,7 +451,7 @@ const AssignmentView = {
                         ${(() => {
                           const files = AssignmentView.parseAttachmentFiles(s.file_url, s.file_name, s.file_size_bytes);
                           if (files.length === 0) {
-                            return s.submission_text ? `<span title="${s.submission_text.replace(/"/g, '&quot;')}" style="cursor: help; color: var(--primary); font-weight: 600;">📝 Qoraal kaliya</span>` : '<span style="color: var(--text-muted);">None</span>';
+                            return s.submission_text ? `<span title="${s.submission_text.replace(/"/g, '&quot;')}" style="cursor: help; color: var(--primary); font-weight: 600;">${isSo ? '📝 Qoraal kaliya' : '📝 Text Only'}</span>` : `<span style="color: var(--text-muted);">${isSo ? 'Ma jiro' : 'None'}</span>`;
                           }
                           if (files.length === 1) {
                             const f = files[0];
@@ -455,7 +467,7 @@ const AssignmentView = {
                           }
                           return `
                             <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-                              <span style="font-size: 0.74rem; font-weight: 700; color: var(--primary);">📁 ${files.length} faylal / sawirro:</span>
+                              <span style="font-size: 0.74rem; font-weight: 700; color: var(--primary);">📁 ${files.length} ${isSo ? 'faylal / sawirro:' : 'files / images:'}</span>
                               <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
                                 ${files.map((f, i) => {
                                   const isImg = /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(f.name);
@@ -481,14 +493,14 @@ const AssignmentView = {
                       <td>
                         ${s.submission_id ? `
                           <button class="btn btn-primary btn-sm" onclick="AssignmentView.openGradingModalById(${s.submission_id})">
-                            ${s.submission_status === 'graded' ? 'Regrade' : 'Grade Submission'}
+                            ${s.submission_status === 'graded' ? t('assignments.regrade_btn', isSo ? 'Dib u Sax' : 'Regrade') : t('assignments.grade_submission_btn', isSo ? 'Sax Shaqada' : 'Grade Submission')}
                           </button>
                         ` : `
                           <button class="btn btn-outline btn-sm"
                                   style="color: #dc2626; border-color: rgba(220, 38, 38, 0.45); background: rgba(220, 38, 38, 0.06); font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;"
-                                  title="Ardaygani ma soo gudbin shaqada - dhagsii si aad u siiso 0 ama dhibco kale"
+                                  title="${isSo ? 'Ardaygani ma soo gudbin - dhagsii si aad u siiso dhibco' : 'Student did not submit - click to grade with 0'}"
                                   onclick="AssignmentView.openUnsubmittedGradeModal(${s.student_id})">
-                            <span>Sii Grade (0)</span>
+                            <span>${t('assignments.grade_zero_btn', isSo ? 'Sii Grade (0)' : 'Grade (0)')}</span>
                           </button>
                         `}
                       </td>
@@ -520,28 +532,29 @@ const AssignmentView = {
     if (wrap && bar) {
       wrap.style.display = 'block';
       bar.style.background = 'var(--primary)';
-      lbl.textContent = 'Faylasha iyo sawirrada ayaa la soo dirayaa...';
+      const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+      lbl.textContent = isSo ? 'Faylasha iyo sawirrada ayaa la soo dirayaa...' : 'Uploading files and images...';
       let pct = 0;
       const fakeProg = setInterval(() => {
         pct = Math.min(pct + Math.random() * 14, 85);
         bar.style.width = pct + '%';
       }, 250);
 
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Soo dirayaa...'; }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isSo ? '⏳ Soo dirayaa...' : '⏳ Submitting...'; }
 
       try {
         await API.submitAssignment(assignmentId, formData);
         clearInterval(fakeProg);
         bar.style.width = '100%';
         bar.style.background = '#22c55e';
-        lbl.textContent = '✅ Si guul leh ayaa loo gudbiyay!';
+        lbl.textContent = isSo ? '✅ Si guul leh ayaa loo gudbiyay!' : '✅ Submitted successfully!';
         App.showToast('Assignment submitted successfully! 🎉');
         setTimeout(() => { App.refreshCurrentView(); }, 600);
       } catch (err) {
         clearInterval(fakeProg);
         bar.style.background = '#ef4444';
-        lbl.textContent = '❌ ' + (err.message || 'Khalad ayaa dhacay');
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Confirm & Submit Assignment'; }
+        lbl.textContent = '❌ ' + (err.message || (isSo ? 'Khalad ayaa dhacay' : 'Error occurred'));
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = isSo ? 'Xaqiiji & Gudbi Shaqada' : 'Confirm & Submit Assignment'; }
         App.showToast(err.message, 'error');
       }
     } else {
@@ -561,6 +574,8 @@ const AssignmentView = {
       App.showToast('Xogta ardayga lama helin', 'error');
       return;
     }
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (key, fb) => (typeof I18N !== 'undefined') ? I18N.t(key, fb) : fb;
     const maxScore = this._currentMaxScore || 100;
     const assignmentId = this._currentAssignmentId;
     const esc = (val) => String(val || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -568,7 +583,7 @@ const AssignmentView = {
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 580px;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem;">📝 Sii Grade: ${esc(s.full_name)}</h3>
+          <h3 style="font-size: 1.15rem;">${isSo ? `📝 Sii Grade: ${esc(s.full_name)}` : `📝 Grade Student: ${esc(s.full_name)}`}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="AssignmentView.submitManualGrade(event, ${assignmentId}, ${studentId})">
@@ -576,16 +591,16 @@ const AssignmentView = {
             
             <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
               <div style="font-weight: 700; color: #dc2626; font-size: 0.85rem; margin-bottom: 0.25rem;">
-                ⚠️ Ma jiro shaqo online ah oo la soo gudbiyay (NOT SUBMITTED)
+                ${t('assignments.modal_unsubmitted_notice_title', isSo ? '⚠️ Ma jiro shaqo online ah oo la soo gudbiyay (NOT SUBMITTED)' : '⚠️ No online submission received (NOT SUBMITTED)')}
               </div>
               <div style="font-size: 0.78rem; color: var(--text-muted);">
-                Waxaad ardaygan siin kartaa <strong>0</strong> sababtoo ah ma soo gudbin shaqada, ama dhibco kale haddii uu fasalka ku dhiibay.
+                ${t('assignments.modal_unsubmitted_notice_desc', isSo ? 'Waxaad ardaygan siin kartaa <strong>0</strong> sababtoo ah ma soo gudbin shaqada, ama dhibco kale haddii uu fasalka ku dhiibay.' : 'You can assign <strong>0</strong> for missing the assignment, or award a grade if submitted in class.')}
               </div>
             </div>
 
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
-                Dhibcaha (Grade Score) - Ugu badnaan: ${maxScore} pts
+                ${t('assignments.modal_score_label', isSo ? `Dhibcaha (Grade Score) - Ugu badnaan: ${maxScore} pts` : `Grade Score (Out of ${maxScore} points)`).replace('{max}', maxScore)}
               </label>
               <input type="number" step="0.5" min="0" max="${maxScore}" name="grade" value="0" required
                      style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1.15rem; font-weight: 800; color: #dc2626;">
@@ -593,19 +608,19 @@ const AssignmentView = {
 
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
-                Faallo / Feedback
+                ${t('assignments.modal_feedback_label', isSo ? 'Faallo / Feedback' : 'Pedagogical Feedback & Comments')}
               </label>
-              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="Sababta dhibcahan loo siiyay...">Ma soo gudbin shaqada (No submission submitted)</textarea>
+              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="${isSo ? 'Sababta dhibcahan loo siiyay...' : 'Reason for this grade...'}">${t('assignments.modal_feedback_unsubmitted_default', isSo ? 'Ma soo gudbin shaqada (No submission submitted)' : 'No submission submitted')}</textarea>
             </div>
 
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <input type="checkbox" name="is_grades_released" id="release_manual_grade_check" checked>
-              <label for="release_manual_grade_check" style="font-size: 0.85rem; font-weight: 600;">U sii daa dhibcaha ardayga isla markiiba (Release grade)</label>
+              <label for="release_manual_grade_check" style="font-size: 0.85rem; font-weight: 600;">${t('assignments.modal_release_check', isSo ? 'U sii daa dhibcaha ardayga isla markiiba (Release grade)' : 'Release grade and feedback to student immediately')}</label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Ka noqo / Cancel</button>
-            <button type="submit" class="btn btn-primary" style="background: #dc2626; border-color: #dc2626;">💾 Save Grade (0)</button>
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${isSo ? 'Ka noqo / Cancel' : 'Cancel'}</button>
+            <button type="submit" class="btn btn-primary" style="background: #dc2626; border-color: #dc2626;">${t('assignments.modal_save_zero', isSo ? '💾 Kaydi Dhibcaha (0)' : '💾 Save Grade (0)')}</button>
           </div>
         </form>
       </div>
@@ -657,12 +672,14 @@ const AssignmentView = {
 
   openGradingModal(submissionId, studentName, currentGrade, currentFeedback, maxScore, submissionText, fileUrl, fileName) {
     const submittedFiles = fileUrl ? this.parseAttachmentFiles(fileUrl, fileName) : [];
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (key, fb) => (typeof I18N !== 'undefined') ? I18N.t(key, fb) : fb;
     const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 650px;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem;">Grade Submission: ${esc(studentName)}</h3>
+          <h3 style="font-size: 1.15rem;">${isSo ? `Saxidda Shaqada: ${esc(studentName)}` : `Grade Submission: ${esc(studentName)}`}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="AssignmentView.submitGrade(event, ${submissionId})">
@@ -672,20 +689,20 @@ const AssignmentView = {
             ${(submissionText || submittedFiles.length > 0) ? `
               <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
                 <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
-                  👀 Shaqada Ardaygu Soo Gudbiyay (Submitted Work):
+                  ${t('assignments.submitted_work_heading', isSo ? '👀 Shaqada Ardaygu Soo Gudbiyay:' : '👀 Student Submitted Work:')}
                 </div>
                 ${submissionText ? `
                   <div style="font-size: 0.85rem; background: var(--bg-surface); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 0.75rem; white-space: pre-wrap;">
                     ${submissionText}
                   </div>
                 ` : ''}
-                ${submittedFiles.length > 0 ? this.renderFilesGallery(submittedFiles, 'Sawirrada & Faylasha') : ''}
+                ${submittedFiles.length > 0 ? this.renderFilesGallery(submittedFiles, t('assignments.attached_files_heading', isSo ? 'Sawirrada & Faylasha Ku Lifaaqan' : 'Attached Files & Images')) : ''}
               </div>
             ` : ''}
 
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
-                Grade Score (Out of ${maxScore} points)
+                ${t('assignments.modal_score_label', isSo ? `Dhibcaha (Ugu badnaan: ${maxScore} pts)` : `Grade Score (Out of ${maxScore} points)`).replace('{max}', maxScore)}
               </label>
               <input type="number" step="0.5" min="0" max="${maxScore}" name="grade" value="${currentGrade}" required
                      style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-weight: 700;">
@@ -693,19 +710,19 @@ const AssignmentView = {
 
             <div style="margin-bottom: 1.25rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
-                Pedagogical Feedback & Comments
+                ${t('assignments.modal_feedback_label', isSo ? 'Faallada & Talada Macallinka' : 'Pedagogical Feedback & Comments')}
               </label>
-              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="Explain what was done well and areas for improvement...">${esc(currentFeedback)}</textarea>
+              <textarea name="feedback" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;" placeholder="${t('assignments.modal_feedback_placeholder', isSo ? 'Sharax waxa ardaygu ku fiicnaa iyo meelaha u baahan hagaajin...' : 'Explain what was done well and areas for improvement...')}">${esc(currentFeedback)}</textarea>
             </div>
 
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <input type="checkbox" name="is_grades_released" id="release_grade_check" checked>
-              <label for="release_grade_check" style="font-size: 0.85rem; font-weight: 600;">Release grade and feedback to student immediately</label>
+              <label for="release_grade_check" style="font-size: 0.85rem; font-weight: 600;">${t('assignments.modal_release_check', isSo ? 'U sii daa dhibcaha ardayga isla markiiba' : 'Release grade and feedback to student immediately')}</label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
-            <button type="submit" class="btn btn-success">Save & Release Grade</button>
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${isSo ? 'Ka noqo' : 'Cancel'}</button>
+            <button type="submit" class="btn btn-success">${t('assignments.modal_save_grade', isSo ? 'Kaydi & U Sii Daa Dhibcaha' : 'Save & Release Grade')}</button>
           </div>
         </form>
       </div>

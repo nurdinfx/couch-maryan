@@ -592,11 +592,13 @@ const StudentsView = {
       const fName = (student.full_name || studentName || '').trim().split(' ')[0];
       currentActualPassword = fName ? (fName.charAt(0).toUpperCase() + fName.slice(1).toLowerCase() + '123') : 'student123';
     }
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (key, fb) => (typeof I18N !== 'undefined') ? I18N.t(key, fb) : fb;
 
     App.showCustomModal(`
       <div class="modal-dialog" style="max-width: 480px; width: 95%;">
         <div class="modal-header">
-          <h3 style="font-size: 1.15rem; font-weight: 700;">🔑 Furaha Sirta ah (Password) - ${studentName}</h3>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">${isSo ? `🔑 Furaha Sirta ah (Password) - ${studentName}` : `🔑 Student Password - ${studentName}`}</h3>
           <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
         </div>
         <form onsubmit="StudentsView.submitResetPassword(event, ${studentId})">
@@ -604,13 +606,13 @@ const StudentsView = {
             
             <div style="background: #f0fdf4; border: 1.5px solid #22c55e; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
               <span style="font-size: 0.8rem; font-weight: 700; color: #166534; display: block; margin-bottom: 0.25rem;">
-                🔐 Furaha Hadda U Degsan Ardayga (Current Password):
+                ${isSo ? '🔐 Furaha Hadda U Degsan Ardayga (Current Password):' : '🔐 Current Password Assigned to Student:'}
               </span>
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                 <code style="font-size: 1.15rem; font-weight: 800; color: #15803d; letter-spacing: 0.5px; background: white; padding: 0.35rem 0.75rem; border-radius: 4px; border: 1px solid #bbf7d0;">
                   ${currentActualPassword}
                 </code>
-                <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.65rem; font-weight: 700;" onclick="navigator.clipboard.writeText('${currentActualPassword}'); App.showToast('Furaha waa la koobiyeeyay!')">
+                <button type="button" class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.65rem; font-weight: 700;" onclick="navigator.clipboard.writeText('${currentActualPassword}'); App.showToast(isSo ? 'Furaha waa la koobiyeeyay!' : 'Password copied!')">
                   📋 Copy
                 </button>
               </div>
@@ -618,17 +620,17 @@ const StudentsView = {
 
             <div style="margin-bottom: 1rem;">
               <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
-                Furaha Sirta ah ee Ardayga (Gali ama Baddal) *
+                ${isSo ? 'Furaha Sirta ah ee Ardayga (Geli ama Baddal) *' : 'Student Password (Set or Change) *'}
               </label>
-              <input type="text" name="new_password" required minlength="4" value="${currentActualPassword}" placeholder="Gali furaha cusub..." style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; background: var(--bg-surface); color: var(--text-primary);">
+              <input type="text" name="new_password" required minlength="4" value="${currentActualPassword}" placeholder="${isSo ? 'Gali furaha cusub...' : 'Enter new password...'}" style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; background: var(--bg-surface); color: var(--text-primary);">
               <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
-                Halkan waxaad toos uga arki kartaa furaha ardayga, haddaad rabtana waad ka baddali kartaa.
+                ${isSo ? 'Halkan waxaad toos uga arki kartaa furaha ardayga, haddaad rabtana waad ka baddali kartaa.' : 'You can view the student password here, and change it if needed.'}
               </span>
             </div>
           </div>
           <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
-            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${I18N.t('common.cancel', 'Xir')}</button>
-            <button type="submit" class="btn btn-primary" style="font-weight: 700;">Kaydi Furaha Cusub 💾</button>
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('common.cancel', isSo ? 'Xir' : 'Cancel')}</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">${isSo ? 'Kaydi Furaha Cusub 💾' : 'Save Password 💾'}</button>
           </div>
         </form>
       </div>
@@ -642,7 +644,8 @@ const StudentsView = {
     try {
       await API.resetPassword(studentId, newPass);
       App.closeModal();
-      App.showToast('Furaha sirta ah ee ardayga si guul leh ayaa loo cusbooneysiiyay!');
+      const isSo2 = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+      App.showToast(isSo2 ? 'Furaha sirta ah ee ardayga si guul leh ayaa loo cusbooneysiiyay!' : 'Student password updated successfully!');
       // Update locally in cachedStudents
       const st = (this.cachedStudents || []).find(s => s.id === studentId);
       if (st) st.password_plain = newPass;

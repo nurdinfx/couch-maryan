@@ -71,17 +71,17 @@ const AdminView = {
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <a href="/api/admin/backup-json" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
-            <span>📦</span> Export Snapshot (JSON)
+            <span>📦</span> ${I18N.t('admin.export_snapshot', 'Export Snapshot (JSON)')}
           </a>
           <label class="btn btn-outline" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0;">
-            <span>📥</span> Import Snapshot (JSON)
+            <span>📥</span> ${I18N.t('admin.import_snapshot', 'Import Snapshot (JSON)')}
             <input type="file" id="import-snapshot-input" accept=".json" style="display: none;" onchange="AdminView.handleImportSnapshot(event)">
           </label>
           <a href="/api/admin/backup-db" class="btn btn-outline" download style="display: flex; align-items: center; gap: 0.5rem;">
             <span>💾</span> ${I18N.t('admin.download_backup', 'Download SQLite Backup')}
           </a>
           <button class="btn" onclick="AdminView.restorePersistentData()" style="display: flex; align-items: center; gap: 0.5rem; background: #0284c7; color: white; border: none; font-weight: 600;">
-            <span>🔄</span> Soo Celi Xogta Rasmiga ah (Restore Real Data)
+            <span>🔄</span> ${I18N.t('admin.restore_real_data', 'Restore Real Data')}
           </button>
         </div>
       </div>

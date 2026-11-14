@@ -27,11 +27,12 @@ const MessagesView = {
       } else {
         const container = document.getElementById('active-chat-thread-container');
         if (container) {
+          const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
           container.innerHTML = `
             <div style="padding: 4rem 1.5rem; text-align: center; color: var(--text-muted); margin: auto;">
               <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
-              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.5rem;">Direct Academic Messages</h3>
-              <p style="font-size: 0.9rem; max-width: 360px; margin: 0 auto;">Fadlan dhanka bidix ka dooro qofka aad rabto inaad la hadasho si aad u bilowdo wada hadalka.</p>
+              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.5rem;">${I18N.t('messages.page_title', 'Direct Academic Messages')}</h3>
+              <p style="font-size: 0.9rem; max-width: 360px; margin: 0 auto;">${isSo ? 'Fadlan dhanka bidix ka dooro qofka aad rabto inaad la hadasho si aad u bilowdo wada hadalka.' : 'Please select a contact from the left list to start the conversation.'}</p>
             </div>
           `;
         }
@@ -69,7 +70,7 @@ const MessagesView = {
 
           <!-- Contact Search Bar -->
           <div style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-color); background: var(--bg-surface);">
-            <input type="text" id="contact-search-input" placeholder="🔍 Raadi qof / Search..."
+            <input type="text" id="contact-search-input" placeholder="${(typeof I18N !== 'undefined' && I18N.getLang() === 'so') ? '🔍 Raadi qof...' : '🔍 Search contacts...'}"
                    oninput="MessagesView.filterContacts(this.value)"
                    style="width: 100%; padding: 0.45rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem; background: var(--bg-surface-alt); color: var(--text-primary); outline: none;">
           </div>

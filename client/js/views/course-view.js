@@ -8,6 +8,7 @@ const CourseView = {
     const activeTab = params.tab || 'content';
     const user = API.currentUser;
     const isProfessor = user.role === 'professor' || user.role === 'admin' || user.is_admin === 1;
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
 
     let courseData = null;
     try {
@@ -206,17 +207,17 @@ const CourseView = {
                   <div style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.85rem; font-weight: 600;">
                     <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; margin: 0;">
                       <input type="checkbox" id="select-all-box-${m.id}" onchange="App.toggleSelectAllActivities(${m.id}, this.checked)" style="width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary);">
-                      <span>Dooro Dhamaan / Select All</span>
+                      <span>${isSo ? 'Dooro Dhamaan' : 'Select All'}</span>
                     </label>
                     <span style="color: var(--text-muted); font-weight: normal;">|</span>
-                    <span style="color: var(--primary); font-weight: 700;"><span id="selected-count-${m.id}">0</span> la doortay / selected</span>
+                    <span style="color: var(--primary); font-weight: 700;"><span id="selected-count-${m.id}">0</span> ${isSo ? 'la doortay' : 'selected'}</span>
                   </div>
                   <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <button class="btn btn-sm btn-outline" onclick="App.clearSelection(${m.id})" style="font-size: 0.78rem; padding: 0.3rem 0.65rem;">
-                      Baaji / Deselect
+                      ${isSo ? 'Baaji' : 'Deselect'}
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="App.deleteSelectedActivities(${m.id})" style="font-size: 0.78rem; padding: 0.3rem 0.65rem; display: flex; align-items: center; gap: 0.35rem; background: var(--danger); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer;">
-                      🗑 Tirtir Kuwa La Doortay / Delete Selected
+                      🗑 ${isSo ? 'Tirtir Kuwa La Doortay' : 'Delete Selected'}
                     </button>
                   </div>
                 </div>
@@ -255,15 +256,15 @@ const CourseView = {
                     ${isProfessor ? `
                       <button class="btn btn-outline btn-sm activity-edit-btn"
                               style="color: var(--primary); border-color: var(--primary-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm); margin-right: 0.35rem;"
-                              title="Wax ka beddel casharkan / Edit lesson"
+                              title="${isSo ? 'Wax ka beddel casharkan' : 'Edit lesson'}"
                               onclick="event.stopPropagation(); App.showModal('editLessonModal', { lessonId: ${l.id}, courseId: ${course.id} })">
-                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                        ✏️ <span style="font-size: 0.75rem;">${isSo ? 'Wax ka beddel' : 'Edit'}</span>
                       </button>
                       <button class="btn btn-outline btn-sm activity-delete-btn"
                               style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
-                              title="Tirtir casharkan / Delete lesson"
+                              title="${isSo ? 'Tirtir casharkan' : 'Delete lesson'}"
                               onclick="event.stopPropagation(); App.deleteLesson(${l.id}, '${(l.title || '').replace(/'/g, "\\'")}')">
-                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                        🗑 <span style="font-size: 0.75rem;">${isSo ? 'Tirtir' : 'Delete'}</span>
                       </button>
                     ` : ''}
                   </div>
@@ -298,15 +299,15 @@ const CourseView = {
                     ${isProfessor ? `
                       <button class="btn btn-outline btn-sm"
                               style="color: var(--primary); border-color: rgba(59, 130, 246, 0.4); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
-                              title="Wax ka beddel shaqadan / Edit assignment"
+                              title="${isSo ? 'Wax ka beddel shaqadan' : 'Edit assignment'}"
                               onclick="event.stopPropagation(); App.openEditAssignmentModal(${a.id})">
-                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                        ✏️ <span style="font-size: 0.75rem;">${isSo ? 'Wax ka beddel' : 'Edit'}</span>
                       </button>
                       <button class="btn btn-outline btn-sm activity-delete-btn"
                               style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
-                              title="Tirtir shaqadan / Delete assignment"
+                              title="${isSo ? 'Tirtir shaqadan' : 'Delete assignment'}"
                               onclick="event.stopPropagation(); App.deleteAssignment(${a.id}, '${(a.title || '').replace(/'/g, "\\'")}')">
-                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                        🗑 <span style="font-size: 0.75rem;">${isSo ? 'Tirtir' : 'Delete'}</span>
                       </button>
                     ` : ''}
                   </div>
@@ -363,15 +364,15 @@ const CourseView = {
                     ${isProfessor ? `
                       <button class="btn btn-outline btn-sm"
                               style="color: var(--primary); border-color: var(--border-color); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
-                              title="Wax ka beddel / Edit quiz & schedule"
+                              title="${isSo ? 'Wax ka beddel imtixaanka' : 'Edit quiz & schedule'}"
                               onclick="event.stopPropagation(); App.showModal('editQuizModal', { quizId: ${q.id} })">
-                        ✏️ <span style="font-size: 0.75rem;">Edit</span>
+                        ✏️ <span style="font-size: 0.75rem;">${isSo ? 'Wax ka beddel' : 'Edit'}</span>
                       </button>
                       <button class="btn btn-outline btn-sm activity-delete-btn"
                               style="color: var(--danger); border-color: var(--danger-border); padding: 0.25rem 0.55rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius-sm);"
-                              title="Tirtir imtixaankan / Delete quiz"
+                              title="${isSo ? 'Tirtir imtixaankan' : 'Delete quiz'}"
                               onclick="event.stopPropagation(); App.deleteQuiz(${q.id}, '${(q.title || '').replace(/'/g, "\\'")}')">
-                        🗑 <span style="font-size: 0.75rem;">Delete</span>
+                        🗑 <span style="font-size: 0.75rem;">${isSo ? 'Tirtir' : 'Delete'}</span>
                       </button>
                     ` : ''}
                   </div>
