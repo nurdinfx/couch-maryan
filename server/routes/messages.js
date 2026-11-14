@@ -7,8 +7,9 @@ const { safeUploadSingle } = require('../middleware/upload');
 // 1. Get List of Conversations for Current User
 router.get('/conversations', requireAuth, (req, res) => {
   const userId = req.user.id;
+  const userRole = req.user.role;
 
-  // Find all distinct users we have conversed with
+  // Find all distinct users we have conversed with, or our relevant academic peers
   const conversations = db.prepare(`
     SELECT
       u.id as user_id,
@@ -29,12 +30,39 @@ router.get('/conversations', requireAuth, (req, res) => {
       (SELECT COUNT(*) FROM messages WHERE sender_id = u.id AND recipient_id = ? AND is_read = 0) as unread_count
     FROM users u
     WHERE u.id != ? AND (
-      EXISTS(SELECT 1 FROM messages WHERE sender_id = u.id AND recipient_id = ?) OR
-      EXISTS(SELECT 1 FROM messages WHERE sender_id = ? AND recipient_id = u.id) OR
-      u.role = 'professor'
+      -- 1. Anyone with whom this user has already exchanged messages
+      EXISTS(SELECT 1 FROM messages WHERE (sender_id = u.id AND recipient_id = ?) OR (sender_id = ? AND recipient_id = u.id))
+      OR
+      -- 2. If professor: only show students enrolled in courses taught by this professor
+      (? = 'professor' AND u.role = 'student' AND u.id IN (
+        SELECT DISTINCT e.user_id 
+        FROM enrollments e 
+        JOIN courses c ON e.course_id = c.id 
+        WHERE c.professor_id = ?
+      ))
+      OR
+      -- 3. If student: only show professors of courses this student is enrolled in
+      (? = 'student' AND u.role = 'professor' AND u.id IN (
+        SELECT DISTINCT c.professor_id 
+        FROM enrollments e 
+        JOIN courses c ON e.course_id = c.id 
+        WHERE e.user_id = ?
+      ))
+      OR
+      -- 4. If admin: can view professors
+      (? = 'admin' AND u.role = 'professor')
     )
-    ORDER BY last_message_at DESC NULLS LAST
-  `).all(userId, userId, userId, userId, userId, userId, userId, userId);
+    ORDER BY last_message_at DESC NULLS LAST, u.full_name ASC
+  `).all(
+    userId, userId,
+    userId, userId,
+    userId,
+    userId,
+    userId, userId,
+    userRole, userId,
+    userRole, userId,
+    userRole
+  );
 
   res.json({ conversations });
 });

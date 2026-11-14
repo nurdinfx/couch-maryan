@@ -18,11 +18,24 @@ const MessagesView = {
       console.error('Error fetching conversations:', err);
     }
 
-    const activeRecipientId = params && params.recipient ? parseInt(params.recipient) : (conversations[0]?.user_id || 1);
+    const activeRecipientId = params && params.recipient ? parseInt(params.recipient) : (conversations[0]?.user_id || null);
     this.activeRecipientId = activeRecipientId;
 
     setTimeout(() => {
-      this.loadThread(activeRecipientId);
+      if (activeRecipientId) {
+        this.loadThread(activeRecipientId);
+      } else {
+        const container = document.getElementById('active-chat-thread-container');
+        if (container) {
+          container.innerHTML = `
+            <div style="padding: 4rem 1.5rem; text-align: center; color: var(--text-muted); margin: auto;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
+              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.5rem;">Direct Academic Messages</h3>
+              <p style="font-size: 0.9rem; max-width: 360px; margin: 0 auto;">Fadlan dhanka bidix ka dooro qofka aad rabto inaad la hadasho si aad u bilowdo wada hadalka.</p>
+            </div>
+          `;
+        }
+      }
     }, 50);
 
     return `
@@ -53,9 +66,19 @@ const MessagesView = {
             <span>${I18N.t('messages.conversations', 'Conversations')}</span>
             <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: 0.75rem;">${conversations.length}</span>
           </div>
-          <div style="overflow-y: auto; flex: 1; max-height: 560px;">
+
+          <!-- Contact Search Bar -->
+          <div style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-color); background: var(--bg-surface);">
+            <input type="text" id="contact-search-input" placeholder="🔍 Raadi qof / Search..."
+                   oninput="MessagesView.filterContacts(this.value)"
+                   style="width: 100%; padding: 0.45rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem; background: var(--bg-surface-alt); color: var(--text-primary); outline: none;">
+          </div>
+
+          <div id="conversations-scroll-list" style="overflow-y: auto; flex: 1; max-height: 520px;">
             ${conversations.map(c => `
               <div class="conversation-item ${c.user_id === activeRecipientId ? 'active' : ''}"
+                   data-id="${c.user_id}"
+                   data-name="${(c.full_name || '').replace(/"/g, '&quot;')}"
                    style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; gap: 0.75rem; align-items: center; background: ${c.user_id === activeRecipientId ? 'var(--bg-surface)' : 'transparent'}; transition: background 0.2s;"
                    onclick="MessagesView.switchRecipient(${c.user_id})">
                 <img src="${c.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color);">
@@ -75,8 +98,8 @@ const MessagesView = {
             `).join('')}
 
             ${conversations.length === 0 ? `
-              <div style="padding: 2rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-                No conversations found.
+              <div style="padding: 2.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                Wada hadal lama helin.
               </div>
             ` : ''}
           </div>
@@ -94,9 +117,31 @@ const MessagesView = {
     `;
   },
 
+  filterContacts(query) {
+    const q = (query || '').toLowerCase().trim();
+    const items = document.querySelectorAll('.conversation-item');
+    items.forEach(el => {
+      const name = (el.getAttribute('data-name') || '').toLowerCase();
+      if (!q || name.includes(q)) {
+        el.style.display = 'flex';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  },
+
   switchRecipient(userId) {
     this.activeRecipientId = userId;
     this.selectedFile = null;
+    document.querySelectorAll('.conversation-item').forEach(el => {
+      el.classList.remove('active');
+      el.style.background = 'transparent';
+    });
+    const selectedEl = document.querySelector(`.conversation-item[data-id="${userId}"]`);
+    if (selectedEl) {
+      selectedEl.classList.add('active');
+      selectedEl.style.background = 'var(--bg-surface)';
+    }
     this.loadThread(userId);
   },
 
