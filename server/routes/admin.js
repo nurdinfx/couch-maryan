@@ -1,0 +1,431 @@
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const { db } = require('../../database/db');
+const { requireAuth, requireAdmin, isAdminUser, isProfessorOrAdmin } = require('../middleware/auth');
+const multer = require('multer');
+const tempDir = path.join(__dirname, '..', '..', 'uploads', 'temp');
+if (!fs.existsSync(tempDir)) {
+  try { fs.mkdirSync(tempDir, { recursive: true }); } catch (e) {}
+}
+const tempUpload = multer({
+  dest: tempDir,
+  limits: { fileSize: 250 * 1024 * 1024 }
+});
+
+// 1. System Health & Diagnostics (Admin only)
+router.post('/clear-mock', requireAdmin, (req, res) => {
+  try {
+    const { clearMockData } = require('../../database/clear-mock');
+    clearMockData();
+    logAudit(req.user.id, 'MOCK_DATA_CLEARED', 'Cleared all mock courses and test students', req);
+    res.json({ success: true, message: 'All mock courses and test students cleared successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Database Backup Download Endpoint (Admin only)
+router.get(['/backup', '/backup-db'], requireAdmin, (req, res) => {
+  try {
+    const { dbPath } = require('../../database/db');
+    // Ensure all transactions in WAL are flushed to faculty_lms.db
+    try {
+      db.pragma('wal_checkpoint(TRUNCATE)');
+    } catch (e) {
+      console.warn('WAL checkpoint notice:', e.message);
+    }
+
+    if (!fs.existsSync(dbPath)) {
+      return res.status(404).json({ error: 'Database file not found' });
+    }
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const downloadName = `guray_sicid_lms_backup_${dateStr}.db`;
+    logAudit(req.user.id, 'DATABASE_BACKUP_DOWNLOAD', `Downloaded SQLite backup: ${downloadName}`, req);
+
+    res.setHeader('Content-Type', 'application/vnd.sqlite3');
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+    res.download(dbPath, downloadName);
+  } catch (err) {
+    console.error('Download DB error:', err);
+    res.status(500).json({ error: 'Failed to download SQLite backup: ' + err.message });
+  }
+});
+
+// JSON Persistence Backup Endpoint (Admin only)
+router.get(['/backup-json', '/export-data'], requireAdmin, (req, res) => {
+  try {
+    const { TABLES, savePersistence, PERSISTENCE_FILE } = require('../../database/persistence');
+    try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch (e) {}
+
+    // Flush and save current persistence
+    savePersistence(db);
+
+    // Build fresh live snapshot directly from SQLite to guarantee 100% consistency
+    const snapshot = {
+      _meta: {
+        system: 'Guray Sicid Learning Platform',
+        version: '3.0.0',
+        exported_at: new Date().toISOString(),
+        exported_by: req.user ? req.user.email : 'admin'
+      }
+    };
+    for (const table of TABLES) {
+      try {
+        snapshot[table] = db.prepare(`SELECT * FROM ${table}`).all();
+      } catch (err) {
+        snapshot[table] = [];
+      }
+    }
+
+    // Ensure persistent file on disk is fresh
+    try {
+      const dir = path.dirname(PERSISTENCE_FILE);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
+    } catch (e) {}
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const downloadName = `guray_sicid_lms_snapshot_${dateStr}.json`;
+    logAudit(req.user.id, 'PERSISTENCE_EXPORT_DOWNLOAD', `Downloaded JSON snapshot: ${downloadName}`, req);
+
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+    res.send(JSON.stringify(snapshot, null, 2));
+  } catch (err) {
+    console.error('Export snapshot error:', err);
+    res.status(500).json({ error: 'Failed to export JSON snapshot: ' + err.message });
+  }
+});
+
+// Restore from JSON snapshot (Admin only)
+router.post('/restore-json', requireAdmin, (req, res) => {
+  try {
+    const { restorePersistence } = require('../../database/persistence');
+    const snapshot = req.body;
+    if (!snapshot || typeof snapshot !== 'object') {
+      return res.status(400).json({ error: 'Faylka JSON snapshot-ka ah ma saxna (Invalid JSON snapshot).' });
+    }
+    const result = restorePersistence(db, snapshot, true);
+    logAudit(req.user.id, 'DATABASE_RESTORE_JSON', 'Restored platform data from uploaded JSON snapshot', req);
+    res.json({
+      success: true,
+      message: `Xogta platform-ka si buuxda ayaa looga soo celiyay snapshot-ka! (${result.usersCount || 0} isticmaale, ${result.coursesCount || 0} koorso, ${result.totalRestoredRecords || 0} diiwaano guud).`,
+      details: result
+    });
+  } catch (err) {
+    console.error('Restore JSON error:', err);
+    res.status(500).json({ error: 'Failed to restore snapshot: ' + err.message });
+  }
+});
+
+// Restore from SQLite DB file upload (Admin only)
+router.post('/restore-db', requireAdmin, tempUpload.single('backup_db'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Fadlan dooro faylka SQLite (.db) ee la soo celinayo.' });
+  }
+
+  const tempFilePath = req.file.path;
+  let tempDb = null;
+  try {
+    const Database = require('better-sqlite3');
+    tempDb = new Database(tempFilePath, { readonly: true });
+
+    const { TABLES, restorePersistence } = require('../../database/persistence');
+    const snapshot = {};
+    let foundTables = 0;
+
+    for (const table of TABLES) {
+      try {
+        snapshot[table] = tempDb.prepare(`SELECT * FROM ${table}`).all();
+        foundTables++;
+      } catch (e) {}
+    }
+
+    if (foundTables === 0 || (!snapshot.users && !snapshot.courses)) {
+      tempDb.close();
+      tempDb = null;
+      try { fs.unlinkSync(tempFilePath); } catch (e) {}
+      return res.status(400).json({ error: 'Faylka la geliyay ma aha SQLite database sax ah oo ka tirsan Guray Sicid LMS.' });
+    }
+
+    tempDb.close();
+    tempDb = null;
+    try { fs.unlinkSync(tempFilePath); } catch (e) {}
+
+    const result = restorePersistence(db, snapshot, true);
+    logAudit(req.user.id, 'DATABASE_RESTORE_DB_FILE', `Restored platform data from uploaded SQLite file: ${req.file.originalname}`, req);
+
+    res.json({
+      success: true,
+      message: `Database-ka si buuxda ayaa looga soo celiyay faylka SQLite "${req.file.originalname}"! (${result.usersCount || 0} isticmaale, ${result.coursesCount || 0} koorso, ${result.totalRestoredRecords || 0} diiwaano guud).`,
+      details: result
+    });
+  } catch (err) {
+    if (tempDb) {
+      try { tempDb.close(); } catch (e) {}
+    }
+    try { fs.unlinkSync(tempFilePath); } catch (e) {}
+    console.error('Restore DB file error:', err);
+    res.status(500).json({ error: 'Khalad ayaa ka dhacay dib u soo celinta database-ka: ' + err.message });
+  }
+});
+
+// Restore from official persistent_data.json snapshot (Admin only)
+router.post('/restore-persistent', requireAdmin, async (req, res) => {
+  try {
+    const { restorePersistence } = require('../../database/persistence');
+    const { fetchLatestFromGitHub, getSyncConfig } = require('../../database/github-sync');
+
+    let remoteSnapshot = null;
+    const config = getSyncConfig();
+    if (config.token) {
+      try {
+        remoteSnapshot = await fetchLatestFromGitHub();
+      } catch (e) {
+        console.warn('GitHub fetch error during restore:', e.message);
+      }
+    }
+
+    const result = restorePersistence(db, remoteSnapshot, true);
+    logAudit(req.user.id, 'DATABASE_RESTORE_PERSISTENT', 'Restored platform data from official persistent_data.json / GitHub', req);
+    res.json({
+      success: true,
+      message: `Dhammaan xogtii rasmiga ahayd ee platform-ka si buuxda ayaa looga soo celiyay kaydka joogtada ah! (${result.usersCount || 0} isticmaale, ${result.coursesCount || 0} koorso).`,
+      details: result
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Seed Demo Mock Data (Protected to prevent wiping real data)
+router.post('/seed-default', requireAdmin, (req, res) => {
+  try {
+    const realCourses = db.prepare("SELECT COUNT(*) as c FROM courses WHERE code NOT IN ('CS301', 'CS204', 'CS410')").get().c;
+    if (realCourses > 0 && req.query.force !== 'true') {
+      return res.status(400).json({
+        error: 'Lama tirtiri karo xogta rasmiga ah ee ardayda iyo koorsooyinka. Haddii aad doonayso inaad xogta soo celiso, isticmaal "Dib u soo celi Kaydka Rasmiga ah (Restore Persistent Data)".'
+      });
+    }
+    const { seed } = require('../../database/seed-data');
+    seed();
+    logAudit(req.user.id, 'DATABASE_RESTORE_DEFAULT', 'Admin restored demo courses and mock data', req);
+    res.json({ success: true, message: 'Demo mock data seeded.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/health', requireAdmin, (req, res) => {
+  const { dbPath } = require('../../database/db');
+  let dbSizeBytes = 0;
+  if (fs.existsSync(dbPath)) {
+    dbSizeBytes = fs.statSync(dbPath).size;
+  }
+
+  const counts = {
+    users: db.prepare('SELECT COUNT(*) as c FROM users').get().c,
+    courses: db.prepare('SELECT COUNT(*) as c FROM courses').get().c,
+    lessons: db.prepare('SELECT COUNT(*) as c FROM lessons').get().c,
+    submissions: db.prepare('SELECT COUNT(*) as c FROM assignment_submissions').get().c,
+    quiz_attempts: db.prepare('SELECT COUNT(*) as c FROM quiz_attempts').get().c,
+    audit_logs: db.prepare('SELECT COUNT(*) as c FROM audit_logs').get().c,
+    certificates: db.prepare('SELECT COUNT(*) as c FROM certificates').get().c
+  };
+
+  res.json({
+    status: 'healthy',
+    systemTime: new Date().toISOString(),
+    uptimeSeconds: Math.floor(process.uptime()),
+    database: {
+      type: 'SQLite3 WAL',
+      sizeBytes: dbSizeBytes,
+      sizeFormatted: `${(dbSizeBytes / (1024 * 1024)).toFixed(2)} MB`,
+      recordsCount: counts
+    },
+    nodeVersion: process.version,
+    platform: process.platform
+  });
+});
+
+// 2. Audit Logs (Admin only)
+router.get('/audit-logs', requireAdmin, (req, res) => {
+  const logs = db.prepare(`
+    SELECT al.*, u.full_name as user_name, u.email as user_email, u.role as user_role
+    FROM audit_logs al
+    LEFT JOIN users u ON al.user_id = u.id
+    ORDER BY al.created_at DESC
+    LIMIT 50
+  `).all();
+
+  res.json({ logs });
+});
+
+// 3. User Management: Reset password / Toggle status
+router.post('/users/:id/reset-password', requireAdmin, (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { new_password } = req.body;
+
+  if (!new_password || new_password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+
+  const cleanPw = new_password.trim();
+  const hashedPassword = bcrypt.hashSync(cleanPw, 10);
+  db.prepare('UPDATE users SET password_hash = ?, password_plain = ? WHERE id = ?').run(hashedPassword, cleanPw, userId);
+
+  const targetUser = db.prepare('SELECT full_name, email FROM users WHERE id = ?').get(userId);
+  logAudit(req.user.id, 'PASSWORD_RESET', `Admin reset password for user ${targetUser?.email || userId}`, req);
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  res.json({ message: `Password reset successfully for ${targetUser?.full_name || 'user'}.` });
+});
+
+
+
+// 5. Admin Accounts Management (Register new Admin, List admins, Delete admin)
+router.get('/admins', requireAuth, (req, res) => {
+  if (!isProfessorOrAdmin(req.user)) {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const admins = db.prepare(`
+    SELECT id, email, full_name, role, department, avatar_url, is_active, created_at
+    FROM users
+    WHERE role = 'admin'
+    ORDER BY created_at DESC
+  `).all();
+
+  res.json({ admins });
+});
+
+router.post('/admins', requireAuth, (req, res) => {
+  if (!isProfessorOrAdmin(req.user)) {
+    return res.status(403).json({ error: 'Permission denied. Only an administrator can register new admins.' });
+  }
+
+  const { full_name, email, password, department, avatar_url } = req.body;
+  if (!full_name || !email || !password) {
+    return res.status(400).json({ error: 'Full name, email, and password are required.' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+
+  const existing = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get(email.trim());
+  if (existing) {
+    return res.status(400).json({ error: 'An account with this email address already exists.' });
+  }
+
+  const defaultAdminAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150';
+  const finalAvatar = (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : defaultAdminAvatar;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const result = db.prepare(`
+    INSERT INTO users (email, password_hash, full_name, role, avatar_url, department, is_active)
+    VALUES (?, ?, ?, 'admin', ?, ?, 1)
+  `).run(
+    email.trim().toLowerCase(),
+    hashedPassword,
+    full_name.trim(),
+    finalAvatar,
+    department || 'Guray Sicid Learning Platform Administration'
+  );
+
+  const newAdmin = db.prepare('SELECT id, email, full_name, role, avatar_url, department, created_at FROM users WHERE id = ?').get(result.lastInsertRowid);
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  logAudit(req.user.id, 'ADMIN_CREATED', `Registered new admin: ${newAdmin.email}`, req);
+
+  res.status(201).json({ message: 'Admin account created successfully', admin: newAdmin });
+});
+
+router.put('/admins/:id', requireAuth, (req, res) => {
+  if (!isProfessorOrAdmin(req.user)) {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const targetId = parseInt(req.params.id);
+  const { full_name, email, department, avatar_url, is_active } = req.body;
+
+  db.prepare(`
+    UPDATE users
+    SET full_name = COALESCE(?, full_name),
+        email = COALESCE(?, email),
+        department = COALESCE(?, department),
+        avatar_url = COALESCE(?, avatar_url),
+        is_active = COALESCE(?, is_active)
+    WHERE id = ? AND role = 'admin'
+  `).run(
+    full_name,
+    email ? email.trim().toLowerCase() : null,
+    department,
+    (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : null,
+    is_active !== undefined ? (is_active ? 1 : 0) : null,
+    targetId
+  );
+
+  try {
+    const { savePersistence } = require('../../database/db');
+    savePersistence(db);
+  } catch (e) {}
+
+  const updatedAdmin = db.prepare('SELECT id, email, full_name, role, avatar_url, department, is_active FROM users WHERE id = ?').get(targetId);
+  res.json({ message: 'Admin account updated successfully', admin: updatedAdmin });
+});
+
+router.delete('/admins/:id', requireAuth, (req, res) => {
+  if (!isProfessorOrAdmin(req.user)) {
+    return res.status(403).json({ error: 'Permission denied.' });
+  }
+
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.user.id) {
+    return res.status(400).json({ error: 'You cannot delete your own active administrator account.' });
+  }
+
+  const adminUser = db.prepare("SELECT id, email, full_name FROM users WHERE id = ? AND role = 'admin'").get(targetId);
+  if (!adminUser) {
+    return res.status(404).json({ error: 'Admin account not found.' });
+  }
+
+  try {
+    const cleanupAndRemoveAdmin = db.transaction(() => {
+      db.prepare('UPDATE courses SET professor_id = ? WHERE professor_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE assignment_submissions SET graded_by = ? WHERE graded_by = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE announcements SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE forum_topics SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('UPDATE forum_replies SET author_id = ? WHERE author_id = ?').run(req.user.id, targetId);
+      db.prepare('DELETE FROM messages WHERE sender_id = ? OR recipient_id = ?').run(targetId, targetId);
+      db.prepare('DELETE FROM notifications WHERE user_id = ?').run(targetId);
+      db.prepare('UPDATE audit_logs SET user_id = NULL WHERE user_id = ?').run(targetId);
+      db.prepare('DELETE FROM enrollments WHERE user_id = ?').run(targetId);
+      db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
+    });
+    cleanupAndRemoveAdmin();
+
+    try {
+      const { savePersistence } = require('../../database/db');
+      savePersistence(db);
+    } catch (e) {}
+
+    logAudit(req.user.id, 'ADMIN_DELETED', `Deleted admin account: ${adminUser.email}`, req);
+    res.json({ message: `Admin account ${adminUser.full_name} removed successfully.` });
+  } catch (err) {
+    console.error('Delete admin error:', err);
+    res.status(500).json({ error: 'Failed to delete admin: ' + err.message });
+  }
+});
+
+module.exports = router;

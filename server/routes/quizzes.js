@@ -1,0 +1,744 @@
+const express = require('express');
+const router = express.Router();
+const { db, savePersistence } = require('../../database/db');
+const { requireAuth, requireProfessor } = require('../middleware/auth');
+const { logAudit } = require('../middleware/audit');
+
+function extractOptionLetter(str) {
+  if (!str || typeof str !== 'string') return '';
+  const trimmed = str.trim();
+  const match = trimmed.match(/^[\(\[]?([a-zA-Z0-9])[\)\]\.\:\-]/);
+  if (match) return match[1].toLowerCase();
+  if (trimmed.length === 1) return trimmed.toLowerCase();
+  return '';
+}
+
+function matchesAnswerChoice(userChoice, correctText) {
+  if (!userChoice || !correctText) return false;
+  const uStr = String(userChoice).trim().toLowerCase();
+  const cStr = String(correctText).trim().toLowerCase();
+  if (uStr === cStr) return true;
+
+  const uLetter = extractOptionLetter(uStr);
+  const cLetter = extractOptionLetter(cStr);
+
+  if (uLetter && cLetter && uLetter === cLetter) return true;
+  if (uLetter && uLetter === cStr) return true;
+  if (cLetter && cLetter === uStr) return true;
+
+  if (uStr.startsWith(cStr + ')') || uStr.startsWith(cStr + '.') || uStr.startsWith(cStr + ' ')) return true;
+  if (cStr.startsWith(uStr + ')') || cStr.startsWith(uStr + '.') || cStr.startsWith(uStr + ' ')) return true;
+
+  return false;
+}
+
+// 1. Get single quiz info
+router.get('/:id', requireAuth, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const userId = req.user.id;
+
+  const quiz = db.prepare(`
+    SELECT q.*, c.title as course_title, c.code as course_code, m.title as module_title
+    FROM quizzes q
+    JOIN courses c ON q.course_id = c.id
+    LEFT JOIN modules m ON q.module_id = m.id
+    WHERE q.id = ?
+  `).get(quizId);
+
+  if (!quiz) {
+    return res.status(404).json({ error: 'Quiz not found.' });
+  }
+
+  // Get question count and total points
+  const questionSummary = db.prepare(`
+    SELECT COUNT(*) as question_count, SUM(points) as total_points
+    FROM quiz_questions
+    WHERE quiz_id = ?
+  `).get(quizId);
+
+  // Get user's personal attempts
+  const myAttempts = db.prepare(`
+    SELECT id, attempt_number, started_at, submitted_at, score, max_score, percentage, is_passed, status, feedback
+    FROM quiz_attempts
+    WHERE quiz_id = ? AND user_id = ?
+    ORDER BY attempt_number DESC
+  `).all(quizId, userId);
+
+  const isProfessor = req.user.role === 'professor' || req.user.role === 'admin' || req.user.is_admin === 1;
+
+  let studentAttempts = [];
+  let stats = null;
+
+  if (isProfessor) {
+    studentAttempts = db.prepare(`
+      SELECT 
+        qa.id, qa.user_id, qa.attempt_number, qa.started_at, qa.submitted_at,
+        qa.score, qa.max_score, qa.percentage, qa.is_passed, qa.status, qa.feedback,
+        u.full_name as student_name, u.email as student_email, u.student_id_number, u.avatar_url as student_avatar,
+        u.role as user_role
+      FROM quiz_attempts qa
+      JOIN users u ON qa.user_id = u.id
+      WHERE qa.quiz_id = ?
+      ORDER BY qa.submitted_at DESC, qa.id DESC
+    `).all(quizId);
+
+    const validSubmissions = studentAttempts.filter(a => a.submitted_at);
+    const passedCount = validSubmissions.filter(a => a.is_passed === 1).length;
+    const scores = validSubmissions.filter(a => a.percentage !== null).map(a => a.percentage);
+    const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+    const highestScore = scores.length > 0 ? Math.max(...scores) : 0;
+
+    stats = {
+      total_attempts: studentAttempts.length,
+      total_submissions: validSubmissions.length,
+      passed_count: passedCount,
+      failed_count: validSubmissions.length - passedCount,
+      pass_rate: validSubmissions.length > 0 ? Math.round((passedCount / validSubmissions.length) * 100) : 0,
+      avg_score: avgScore,
+      highest_score: highestScore
+    };
+  }
+
+  res.json({
+    quiz: {
+      ...quiz,
+      question_count: questionSummary.question_count || 0,
+      total_points: questionSummary.total_points || 0
+    },
+    attempts: myAttempts,
+    student_attempts: studentAttempts,
+    stats: stats
+  });
+});
+
+// 2. Create Quiz (Professor only)
+router.post('/course/:courseId', requireProfessor, (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const {
+    module_id, title, description, time_limit_minutes, time_limit,
+    max_attempts, passing_percentage, pass_percentage, weight_percentage,
+    open_date, close_date, days_until_active, active_days, active_duration_days,
+    release_results_immediately
+  } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ error: 'Quiz title is required.' });
+  }
+
+  // Calculate open_date from days_until_active if provided
+  let finalOpenDate = open_date ? String(open_date).replace('T', ' ') : null;
+  const daysUntil = parseFloat(days_until_active);
+  if (!finalOpenDate && !isNaN(daysUntil) && daysUntil > 0) {
+    const target = new Date();
+    target.setDate(target.getDate() + daysUntil);
+    finalOpenDate = target.toISOString().replace('T', ' ').substring(0, 19);
+  }
+
+  // Calculate close_date from active_days if provided
+  let finalCloseDate = close_date ? String(close_date).replace('T', ' ') : null;
+  const duration = parseFloat(active_days || active_duration_days);
+  if (!finalCloseDate && !isNaN(duration) && duration > 0) {
+    const base = finalOpenDate ? new Date(finalOpenDate) : new Date();
+    base.setDate(base.getDate() + duration);
+    finalCloseDate = base.toISOString().replace('T', ' ').substring(0, 19);
+  }
+
+  const result = db.prepare(`
+    INSERT INTO quizzes (
+      course_id, module_id, title, description, time_limit_minutes,
+      max_attempts, passing_percentage, weight_percentage,
+      open_date, close_date, release_results_immediately
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    courseId,
+    module_id ? parseInt(module_id) : null,
+    title.trim(),
+    description || '',
+    parseInt(time_limit_minutes || time_limit) || 30,
+    parseInt(max_attempts) || 2,
+    parseFloat(passing_percentage || pass_percentage) || 60.0,
+    parseFloat(weight_percentage) || 20.0,
+    finalOpenDate,
+    finalCloseDate,
+    release_results_immediately !== undefined ? (release_results_immediately ? 1 : 0) : 1
+  );
+
+  try { savePersistence(db); } catch (e) {}
+
+  const newQuiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(result.lastInsertRowid);
+  try { logAudit(req.user.id, 'QUIZ_CREATED', `Created quiz ${title} in course ${courseId}`, req); } catch (e) {}
+
+  res.status(201).json({ message: 'Quiz created successfully', quiz: newQuiz });
+});
+
+// Update Quiz / Schedule (Professor or Admin)
+router.put('/:id', requireProfessor, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const quiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
+  if (!quiz) {
+    return res.status(404).json({ error: 'Quiz not found.' });
+  }
+
+  const {
+    title, description, time_limit_minutes, time_limit,
+    max_attempts, passing_percentage, pass_percentage, weight_percentage,
+    open_date, close_date, days_until_active, active_days, active_duration_days,
+    release_results_immediately
+  } = req.body;
+
+  let finalOpenDate = open_date !== undefined ? (open_date ? String(open_date).replace('T', ' ') : null) : quiz.open_date;
+  const daysUntil = parseFloat(days_until_active);
+  if (days_until_active !== undefined && !isNaN(daysUntil)) {
+    if (daysUntil > 0) {
+      const target = new Date();
+      target.setDate(target.getDate() + daysUntil);
+      finalOpenDate = target.toISOString().replace('T', ' ').substring(0, 19);
+    } else {
+      finalOpenDate = null;
+    }
+  }
+
+  let finalCloseDate = close_date !== undefined ? (close_date ? String(close_date).replace('T', ' ') : null) : quiz.close_date;
+  const duration = parseFloat(active_days || active_duration_days);
+  if (duration !== undefined && !isNaN(duration)) {
+    if (duration > 0) {
+      const base = finalOpenDate ? new Date(finalOpenDate) : new Date();
+      base.setDate(base.getDate() + duration);
+      finalCloseDate = base.toISOString().replace('T', ' ').substring(0, 19);
+    } else {
+      finalCloseDate = null;
+    }
+  }
+
+  db.prepare(`
+    UPDATE quizzes SET
+      title = COALESCE(?, title),
+      description = COALESCE(?, description),
+      time_limit_minutes = COALESCE(?, time_limit_minutes),
+      max_attempts = COALESCE(?, max_attempts),
+      passing_percentage = COALESCE(?, passing_percentage),
+      weight_percentage = COALESCE(?, weight_percentage),
+      open_date = ?,
+      close_date = ?,
+      release_results_immediately = COALESCE(?, release_results_immediately)
+    WHERE id = ?
+  `).run(
+    title ? title.trim() : null,
+    description !== undefined ? description : null,
+    time_limit_minutes || time_limit ? parseInt(time_limit_minutes || time_limit) : null,
+    max_attempts ? parseInt(max_attempts) : null,
+    passing_percentage || pass_percentage ? parseFloat(passing_percentage || pass_percentage) : null,
+    weight_percentage ? parseFloat(weight_percentage) : null,
+    finalOpenDate,
+    finalCloseDate,
+    release_results_immediately !== undefined ? (release_results_immediately ? 1 : 0) : null,
+    quizId
+  );
+
+  try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'QUIZ_UPDATED', `Updated quiz #${quizId} schedule and settings`, req); } catch (e) {}
+
+  const updatedQuiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
+  res.json({ message: 'Quiz updated successfully', quiz: updatedQuiz });
+});
+
+// 3. Question Bank: Get questions for quiz
+router.get('/:id/questions', requireAuth, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const isProfessor = req.user.role === 'professor' || req.user.role === 'admin';
+
+  let questions = db.prepare(`
+    SELECT * FROM quiz_questions
+    WHERE quiz_id = ?
+    ORDER BY sort_order ASC, id ASC
+  `).all(quizId);
+
+  questions = questions.map(q => {
+    let parsedOptions = [];
+    try {
+      const raw = JSON.parse(q.options_json || '[]');
+      if (Array.isArray(raw)) {
+        parsedOptions = raw.map((opt, idx) => {
+          if (typeof opt === 'string') return { id: opt, text: opt };
+          return { id: opt.id || opt.text || String(idx), text: opt.text || opt.id || String(opt), isCorrect: opt.isCorrect };
+        });
+      }
+    } catch (e) {}
+
+    if (q.question_type === 'true_false' && parsedOptions.length === 0) {
+      const isTrue = String(q.correct_answer_text || '').toLowerCase().trim() === 'true';
+      parsedOptions = [
+        { id: 'true', text: 'True (Run)', isCorrect: isTrue },
+        { id: 'false', text: 'False (Been)', isCorrect: !isTrue }
+      ];
+    }
+
+    const safeOptions = isProfessor 
+      ? parsedOptions 
+      : parsedOptions.map(({ isCorrect, ...rest }) => rest);
+
+    return {
+      id: q.id,
+      quiz_id: q.quiz_id,
+      question_text: q.question_text,
+      question_type: q.question_type,
+      options: safeOptions,
+      points: q.points,
+      sort_order: q.sort_order,
+      ...(isProfessor ? { correct_answer_text: q.correct_answer_text } : {})
+    };
+  });
+
+  res.json({ questions });
+});
+
+// 4. Question Bank: Add question to quiz (Professor only)
+router.post('/:id/questions', requireProfessor, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const { question_text, question_type, options, points } = req.body;
+  const correct_answer_text = (req.body.correct_answer_text || req.body.correct_answer || '').trim();
+
+  if (!question_text || !question_type) {
+    return res.status(400).json({ error: 'Question text and question type are required.' });
+  }
+
+  let finalOptions = null;
+  if (question_type === 'true_false') {
+    finalOptions = [
+      { id: 'true', text: 'True (Run)', isCorrect: correct_answer_text.toLowerCase() === 'true' || correct_answer_text.toLowerCase() === 'run' },
+      { id: 'false', text: 'False (Been)', isCorrect: correct_answer_text.toLowerCase() === 'false' || correct_answer_text.toLowerCase() === 'been' }
+    ];
+  } else if (options) {
+    if (typeof options === 'string') {
+      try { finalOptions = JSON.parse(options); } catch (e) { finalOptions = options; }
+    } else {
+      finalOptions = options;
+    }
+  }
+
+  const maxOrder = db.prepare('SELECT MAX(sort_order) as m FROM quiz_questions WHERE quiz_id = ?').get(quizId).m || 0;
+
+  const result = db.prepare(`
+    INSERT INTO quiz_questions (
+      quiz_id, question_text, question_type, options_json, correct_answer_text, points, sort_order
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    quizId,
+    question_text.trim(),
+    question_type,
+    finalOptions ? JSON.stringify(finalOptions) : null,
+    correct_answer_text || null,
+    parseFloat(points) || 10.0,
+    maxOrder + 1
+  );
+
+  const newQuestion = db.prepare('SELECT * FROM quiz_questions WHERE id = ?').get(result.lastInsertRowid);
+  res.status(201).json({ message: 'Question added successfully', question: newQuestion });
+});
+
+// 5. Question Bank: Delete Question (Professor only)
+router.delete('/questions/:questionId', requireProfessor, (req, res) => {
+  const questionId = parseInt(req.params.questionId);
+  db.prepare('DELETE FROM quiz_questions WHERE id = ?').run(questionId);
+  res.json({ message: 'Question removed from question bank.' });
+});
+
+// Delete Entire Quiz (Professor or Admin)
+router.delete('/:id', requireProfessor, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  db.prepare('DELETE FROM quiz_attempt_answers WHERE attempt_id IN (SELECT id FROM quiz_attempts WHERE quiz_id = ?)').run(quizId);
+  db.prepare('DELETE FROM quiz_attempts WHERE quiz_id = ?').run(quizId);
+  db.prepare('DELETE FROM quiz_questions WHERE quiz_id = ?').run(quizId);
+  db.prepare('DELETE FROM quizzes WHERE id = ?').run(quizId);
+  try { savePersistence(db); } catch (e) {}
+  try { logAudit(req.user.id, 'QUIZ_DELETED', `Deleted quiz #${quizId}`, req); } catch (e) {}
+  res.json({ message: 'Quiz deleted successfully.' });
+});
+
+// 6. Start Quiz Attempt (Student)
+router.post('/:id/start', requireAuth, (req, res) => {
+  const quizId = parseInt(req.params.id);
+  const userId = req.user.id;
+
+  const quiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(quizId);
+  if (!quiz) {
+    return res.status(404).json({ error: 'Quiz not found.' });
+  }
+
+  // Access control: student must be enrolled in the quiz course
+  if (req.user.role === 'student') {
+    const isEnrolled = db.prepare('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?').get(userId, quiz.course_id);
+    if (!isEnrolled) {
+      return res.status(403).json({ error: 'Kuma lihid diiwaangelin koorsada imtixaankan. (Access Denied: You are not enrolled in the course for this quiz.)' });
+    }
+  }
+
+  // If user is a student, enforce active schedule (open_date & close_date)
+  if (req.user.role === 'student') {
+    const now = new Date();
+    if (quiz.open_date && new Date(quiz.open_date) > now) {
+      const openFormatted = new Date(quiz.open_date).toLocaleString();
+      const diffDays = Math.ceil((new Date(quiz.open_date) - now) / (1000 * 60 * 60 * 24));
+      return res.status(403).json({
+        error: `Imtixaankan wali ma furna. Wuxuu active noqon doonaa ${diffDays} cisho kadib (${openFormatted}). / This quiz is scheduled and will open in ${diffDays} day(s) on ${openFormatted}.`
+      });
+    }
+    if (quiz.close_date && new Date(quiz.close_date) < now) {
+      const closeFormatted = new Date(quiz.close_date).toLocaleString();
+      return res.status(403).json({
+        error: `Imtixaankan wuu xirmay ${closeFormatted} / This quiz closed on ${closeFormatted}.`
+      });
+    }
+  }
+
+  // Count existing attempts
+  const pastAttempts = db.prepare('SELECT COUNT(*) as c FROM quiz_attempts WHERE quiz_id = ? AND user_id = ?').get(quizId, userId).c;
+  if (pastAttempts >= quiz.max_attempts) {
+    return res.status(400).json({ error: `You have reached the maximum allowed attempts (${quiz.max_attempts}) for this quiz.` });
+  }
+
+  // Check for any ongoing unfinished attempt
+  let activeAttempt = db.prepare(`
+    SELECT * FROM quiz_attempts
+    WHERE quiz_id = ? AND user_id = ? AND status = 'in_progress'
+  `).get(quizId, userId);
+
+  if (!activeAttempt) {
+    const attemptNumber = pastAttempts + 1;
+    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+    const result = db.prepare(`
+      INSERT INTO quiz_attempts (quiz_id, user_id, attempt_number, started_at, status)
+      VALUES (?, ?, ?, ?, 'in_progress')
+    `).run(quizId, userId, attemptNumber, now);
+
+    activeAttempt = db.prepare('SELECT * FROM quiz_attempts WHERE id = ?').get(result.lastInsertRowid);
+  }
+
+  // Fetch questions without answers
+  const questions = db.prepare(`
+    SELECT id, quiz_id, question_text, question_type, options_json, points, sort_order
+    FROM quiz_questions
+    WHERE quiz_id = ?
+    ORDER BY sort_order ASC, id ASC
+  `).all(quizId);
+
+  const safeQuestions = questions.map(q => {
+    let opts = [];
+    try {
+      opts = JSON.parse(q.options_json || '[]').map(o => ({ id: o.id, text: o.text }));
+    } catch (e) {}
+    return {
+      id: q.id,
+      question_text: q.question_text,
+      question_type: q.question_type,
+      options: opts,
+      points: q.points
+    };
+  });
+
+  res.json({
+    attempt: activeAttempt,
+    quiz: {
+      id: quiz.id,
+      title: quiz.title,
+      time_limit_minutes: quiz.time_limit_minutes
+    },
+    questions: safeQuestions
+  });
+});
+
+// 7. Submit Quiz Attempt & Instant Auto-Grading (Student)
+router.post('/attempts/:attemptId/submit', requireAuth, (req, res) => {
+  const attemptId = parseInt(req.params.attemptId);
+  const userId = req.user.id;
+  const { answers } = req.body; // map of { [questionId]: answerValue }
+
+  const attempt = db.prepare('SELECT * FROM quiz_attempts WHERE id = ?').get(attemptId);
+  if (!attempt) {
+    return res.status(404).json({ error: 'Quiz attempt not found.' });
+  }
+
+  if (attempt.user_id !== userId && req.user.role !== 'professor' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'You are not authorized to submit this attempt.' });
+  }
+
+  const quiz = db.prepare('SELECT * FROM quizzes WHERE id = ?').get(attempt.quiz_id);
+  const questions = db.prepare('SELECT * FROM quiz_questions WHERE quiz_id = ?').all(attempt.quiz_id);
+
+  let totalScore = 0;
+  let maxScore = 0;
+  let hasManualGradingPending = false;
+
+  const insertAnswer = db.prepare(`
+    INSERT OR REPLACE INTO quiz_attempt_answers (
+      attempt_id, question_id, user_answer_json, awarded_points, is_auto_graded, graded_manually, feedback
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  db.transaction(() => {
+    for (const q of questions) {
+      maxScore += q.points;
+      const userAns = answers ? answers[q.id] : null;
+      let pointsAwarded = 0;
+      let feedback = '';
+
+      if (q.question_type === 'single_choice' || q.question_type === 'true_false') {
+        let opts = [];
+        try { opts = JSON.parse(q.options_json || '[]'); } catch (e) {}
+        const correctOpt = Array.isArray(opts) ? opts.find(o => o && o.isCorrect) : null;
+        let isCorrect = false;
+
+        const normUser = String(userAns || '').toLowerCase().trim();
+        const normCorrect = String(q.correct_answer_text || (correctOpt ? correctOpt.id : '')).toLowerCase().trim();
+
+        if (correctOpt && userAns === correctOpt.id) {
+          isCorrect = true;
+        } else if (normUser && (
+          normUser === normCorrect ||
+          matchesAnswerChoice(userAns, q.correct_answer_text) ||
+          (normUser === 'true' && (normCorrect === 'run' || normCorrect === 'true' || normCorrect === '1')) ||
+          (normUser === 'false' && (normCorrect === 'been' || normCorrect === 'false' || normCorrect === '0'))
+        )) {
+          isCorrect = true;
+        }
+
+        if (isCorrect) {
+          pointsAwarded = q.points;
+          feedback = 'Correct';
+        } else {
+          feedback = 'Incorrect';
+        }
+        insertAnswer.run(attemptId, q.id, JSON.stringify(userAns), pointsAwarded, 1, 0, feedback);
+      } else if (q.question_type === 'multiple_choice') {
+        let opts = [];
+        try { opts = JSON.parse(q.options_json || '[]'); } catch (e) {}
+        
+        // Find correct answers: either from options marked isCorrect, or matching correct_answer_text
+        let correctOptions = [];
+        if (Array.isArray(opts)) {
+          correctOptions = opts.filter(o => {
+            if (!o) return false;
+            if (typeof o === 'object' && o.isCorrect) return true;
+            const optVal = typeof o === 'object' ? (o.id || o.text || '') : String(o);
+            return matchesAnswerChoice(optVal, q.correct_answer_text);
+          }).map(o => typeof o === 'object' ? (o.id || o.text || '') : String(o));
+        }
+
+        // If no options matched yet but correct_answer_text exists, add it directly
+        if (correctOptions.length === 0 && q.correct_answer_text) {
+          correctOptions = [q.correct_answer_text.trim()];
+        }
+
+        // Selected answers by student (normalize single value or array)
+        let selected = [];
+        if (Array.isArray(userAns)) {
+          selected = userAns.filter(Boolean).map(String);
+        } else if (userAns !== null && userAns !== undefined && String(userAns).trim() !== '') {
+          selected = [String(userAns).trim()];
+        }
+
+        // Check if selections match correct answers (flexible letter/option matching)
+        let correctSelectedCount = 0;
+        let incorrectSelectedCount = 0;
+
+        for (const sel of selected) {
+          const isSelCorrect = correctOptions.some(corr => matchesAnswerChoice(sel, corr));
+          if (isSelCorrect) {
+            correctSelectedCount++;
+          } else {
+            incorrectSelectedCount++;
+          }
+        }
+
+        const totalExpected = correctOptions.length || 1;
+        if (correctSelectedCount === totalExpected && incorrectSelectedCount === 0) {
+          pointsAwarded = q.points;
+          feedback = 'All correct selections made.';
+        } else if (correctSelectedCount > 0 && incorrectSelectedCount === 0) {
+          // Full or partial credit
+          const fraction = correctSelectedCount / totalExpected;
+          pointsAwarded = Math.round(fraction * q.points * 10) / 10;
+          feedback = `Partial credit: ${pointsAwarded} pts`;
+        } else if (correctSelectedCount > 0 && incorrectSelectedCount > 0) {
+          const net = Math.max(0, correctSelectedCount - incorrectSelectedCount);
+          const fraction = net / totalExpected;
+          pointsAwarded = Math.round(fraction * q.points * 10) / 10;
+          feedback = pointsAwarded > 0 ? `Partial credit: ${pointsAwarded} pts` : 'Incorrect selection';
+        } else {
+          pointsAwarded = 0;
+          feedback = 'Incorrect selection';
+        }
+
+        insertAnswer.run(attemptId, q.id, JSON.stringify(selected), pointsAwarded, 1, 0, feedback);
+      } else if (q.question_type === 'short_answer') {
+        const expected = (q.correct_answer_text || '').trim().toLowerCase();
+        const actual = (userAns || '').toString().trim().toLowerCase();
+        if (expected && actual === expected) {
+          pointsAwarded = q.points;
+          feedback = 'Correct';
+        } else {
+          feedback = `Expected: "${q.correct_answer_text}"`;
+        }
+        insertAnswer.run(attemptId, q.id, JSON.stringify(userAns), pointsAwarded, 1, 0, feedback);
+      } else if (q.question_type === 'essay') {
+        // Essay questions require professor manual review
+        hasManualGradingPending = true;
+        insertAnswer.run(attemptId, q.id, JSON.stringify(userAns || ''), 0, 0, 0, 'Pending professor evaluation');
+      }
+
+      totalScore += pointsAwarded;
+    }
+  })();
+
+  const percentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 1000) / 10 : 0;
+  const isPassed = percentage >= quiz.passing_percentage ? 1 : 0;
+  const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const status = hasManualGradingPending ? 'in_progress' : 'completed';
+
+  db.prepare(`
+    UPDATE quiz_attempts
+    SET submitted_at = ?,
+        score = ?,
+        max_score = ?,
+        percentage = ?,
+        is_passed = ?,
+        status = ?,
+        feedback = ?
+    WHERE id = ?
+  `).run(
+    now,
+    totalScore,
+    maxScore,
+    percentage,
+    isPassed,
+    status,
+    hasManualGradingPending ? 'Objective questions auto-graded. Essay questions are awaiting professor evaluation.' : 'Attempt completed.',
+    attemptId
+  );
+
+  // If score >= 90%, award Quiz Master badge (badge_id = 2)
+  if (percentage >= 90) {
+    db.prepare('INSERT OR IGNORE INTO awarded_badges (badge_id, user_id, course_id) VALUES (?, ?, ?)')
+      .run(2, attempt.user_id, quiz.course_id);
+  }
+
+  logAudit(userId, 'QUIZ_SUBMITTED', `Submitted attempt #${attempt.attempt_number} for quiz ${quiz.title}: ${totalScore}/${maxScore} (${percentage}%)`, req);
+
+  const updatedAttempt = db.prepare('SELECT * FROM quiz_attempts WHERE id = ?').get(attemptId);
+  res.json({
+    message: hasManualGradingPending ? 'Quiz submitted! Objective questions graded; essay pending professor review.' : 'Quiz completed and graded successfully!',
+    attempt: updatedAttempt
+  });
+});
+
+// 8. View Attempt Review (Detailed Question & Answer breakdown)
+router.get('/attempts/:attemptId/review', requireAuth, (req, res) => {
+  const attemptId = parseInt(req.params.attemptId);
+  const userId = req.user.id;
+  const isProfessor = req.user.role === 'professor' || req.user.role === 'admin';
+
+  const attempt = db.prepare(`
+    SELECT qa.*, q.title as quiz_title, q.course_id, q.release_results_immediately, u.full_name as student_name
+    FROM quiz_attempts qa
+    JOIN quizzes q ON qa.quiz_id = q.id
+    JOIN users u ON qa.user_id = u.id
+    WHERE qa.id = ?
+  `).get(attemptId);
+
+  if (!attempt) {
+    return res.status(404).json({ error: 'Attempt not found.' });
+  }
+
+  if (attempt.user_id !== userId && !isProfessor) {
+    return res.status(403).json({ error: 'Access denied.' });
+  }
+
+  const answers = db.prepare(`
+    SELECT qaa.*,
+      qq.question_text,
+      qq.question_type,
+      qq.options_json,
+      qq.correct_answer_text,
+      qq.points as max_points
+    FROM quiz_attempt_answers qaa
+    JOIN quiz_questions qq ON qaa.question_id = qq.id
+    WHERE qaa.attempt_id = ?
+    ORDER BY qq.sort_order ASC, qq.id ASC
+  `).all(attemptId);
+
+  const reviewedAnswers = answers.map(a => {
+    let opts = [];
+    try { opts = JSON.parse(a.options_json || '[]'); } catch (e) {}
+    let parsedUserAnswer = null;
+    try { parsedUserAnswer = JSON.parse(a.user_answer_json || 'null'); } catch (e) { parsedUserAnswer = a.user_answer_json; }
+
+    return {
+      question_id: a.question_id,
+      question_text: a.question_text,
+      question_type: a.question_type,
+      options: opts,
+      correct_answer_text: isProfessor || attempt.release_results_immediately ? a.correct_answer_text : null,
+      user_answer: parsedUserAnswer,
+      awarded_points: a.awarded_points,
+      max_points: a.max_points,
+      is_auto_graded: a.is_auto_graded,
+      graded_manually: a.graded_manually,
+      feedback: a.feedback
+    };
+  });
+
+  res.json({
+    attempt,
+    answers: reviewedAnswers
+  });
+});
+
+// 9. Professor Manual Grading for Essay Questions
+router.post('/attempts/:attemptId/grade-essay', requireProfessor, (req, res) => {
+  const attemptId = parseInt(req.params.attemptId);
+  const { question_id, awarded_points, feedback } = req.body;
+
+  const attempt = db.prepare('SELECT * FROM quiz_attempts WHERE id = ?').get(attemptId);
+  if (!attempt) {
+    return res.status(404).json({ error: 'Attempt not found.' });
+  }
+
+  const question = db.prepare('SELECT points FROM quiz_questions WHERE id = ?').get(question_id);
+  const pts = parseFloat(awarded_points) || 0;
+
+  db.prepare(`
+    UPDATE quiz_attempt_answers
+    SET awarded_points = ?,
+        graded_manually = 1,
+        feedback = ?
+    WHERE attempt_id = ? AND question_id = ?
+  `).run(pts, feedback || 'Graded by professor', attemptId, question_id);
+
+  // Recalculate total score for attempt
+  const sumPoints = db.prepare('SELECT SUM(awarded_points) as s FROM quiz_attempt_answers WHERE attempt_id = ?').get(attemptId).s || 0;
+  const pct = attempt.max_score > 0 ? Math.round((sumPoints / attempt.max_score) * 1000) / 10 : 0;
+  const quiz = db.prepare('SELECT passing_percentage, course_id FROM quizzes WHERE id = ?').get(attempt.quiz_id);
+  const isPassed = pct >= quiz.passing_percentage ? 1 : 0;
+
+  db.prepare(`
+    UPDATE quiz_attempts
+    SET score = ?,
+        percentage = ?,
+        is_passed = ?,
+        status = 'graded'
+    WHERE id = ?
+  `).run(sumPoints, pct, isPassed, attemptId);
+
+  // If score >= 90%, award Quiz Master badge (badge_id = 2)
+  if (pct >= 90) {
+    db.prepare('INSERT OR IGNORE INTO awarded_badges (badge_id, user_id, course_id) VALUES (?, ?, ?)')
+      .run(2, attempt.user_id, quiz.course_id);
+  }
+
+  logAudit(req.user.id, 'QUIZ_ESSAY_GRADED', `Graded essay for attempt #${attemptId}: ${pts}/${question.points} pts`, req);
+
+  res.json({ message: 'Essay question graded successfully', new_score: sumPoints, new_percentage: pct });
+});
+
+module.exports = router;

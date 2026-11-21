@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Tutorials | Guray Sicid Learning Platform</title>
+  <meta name="description" content="Step-by-step video tutorials in English and Somali for students and faculty. Learn how to log in, access courses, stream video lectures, download PDFs, and track grades.">
+  <link rel="canonical" href="https://couch-maryan.onrender.com/tutorials">
+  <link rel="icon" type="image/svg+xml" href="/assets/gs-icon.svg">
+  <link rel="stylesheet" href="/css/public.css">
+  <style>
+    .tut-tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tut-tab-panel.active {
+      display: block;
+    }
+    .step-list {
+      margin: 1rem 0 1.25rem;
+      padding-left: 1.25rem;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .step-list li {
+      margin-bottom: 0.4rem;
+    }
+    .tip-box {
+      background: rgba(2, 132, 199, 0.12);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.82rem;
+      color: #bae6fd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-grid"></div>
+    <div class="glow-orb orb-top-left"></div>
+    <div class="glow-orb orb-top-right"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon-wrap">
+          <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Logo">
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">Guray Sicid</span>
+          <span class="brand-tag">Learning Platform</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link" data-i18n="nav_home">Home</a></li>
+          <li><a href="/features" class="nav-link" data-i18n="nav_features">Features</a></li>
+          <li><a href="/demo" class="nav-link" data-i18n="nav_demo">Interactive Demo</a></li>
+          <li><a href="/tutorials" class="nav-link active" data-i18n="nav_tutorials">Tutorials</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="lang-btn" onclick="PublicI18N.toggleLanguage()">
+          <span id="public-lang-flag">🇬🇧</span>
+          <span id="public-lang-label">English</span>
+        </button>
+
+        <a href="/login" class="btn btn-login btn-login-cta">
+          <span data-i18n="nav_login">Student Login</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Open Mobile Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer -->
+  <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="brand-meta">
+        <span class="brand-name">Guray Sicid</span>
+        <span class="brand-tag">Learning Platform</span>
+      </div>
+      <button class="mobile-toggle" id="mobile-close-btn" aria-label="Close Mobile Menu">✕</button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="/" class="mobile-nav-link" data-i18n="nav_home">Home</a></li>
+      <li><a href="/features" class="mobile-nav-link" data-i18n="nav_features">Features</a></li>
+      <li><a href="/demo" class="mobile-nav-link" data-i18n="nav_demo">Interactive Demo</a></li>
+      <li><a href="/tutorials" class="mobile-nav-link" data-i18n="nav_tutorials">Tutorials</a></li>
+    </ul>
+    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: auto;">
+      <a href="/login" class="btn btn-primary btn-login-cta" style="justify-content: center;">
+        <span data-i18n="nav_login">Student Login</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Hero Header -->
+  <section style="padding: 5rem 0 2.5rem; text-align: center;">
+    <div class="container">
+      <div class="badge-pill">
+        <span>Video Training Library</span>
+      </div>
+      <h1 class="hero-title" style="margin-bottom: 1rem;">
+        Bilingual Platform <span class="text-gradient">Video Tutorials</span>
+      </h1>
+      <p class="hero-description" style="max-width: 720px; margin: 0 auto 2.5rem;">
+        Master the Guray Sicid Learning Platform with comprehensive video guides available in English and Somali. Choose your preferred tutorial language below.
+      </p>
+
+      <!-- Language Selector Tabs -->
+      <div class="tut-lang-switcher" role="tablist">
+        <button class="tut-lang-btn active" onclick="switchTutLanguage('en')" id="btn-tut-en">
+          🇬🇧 English Tutorials (6)
+        </button>
+        <button class="tut-lang-btn" onclick="switchTutLanguage('so')" id="btn-tut-so">
+          🇸🇴 Tababarrada Af-Soomaaliga (6)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       ENGLISH TUTORIALS PANEL
+       ==================================================================== -->
+  <main class="container" style="padding-bottom: 6rem;">
+    
+    <div class="tut-tab-panel active" id="panel-tut-en">
+      <div class="tut-grid">
+        
+        <!-- Video 1 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 3:45</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              1. Introduction to the Platform
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              A guided overview of the platform layout, navigation drawer, switching between dark and light modes, and bilingual language toggling.
+            </p>
+            <ol class="step-list">
+              <li>Navigate using the left drawer menu (Dashboard, Courses, Grades).</li>
+              <li>Toggle between English and Somali via the top bar button.</li>
+              <li>Access site-wide search for courses and assignments.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> You can collapse the navigation drawer anytime by clicking the hamburger icon (☰) at the top left.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 2 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 2:30</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              2. How to Sign In to Your Account
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Learn how students, professors, and administrators authenticate securely using their university email credentials.
+            </p>
+            <ol class="step-list">
+              <li>Click the "Student Login" button on the homepage.</li>
+              <li>Enter your registered university email and password.</li>
+              <li>Use the password visibility icon (eye) to verify accuracy.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> If you forget your credentials, contact the platform administrator to issue a temporary reset key.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 3 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 4:15</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              3. How to Access Enrolled Courses
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Explore how to find your assigned curriculum, view course modules, announcements, and track your overall percentage progress.
+            </p>
+            <ol class="step-list">
+              <li>Go to "Course Catalog" or your "Dashboard".</li>
+              <li>Select your active enrolled course (e.g. CS301).</li>
+              <li>Browse weekly modules and required learning tasks.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> Students only see courses matching their academic year level (Year 1 to Year 5).
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 4 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 3:10</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              4. How to Watch Video Lessons
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Master the built-in video player, keyboard shortcuts, speed controls, cinema mode, and automatic completion tracking.
+            </p>
+            <ol class="step-list">
+              <li>Open any video activity inside a course module.</li>
+              <li>Use speed buttons (1x, 1.25x, 1.5x, 2x) to adjust pace.</li>
+              <li>Watch at least 80% to register an automatic completion mark.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> Press the 'F' key on your keyboard to quickly toggle full-screen theater viewing.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 5 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 3:20</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              5. Downloading Syllabi & Documents
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Learn how to view lecture slides inline, download assignment PDF specifications, and submit files for grading.
+            </p>
+            <ol class="step-list">
+              <li>Click on any document activity marked with the PDF icon.</li>
+              <li>Use the browser's built-in inline reader or click Download.</li>
+              <li>Review the instructor's submission guidelines carefully.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> Upload your assignment solutions in PDF or ZIP format before the due date to avoid late penalties.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 6 -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">English • 4:00</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              6. Tracking Grades & Earning Badges
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              How to view your gradebook matrix, check attendance percentages, earn honors badges, and claim your completion certificate.
+            </p>
+            <ol class="step-list">
+              <li>Click "Gradebook Matrix" in the navigation drawer.</li>
+              <li>Check professor feedback notes on completed assignments.</li>
+              <li>Verify completed course certificates using the verification UUID.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Tip:</strong> Scoring 90% or higher on a midterm exam automatically awards the Quiz Master badge!
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         SOMALI TUTORIALS PANEL
+         ==================================================================== -->
+    <div class="tut-tab-panel" id="panel-tut-so">
+      <div class="tut-grid">
+        
+        <!-- Video 1 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 3:45</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              1. Hordhaca Guud ee Nidaamka
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Muuqaal faahfaahsan oo sharxaya qaab-dhismeedka nidaamka, menu-ga bidix, baddalaadda luuqadda Soomaaliga/Ingiriiska, iyo qaabka habeen/maalin.
+            </p>
+            <ol class="step-list">
+              <li>Adeegso menu-ga bidix (Dashboard-ka, Koorsooyinka, Dhibcaha).</li>
+              <li>Ku baddal luuqadda Soomaali/Ingiriis badhanka kore ee calanka.</li>
+              <li>U isticmaal sanduuqa baadigoobka si aad u hesho cashar kasta.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Waxaad menu-ga qarin kartaa adigoo gujinaya astaanta saddexda xariiqood (☰).
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 2 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 2:30</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              2. Sida loo Galo Akoonka (Login)
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Baro sida ardayda iyo macallimiintu ugu galaan nidaamka si ammaan ah iyagoo adeegsanaya email-kooda rasmiga ah.
+            </p>
+            <ol class="step-list">
+              <li>Guji badhanka "Galitaanka Ardayda" ee ku yaal bogga hore.</li>
+              <li>Geli email-kaaga jaamacadda iyo furahaaga sirta ah (password).</li>
+              <li>Guji astaanta isha si aad u xaqiijiso password-ka saxnaantiisa.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Haddii aad ilowdo password-kaaga, la xiriir maamulaha nidaamka si laguu siiyo mid cusub.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 3 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 4:15</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              3. Sida loo Helo Koorsooyinkaaga
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Muuqaal ku tusaya sida aad u helayso koorsooyinka aad ka diiwaangashan tahay, modul-lada casharrada, iyo ogeysiisyada macallinka.
+            </p>
+            <ol class="step-list">
+              <li>Tag qaybta "Koorsooyinka" ama Dashboard-kaaga.</li>
+              <li>Dooro koorsada aad rabto inaad barato (tusaale CS301).</li>
+              <li>Daalaco modul-kasta iyo hawlaha waxbarasho ee ku dhex jira.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Arday kasta wuxuu arkaa kaliya koorsooyinka u qoondeysan fasalkiisa (Sanadka 1 ilaa Sanadka 5).
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 4 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 3:10</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              4. Daawashada Casharrada Muuqaalka
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Baro sida loo isticmaalo video player-ka casriga ah, kordhinta xawaaraha, shaashadda weyn, iyo qorista horumarkaaga.
+            </p>
+            <ol class="step-list">
+              <li>Guji cashar kasta oo muuqaal ah (Video lecture).</li>
+              <li>Adeegso xawaaraha (1x, 1.25x, 1.5x) si aad ugu xawaareysato.</li>
+              <li>Daawo ugu yaraan 80% si casharku kuugu noqdo mid dhammaystiran.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Riix batoonka 'F' ee keyboard-ka si aad shaashadda oo dhan uga dhigto mid buuxda.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 5 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 3:20</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              5. Soo Dejinta Manhajka & Dukumiintiyada
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Sida loo aqriyo slides-ka macallinka, loo soo dejiyo manhajka PDF-ka ah, iyo sida loo gudbiyo jawaabaha layliyada.
+            </p>
+            <ol class="step-list">
+              <li>Guji fayl kasta oo leh astaanta PDF-ka ee casaan ah.</li>
+              <li>Ku dhex fur browser-ka ama guji Download si aad ugu shubato qalabkaaga.</li>
+              <li>U diyaarso shaqadaada qaab PDF ah inta aan waqtigu dhicin.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Gudbi layliyadaada waqtiga loogu talagalay si looga fogaado dhibco goyn.
+            </div>
+          </div>
+        </article>
+
+        <!-- Video 6 SO -->
+        <article class="tut-card">
+          <div class="tut-video-frame">
+            <video controls preload="none" poster="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800">
+              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+            </video>
+            <span class="tut-badge-lang">Af-Soomaali • 4:00</span>
+          </div>
+          <div style="padding: 1.75rem; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">
+              6. La Socodka Dhibcaha & Shahaadada
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+              Muuqaal ku tusaya sida aad u ogaan karto natiijadaada, xaadiriskaaga, billadaha aad heshay, iyo xaqiijinta shahaadada qallinjebinta.
+            </p>
+            <ol class="step-list">
+              <li>Tag qaybta "Dhibcaha & Natiijada" (Gradebook Matrix).</li>
+              <li>Akhri faallooyinka uu macallinku kaga soo jawaabay shaqadaadii.</li>
+              <li>Ka hel shahaado rasmi ah markaad koorsada si buuxda u gudubto.</li>
+            </ol>
+            <div class="tip-box">
+              💡 <strong>Talo Muhiim ah:</strong> Ardayda keenta 90% ama ka badan waxay si toos ah u helaan billadda "Quiz Master"!
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- CTA Banner -->
+  <section class="section" style="padding-top: 1rem;">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-banner-content">
+          <h2 style="font-size: 2.1rem; font-weight: 800; color: white; margin-bottom: 1rem;">
+            Ready to Put Your Learning Into Practice?
+          </h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Test everything you learned in our interactive demo or sign in to your real university account.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/demo" class="btn btn-cyan">Test in Interactive Demo</a>
+            <a href="/login" class="btn btn-outline btn-login-cta">Sign In to Student Account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-brand">
+            <div class="brand-icon-wrap">
+              <img src="/assets/gs-icon.svg" class="brand-icon-img" alt="Logo">
+            </div>
+            <div class="brand-meta">
+              <span class="brand-name">Guray Sicid</span>
+              <span class="brand-tag">Learning Platform</span>
+            </div>
+          </a>
+          <p>Bilingual Higher Education Tutorials Library. Available in English and Somali.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/" class="footer-link">Home</a></li>
+            <li><a href="/features" class="footer-link">Features</a></li>
+            <li><a href="/demo" class="footer-link">Interactive Demo</a></li>
+            <li><a href="/tutorials" class="footer-link">Tutorials</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform Access</h4>
+          <ul class="footer-links">
+            <li><a href="/login" class="footer-link">Student Login</a></li>
+            <li><a href="/login" class="footer-link">Faculty Portal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform Info</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            Need assistance? Reach out to the university academic administration office.
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 Guray Sicid Learning Platform. All rights reserved.</div>
+        <div><a href="/" class="footer-link">Back to Homepage</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/public.js"></script>
+  <script>
+    function switchTutLanguage(lang) {
+      document.querySelectorAll('.tut-lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tut-tab-panel').forEach(p => p.classList.remove('active'));
+
+      const btn = document.getElementById('btn-tut-' + lang);
+      const panel = document.getElementById('panel-tut-' + lang);
+      if (btn) btn.classList.add('active');
+      if (panel) panel.classList.add('active');
+    }
+  </script>
+</body>
+</html>

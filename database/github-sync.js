@@ -1,0 +1,284 @@
+/**
+ * ============================================================
+ * GURAY SICID LMS — GITHUB AUTO-SYNC MODULE
+ * ============================================================
+ * Automatically pushes persistent_data.json back to GitHub
+ * after every data change so that Render re-deployments always
+ * start with the LATEST data, not an old git snapshot.
+ *
+ * Required Environment Variables (set in Render dashboard):
+ *   GITHUB_TOKEN  — Personal Access Token with repo write access
+ *   GITHUB_OWNER  — GitHub username/org  (default: nurdinfx)
+ *   GITHUB_REPO   — Repository name      (default: couch-maryan)
+ *   GITHUB_BRANCH — Branch to sync to    (default: main)
+ * ============================================================
+ */
+
+const fs = require('fs');
+
+function getSyncConfig() {
+  return {
+    token: (process.env.GITHUB_TOKEN || '').trim(),
+    owner: (process.env.GITHUB_OWNER || 'nurdinfx').trim(),
+    repo: (process.env.GITHUB_REPO || 'couch-maryan').trim(),
+    branch: (process.env.GITHUB_BRANCH || 'main').trim(),
+    filePath: 'database/persistent_data.json'
+  };
+}
+
+// ──────────────────────────────────────────────
+let _lastSyncedContent = null;
+
+// ──────────────────────────────────────────────
+// Internal: fetch current SHA and content from GitHub
+// ──────────────────────────────────────────────
+async function getFileRemoteInfo(config) {
+  try {
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.filePath}?ref=${config.branch}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      sha: data.sha || null,
+      content: data.content ? data.content.replace(/\s+/g, '') : null
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ──────────────────────────────────────────────
+// FETCH latest persistent_data.json FROM GitHub (used at startup)
+// Returns parsed JSON object, or null if unavailable
+// ──────────────────────────────────────────────
+async function fetchLatestFromGitHub() {
+  const config = getSyncConfig();
+  if (!config.token) {
+    console.log('[GitHubSync] No GITHUB_TOKEN — skipping remote fetch, using local snapshot.');
+    return null;
+  }
+  try {
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.filePath}?ref=${config.branch}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      }
+    });
+    if (!res.ok) {
+      console.error('[GitHubSync] Could not fetch from GitHub:', res.status);
+      return null;
+    }
+    const data = await res.json();
+    if (!data.content) return null;
+    const decoded = Buffer.from(data.content, 'base64').toString('utf8');
+    const parsed = JSON.parse(decoded);
+    console.log(`[GitHubSync] ✅ Fetched latest snapshot from GitHub (${(parsed.users || []).length} users, ${(parsed.courses || []).length} courses)`);
+    return parsed;
+  } catch (err) {
+    console.error('[GitHubSync] Error fetching from GitHub:', err.message);
+    return null;
+  }
+}
+
+// ──────────────────────────────────────────────
+// Core: push the JSON content to GitHub
+// ──────────────────────────────────────────────
+async function pushToGitHub(jsonContent) {
+  const config = getSyncConfig();
+  if (!config.token) {
+    // Silent in local development; token not set
+    return false;
+  }
+
+  // Fast check: did the content change since the last sync in this process?
+  if (_lastSyncedContent === jsonContent) {
+    return true;
+  }
+
+  try {
+    const base64Content = Buffer.from(jsonContent, 'utf8').toString('base64');
+    const remoteInfo = await getFileRemoteInfo(config);
+
+    // If GitHub already has the exact same content, skip committing
+    if (remoteInfo && remoteInfo.content === base64Content) {
+      _lastSyncedContent = jsonContent;
+      return true;
+    }
+
+    const sha = remoteInfo ? remoteInfo.sha : null;
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    const body = {
+      message: `chore: auto-sync db snapshot [${now} UTC] [skip render] [skip ci]`,
+      content: base64Content,
+      branch: config.branch
+    };
+    if (sha) body.sha = sha; // required by GitHub when file already exists
+
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.filePath}`;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      _lastSyncedContent = jsonContent;
+      console.log(`[GitHubSync] ✅ persistent_data.json successfully synced to GitHub (${now} UTC)`);
+      return true;
+    } else {
+      const err = await res.json().catch(() => ({}));
+      console.error('[GitHubSync] ❌ Push failed:', err.message || res.status);
+      return false;
+    }
+  } catch (err) {
+    console.error('[GitHubSync] ❌ Network error during sync:', err.message);
+    return false;
+  }
+}
+
+// ──────────────────────────────────────────────
+// Debounced scheduler — batches rapid saves
+// into a single GitHub push after 2 seconds
+// of inactivity. Prevents GitHub API rate limits.
+// ──────────────────────────────────────────────
+let _debounceTimer = null;
+let _pendingFilePath = null;
+
+function scheduleSyncToGitHub(filePath) {
+  const config = getSyncConfig();
+  if (!config.token) return; // noop in local dev
+
+  _pendingFilePath = filePath;
+  if (_debounceTimer) clearTimeout(_debounceTimer);
+
+  _debounceTimer = setTimeout(async () => {
+    _debounceTimer = null;
+    try {
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        await pushToGitHub(content);
+      }
+    } catch (err) {
+      console.error('[GitHubSync] Could not read persistence file:', err.message);
+    }
+  }, 2000); // 2-second debounce window for fast persistence
+}
+
+// Immediate flush on process termination (e.g. Render restart/spin-down)
+async function flushSyncNow() {
+  if (_pendingFilePath) {
+    if (_debounceTimer) {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = null;
+    }
+    try {
+      if (fs.existsSync(_pendingFilePath)) {
+        const content = fs.readFileSync(_pendingFilePath, 'utf8');
+        const result = await pushToGitHub(content);
+        if (result) console.log('[GitHubSync] ✅ Final flush to GitHub completed before shutdown.');
+      }
+    } catch (e) {
+      console.error('[GitHubSync] Error during final flush:', e.message);
+    }
+  }
+}
+
+process.on('SIGTERM', async () => {
+  console.log('[GitHubSync] SIGTERM received — flushing data to GitHub...');
+  await flushSyncNow();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('[GitHubSync] SIGINT received — flushing data to GitHub...');
+  await flushSyncNow();
+  process.exit(0);
+});
+
+// ──────────────────────────────────────────────
+// Push an uploaded file (e.g. PDF document) to GitHub
+// in the background so it survives Render redeployments
+// ──────────────────────────────────────────────
+async function pushUploadedFileToGitHub(localFilePath, relativeRepoPath) {
+  const config = getSyncConfig();
+  if (!config.token) return false;
+  if (!fs.existsSync(localFilePath)) return false;
+
+  try {
+    const stats = fs.statSync(localFilePath);
+    // Don't push files larger than 40MB over Contents API
+    if (stats.size > 40 * 1024 * 1024) {
+      console.log(`[GitHubSync] File ${relativeRepoPath} is larger than 40MB, skipping GitHub API sync.`);
+      return false;
+    }
+
+    const fileBuffer = fs.readFileSync(localFilePath);
+    const base64Content = fileBuffer.toString('base64');
+    const cleanRepoPath = relativeRepoPath.replace(/^[\\/]+/, '').replace(/\\/g, '/');
+
+    // Get current sha if file already exists in repo
+    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${cleanRepoPath}?ref=${config.branch}`;
+    let sha = null;
+    try {
+      const checkRes = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${config.token}`,
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'GurayLMS-AutoSync/1.0'
+        }
+      });
+      if (checkRes.ok) {
+        const info = await checkRes.json();
+        sha = info.sha;
+      }
+    } catch (e) {}
+
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const body = {
+      message: `chore(upload): sync ${cleanRepoPath.split('/').pop()} [${now} UTC] [skip render] [skip ci]`,
+      content: base64Content,
+      branch: config.branch
+    };
+    if (sha) body.sha = sha;
+
+    const putUrl = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${cleanRepoPath}`;
+    const res = await fetch(putUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'GurayLMS-AutoSync/1.0'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      console.log(`[GitHubSync] ✅ Uploaded file synced to GitHub: ${cleanRepoPath}`);
+      return true;
+    } else {
+      const err = await res.json().catch(() => ({}));
+      console.error(`[GitHubSync] ❌ Failed to sync upload ${cleanRepoPath}:`, err.message || res.status);
+      return false;
+    }
+  } catch (err) {
+    console.error(`[GitHubSync] ❌ Error syncing upload to GitHub:`, err.message);
+    return false;
+  }
+}
+
+module.exports = { scheduleSyncToGitHub, pushToGitHub, pushUploadedFileToGitHub, fetchLatestFromGitHub, getSyncConfig, flushSyncNow };

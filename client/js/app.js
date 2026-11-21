@@ -1,0 +1,2585 @@
+// ====================================================================
+// FACULTY LMS - MAIN APPLICATION ROUTER & CONTROLLER
+// ====================================================================
+
+const App = {
+  activeModal: null,
+  isDrawerCollapsed: false,
+
+  COURSE_PRESETS: [
+    { url: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&auto=format&fit=crop&q=80', label: '🩺 Midwifery' },
+    { url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=500&auto=format&fit=crop&q=80', label: '👶 Labour & Birth' },
+    { url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&auto=format&fit=crop&q=80', label: '🏥 Clinical Nursing' },
+    { url: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=500&auto=format&fit=crop&q=80', label: '🔬 Medical Lab' },
+    { url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=500&auto=format&fit=crop&q=80', label: '🫀 Anatomy' },
+    { url: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=80', label: '💊 Pharmacology' },
+    { url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&fit=crop&q=80', label: '💻 Technology' },
+    { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&fit=crop&q=80', label: '📊 Public Health' }
+  ],
+
+  getCourseFallback(code = '', title = '') {
+    const palettes = [
+      { bg1: '#0284c7', bg2: '#0369a1', accent: '#7dd3fc' },
+      { bg1: '#7c3aed', bg2: '#5b21b6', accent: '#c4b5fd' },
+      { bg1: '#059669', bg2: '#047857', accent: '#6ee7b7' },
+      { bg1: '#e11d48', bg2: '#9f1239', accent: '#fda4af' },
+      { bg1: '#d97706', bg2: '#b45309', accent: '#fde68a' },
+      { bg1: '#4f46e5', bg2: '#3730a3', accent: '#a5b4fc' }
+    ];
+    let hash = 0;
+    const str = (code + title) || 'Course';
+    for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i);
+    const p = palettes[Math.abs(hash) % palettes.length];
+
+    const safeCode = (code || 'COURSE').replace(/[^a-zA-Z0-9 -]/g, '');
+    const safeTitle = (title || 'Curriculum').slice(0, 36).replace(/[^a-zA-Z0-9 -]/g, '');
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+      <defs>
+        <linearGradient id="g_${Math.abs(hash)}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${p.bg1}"/>
+          <stop offset="100%" stop-color="${p.bg2}"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="340" fill="url(#g_${Math.abs(hash)})"/>
+      <circle cx="520" cy="50" r="130" fill="rgba(255,255,255,0.08)"/>
+      <circle cx="80" cy="290" r="90" fill="rgba(255,255,255,0.05)"/>
+      <g transform="translate(44, 110)">
+        <text font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="44" fill="${p.accent}" font-weight="900" letter-spacing="1.5">${safeCode}</text>
+        <text y="50" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="20" fill="#ffffff" font-weight="600" opacity="0.95">${safeTitle}</text>
+        <text y="86" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" fill="#ffffff" opacity="0.75" letter-spacing="0.5">Guray Sicid Learning Platform</text>
+      </g>
+    </svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  },
+
+  getCoverUrl(cover_image, code = '', title = '') {
+    if (!cover_image) return this.getCourseFallback(code, title);
+    return typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(cover_image) : cover_image;
+  },
+
+  getAvatarUrl(avatar_url) {
+    if (!avatar_url) return 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+    return typeof API !== 'undefined' && API.getFileUrl ? API.getFileUrl(avatar_url) : avatar_url;
+  },
+
+  handleCoverError(img, code = '', title = '') {
+    if (!img) return;
+    img.onerror = null;
+    img.src = this.getCourseFallback(code, title);
+  },
+
+  processImageFile(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve('');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 800;
+          const maxH = 480;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxW) {
+            h = Math.round((h * maxW) / w);
+            w = maxW;
+          }
+          if (h > maxH) {
+            w = Math.round((w * maxH) / h);
+            h = maxH;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Faylka sawirka lama akhrin karo'));
+      reader.readAsDataURL(file);
+    });
+  },
+
+  processAvatarFile(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve('');
+      if (!file.type || !file.type.startsWith('image/')) {
+        return reject(new Error('Fadlan soo dooro fayl sawir ah (JPG, PNG, WebP).'));
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Crop and resize to clean square avatar
+          const size = Math.min(img.width, img.height);
+          const startX = (img.width - size) / 2;
+          const startY = (img.height - size) / 2;
+          const targetDim = Math.min(size, 260);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = targetDim;
+          canvas.height = targetDim;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, startX, startY, size, size, 0, 0, targetDim, targetDim);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Faylka sawirka lama akhrin karo'));
+      reader.readAsDataURL(file);
+    });
+  },
+
+  async handleAvatarChange(input, previewImgId, hiddenInputId, statusTextId) {
+    if (!input.files || !input.files[0]) return;
+    try {
+      const file = input.files[0];
+      const dataUrl = await this.processAvatarFile(file);
+      const previewImg = document.getElementById(previewImgId);
+      const hiddenInput = document.getElementById(hiddenInputId);
+      const statusText = statusTextId ? document.getElementById(statusTextId) : null;
+      if (previewImg) previewImg.src = dataUrl;
+      if (hiddenInput) hiddenInput.value = dataUrl;
+      if (statusText) {
+        statusText.innerHTML = '<span style="color: #16a34a; font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;">✓ Sawirka waa la doortay (' + Math.round(file.size / 1024) + ' KB)</span>';
+      }
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async init() {
+    console.log('Initializing Guray Sicid Learning Platform...');
+
+    // Setup Theme toggle
+    const savedTheme = localStorage.getItem('faculty_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Setup Language
+    if (typeof I18N !== 'undefined') {
+      this.applyLanguage();
+      window.addEventListener('language-changed', () => {
+        this.applyLanguage();
+        this.refreshCurrentView();
+      });
+    }
+
+    // Setup hash router listener
+    window.addEventListener('hashchange', () => this.handleRoute());
+    window.addEventListener('auth-required', () => { window.location.href = 'login.html'; });
+
+    // Verify session - redirect to login if not authenticated
+    try {
+      if (API.token) {
+        await API.getMe();
+      } else {
+        // No token: redirect to login page
+        window.location.href = 'login.html';
+        return;
+      }
+    } catch (e) {
+      // Token invalid or expired
+      API.setToken(null);
+      localStorage.removeItem('faculty_lms_user');
+      window.location.href = 'login.html';
+      return;
+    }
+
+    this.updateUserNavbar();
+    this.handleRoute();
+    this.setupSearch();
+  },
+
+  toggleLanguage() {
+    if (typeof I18N === 'undefined') return;
+    const next = I18N.toggleLang();
+    this.applyLanguage();
+    this.showToast(next === 'so' ? 'Luuqada nidaamka: Soomaali 🇸🇴' : 'System Language: English 🇬🇧');
+    this.refreshCurrentView();
+  },
+
+  applyLanguage() {
+    if (typeof I18N === 'undefined') return;
+    const lang = I18N.getLang();
+    const flag = document.getElementById('lang-flag-indicator');
+    const label = document.getElementById('lang-label-indicator');
+    const btn = document.getElementById('lang-switcher-btn');
+    if (flag) flag.textContent = lang === 'so' ? '🇸🇴' : '🇬🇧';
+    if (label) label.textContent = lang === 'so' ? 'Soomaali' : 'English';
+    if (btn) btn.title = lang === 'so' ? 'Switch to English' : 'U baddal Soomaali';
+
+    const brandTitle = document.getElementById('brand-title-text');
+    const brandSub = document.getElementById('brand-subtitle-text');
+    if (brandTitle) brandTitle.textContent = I18N.t('brand.name');
+    if (brandSub) brandSub.textContent = I18N.t('brand.tagline');
+
+    const searchInput = document.getElementById('site-search-input');
+    if (searchInput) searchInput.placeholder = I18N.t('nav.search_placeholder');
+
+    const dSecNav = document.getElementById('drawer-sec-nav');
+    const dSecMgmt = document.getElementById('drawer-sec-mgmt');
+    if (dSecNav) dSecNav.textContent = I18N.t('nav.academic_nav');
+    if (dSecMgmt) dSecMgmt.textContent = I18N.t('nav.faculty_mgmt');
+
+    const navMap = {
+      'nav-txt-dashboard': 'nav.dashboard',
+      'nav-txt-courses': 'nav.courses',
+      'nav-txt-gradebook': 'nav.gradebook',
+      'nav-txt-attendance': 'nav.attendance',
+      'nav-txt-badges': 'nav.badges',
+      'nav-txt-discussions': 'nav.discussions',
+      'nav-txt-calendar': 'nav.calendar',
+      'nav-txt-messages': 'nav.messages',
+      'nav-txt-students': 'nav.students',
+      'nav-txt-admin': 'nav.admin'
+    };
+
+    for (const [id, key] of Object.entries(navMap)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = I18N.t(key);
+    }
+
+    const drawerLogout = document.getElementById('drawer-logout-text');
+    if (drawerLogout) drawerLogout.textContent = I18N.t('nav.logout', lang === 'so' ? 'Ka bax' : 'Log Out');
+    const headerLogout = document.getElementById('nav-header-logout-btn');
+    if (headerLogout) headerLogout.title = I18N.t('nav.logout', lang === 'so' ? 'Ka bax' : 'Log Out');
+    const userProfileMenu = document.getElementById('nav-user-profile-menu');
+    if (userProfileMenu) userProfileMenu.title = lang === 'so' ? 'Guji si aad sawirkaaga / profile-kaaga u beddesho' : 'Edit profile & avatar';
+    const drawerUserCard = document.getElementById('drawer-user-card-click');
+    if (drawerUserCard) drawerUserCard.title = lang === 'so' ? 'Baddal profile-kaaga' : 'Edit your profile';
+  },
+
+  logout() {
+    API.setToken(null);
+    localStorage.removeItem('faculty_lms_user');
+    localStorage.removeItem('faculty_lms_token');
+    window.location.href = 'login.html';
+  },
+  updateUserNavbar() {
+    const user = API.currentUser;
+    if (!user) return;
+
+    // Update avatar and name
+    const nameEl = document.getElementById('navbar-user-name');
+    const roleEl = document.getElementById('navbar-user-role');
+    const avatarEl = document.getElementById('navbar-user-avatar');
+    const switcherEl = document.getElementById('quick-role-select');
+
+    // Also update mobile drawer user card
+    const drawerNameEl = document.getElementById('drawer-user-name');
+    const drawerRoleEl = document.getElementById('drawer-user-role');
+    const drawerAvatarEl = document.getElementById('drawer-user-avatar');
+
+    if (nameEl) nameEl.textContent = user.full_name;
+    if (roleEl) roleEl.textContent = user.role.toUpperCase();
+    if (avatarEl && user.avatar_url) avatarEl.src = this.getAvatarUrl(user.avatar_url);
+
+    if (drawerNameEl) drawerNameEl.textContent = user.full_name;
+    if (drawerRoleEl) drawerRoleEl.textContent = user.role.toUpperCase();
+    if (drawerAvatarEl && user.avatar_url) drawerAvatarEl.src = this.getAvatarUrl(user.avatar_url);
+
+    if (switcherEl) switcherEl.value = user.id.toString();
+
+    // Toggle admin link in drawer
+    const adminNavItem = document.getElementById('drawer-nav-admin');
+    if (adminNavItem) {
+      adminNavItem.style.display = (user.role === 'admin' || user.role === 'professor' || user.is_admin === 1) ? 'block' : 'none';
+    }
+  },
+
+  openEditProfileModal() {
+    const user = API.currentUser;
+    if (!user) return;
+
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const t = (k, fb) => (typeof I18N !== 'undefined') ? I18N.t(k, fb) : fb;
+    const currentAvatar = this.getAvatarUrl(user.avatar_url);
+
+    this.showCustomModal(`
+      <div class="modal-dialog" style="max-width: 480px; width: 95%;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.15rem; font-weight: 700;">${t('profile_modal.title', isSo ? '👤 Baddal Sawirkaaga & Profile-ka' : '👤 Edit Profile & Avatar')}</h3>
+          <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <form onsubmit="App.handleSubmitProfile(event)">
+          <div class="modal-body" style="padding: 1.5rem;">
+            
+            <!-- Avatar Upload from Device -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1.25rem; background: var(--bg-surface-alt, #f8fafc); border-radius: var(--radius-md); border: 2px dashed #0284c7; text-align: center;">
+              <div style="position: relative; width: 96px; height: 96px;">
+                <img id="user_profile_avatar_preview" src="${currentAvatar}" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 4px solid #0284c7; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem;">
+                  ${t('profile_modal.device_prompt', isSo ? '📷 Dooro Sawir Cusub oo Device-kaaga ah' : '📷 Choose New Image from Device')}
+                </label>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                  ${t('profile_modal.device_hint', isSo ? 'Soo geli sawir kombiyuutarkaaga ama taleefankaaga ku jira' : 'Upload an image from your computer or phone')}
+                </div>
+                <label class="btn btn-primary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1.15rem; font-weight: 700;">
+                  <span>${t('profile_modal.choose_btn', isSo ? '📁 Soo Dooro Sawirka' : '📁 Choose Image')}</span>
+                  <input type="file" accept="image/*" style="display: none;" onchange="App.handleAvatarChange(this, 'user_profile_avatar_preview', 'user_profile_avatar_url', 'user_profile_avatar_status')">
+                </label>
+                <div id="user_profile_avatar_status" style="font-size: 0.78rem; color: #0284c7; margin-top: 0.4rem; font-weight: 600;"></div>
+              </div>
+              <input type="hidden" name="avatar_url" id="user_profile_avatar_url" value="${user.avatar_url || ''}">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
+                ${t('profile_modal.full_name_label', isSo ? 'Magacaaga (Full Name)' : 'Full Name *')}
+              </label>
+              <input type="text" name="full_name" value="${user.full_name || ''}" required style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);">
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">
+                ${t('profile_modal.bio_label', isSo ? 'Xog Kooban / Bio (Optional)' : 'Bio / Short Introduction (Optional)')}
+              </label>
+              <textarea name="bio" rows="2" placeholder="${t('profile_modal.bio_placeholder', isSo ? 'Xog kooban oo kugu saabsan...' : 'Short bio about yourself...')}" style="width: 100%; padding: 0.7rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary); font-family: inherit;">${user.bio || ''}</textarea>
+            </div>
+
+          </div>
+          <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+            <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('profile_modal.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 700;">${t('profile_modal.save_btn', isSo ? 'Kaydi Sawirka & Xogta 💾' : 'Save Profile & Image 💾')}</button>
+          </div>
+        </form>
+      </div>
+    `);
+  },
+
+  async handleSubmitProfile(e) {
+    e.preventDefault();
+    const form = e.target;
+    const avatar_url = form.avatar_url ? form.avatar_url.value : '';
+    const full_name = form.full_name.value.trim();
+    const bio = form.bio.value.trim();
+
+    try {
+      const res = await API.updateProfile({ full_name, bio, avatar_url });
+      if (res && res.user) {
+        API.currentUser = { ...API.currentUser, ...res.user };
+        localStorage.setItem('faculty_lms_user', JSON.stringify(API.currentUser));
+      }
+      this.closeModal();
+      this.updateUserNavbar();
+      this.showToast('Sawirkaaga iyo profile-kaaga si guul leh ayaa loo cusbooneysiiyay! 🎉');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleRoleSwitch(userId) {
+    try {
+      const res = await API.switchUser(parseInt(userId));
+      this.updateUserNavbar();
+      this.showToast(`Switched persona to ${res.user.full_name} (${res.user.role.toUpperCase()})`);
+      this.handleRoute();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  parseRoute() {
+    const hash = window.location.hash.slice(1) || '/dashboard';
+    const [pathPart, queryPart] = hash.split('?');
+    const queryParams = {};
+    if (queryPart) {
+      queryPart.split('&').forEach(pair => {
+        const [k, v] = pair.split('=');
+        queryParams[k] = decodeURIComponent(v || '');
+      });
+    }
+
+    const segments = pathPart.split('/').filter(Boolean);
+    return { path: pathPart, segments, query: queryParams };
+  },
+
+  async handleRoute() {
+    this.closeDrawerOnMobile();
+    const { path, segments, query } = this.parseRoute();
+    const container = document.getElementById('main-content');
+    if (!container) return;
+
+    // Update active state in sidebar
+    document.querySelectorAll('.drawer-nav-item').forEach(el => el.classList.remove('active'));
+    const baseNavId = segments[0] || 'dashboard';
+    const activeEl = document.getElementById(`nav-${baseNavId}`);
+    if (activeEl) activeEl.classList.add('active');
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+
+    try {
+      if (segments.length === 0 || segments[0] === 'dashboard') {
+        container.innerHTML = await DashboardView.render();
+      } else if (segments[0] === 'courses') {
+        // Full Course Catalog page
+        const cData = await API.getCourses().catch(() => ({ courses: [] }));
+        const cList = cData.courses || [];
+        const isProfessor = API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin' || API.currentUser.is_admin === 1);
+        container.innerHTML = `
+          <div class="breadcrumb-trail">
+            <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span>${I18N.t('nav.courses', 'Course Catalog')}</span>
+          </div>
+          <div class="page-header-container" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+            <div>
+              <h1 class="page-title" style="font-size: 1.85rem; font-weight: 800; margin-bottom: 0.4rem;">
+                📚 ${I18N.t('nav.courses', 'Course Catalog')}
+              </h1>
+              <p class="page-description" style="color: var(--text-muted); font-size: 0.95rem;">
+                ${isProfessor ? I18N.t('dashboard.prof_overview', 'All published courses you manage') : I18N.t('dashboard.my_courses', 'Your enrolled courses')}
+              </p>
+            </div>
+            ${isProfessor ? `
+              <button class="btn btn-primary" onclick="App.showModal('createCourseModal')" style="font-weight: 600; padding: 0.65rem 1.25rem;">
+                + ${I18N.t('dashboard.create_course_now', 'New Course')}
+              </button>
+            ` : ''}
+          </div>
+
+          ${cList.length === 0 ? `
+            <div style="background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center;">
+              <div style="font-size: 3.5rem; margin-bottom: 1rem;">📚</div>
+              <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+                ${I18N.t('dashboard.no_courses_title', 'No Courses Found')}
+              </h2>
+              <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 1.5rem;">
+                ${I18N.t('dashboard.no_courses_desc', 'No courses available yet. Create one to get started.')}
+              </p>
+              ${isProfessor ? `
+                <button class="btn btn-primary" onclick="App.showModal('createCourseModal')">
+                  + ${I18N.t('dashboard.create_course_now', 'Create First Course')}
+                </button>
+              ` : ''}
+            </div>
+          ` : `
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              ${cList.map(c => {
+                const yearBg = c.target_year === 'Year 2' ? '#fef3c7' : c.target_year === 'Year 3' ? '#f3e8ff' : c.target_year === 'Year 4' ? '#dcfce7' : c.target_year === 'Year 5' ? '#ffe4e6' : '#e0f2fe';
+                const yearColor = c.target_year === 'Year 2' ? '#b45309' : c.target_year === 'Year 3' ? '#7e22ce' : c.target_year === 'Year 4' ? '#15803d' : c.target_year === 'Year 5' ? '#e11d48' : '#0369a1';
+                return `
+                  <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow 0.25s, transform 0.2s; cursor: pointer;"
+                       onclick="App.navigate('/course/${c.id}')"
+                       onmouseover="this.style.boxShadow='var(--shadow-lg)'; this.style.transform='translateY(-3px)'"
+                       onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)'">
+                    <img src="${App.getCoverUrl(c.cover_image, c.code, c.title)}" 
+                         style="width: 100%; height: 160px; object-fit: cover;" 
+                         onerror="App.handleCoverError(this, '${c.code}', '${(c.title || '').replace(/'/g, "\\'")}')">
+                    <div style="padding: 1.25rem;">
+                      <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <code style="font-size: 0.75rem; background: var(--bg-surface-alt); padding: 0.2rem 0.5rem; border-radius: 4px;">${c.code}</code>
+                        <span style="background: ${yearBg}; color: ${yearColor}; font-weight: 700; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 999px;">🎯 ${c.target_year || 'All Years'}</span>
+                        ${c.is_published ? '<span class="badge badge-success" style="font-size: 0.72rem;">Published</span>' : '<span class="badge badge-warning" style="font-size: 0.72rem;">Draft</span>'}
+                      </div>
+                      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.35;">${c.title}</h3>
+                      <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        ${c.description || '—'}
+                      </p>
+                      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
+                        <span>👥 ${c.enrolled_students_count || 0} ${I18N.t('dashboard.students_count', 'Students')}</span>
+                        <span>📖 ${c.lessons_count || 0} ${I18N.t('nav.courses', 'Lessons')}</span>
+                        ${c.progress_percentage !== undefined ? `<span style="font-weight: 700; color: var(--primary);">${c.progress_percentage}% Done</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        `;
+      } else if (segments[0] === 'course') {
+        const courseId = segments[1];
+        if (segments[2] === 'lesson') {
+          container.innerHTML = await LessonView.render({ id: segments[3] });
+        } else if (segments[2] === 'assignment') {
+          container.innerHTML = await AssignmentView.render({ id: segments[3] });
+        } else if (segments[2] === 'quiz') {
+          container.innerHTML = await QuizView.render({ id: segments[3], action: query.action, attemptId: query.attemptId });
+        } else {
+          container.innerHTML = await CourseView.render({ id: courseId, tab: query.tab });
+        }
+      } else if (segments[0] === 'gradebook' || segments[0] === 'attendance' || segments[0] === 'discussions') {
+        const tabType = segments[0] === 'gradebook' ? 'grades' : (segments[0] === 'attendance' ? 'attendance' : 'discussions');
+
+        if (segments[0] === 'discussions' && segments[1]) {
+          container.innerHTML = await TopicView.render({ id: segments[1] });
+        } else {
+          // Dynamically fetch available courses instead of hardcoding course ID 1
+          const coursesRes = await API.getCourses().catch(() => ({ courses: [] }));
+          const coursesList = coursesRes.courses || [];
+
+          if (coursesList.length === 0) {
+            const pageTitle = segments[0] === 'gradebook' 
+              ? I18N.t('nav.gradebook', 'Gradebook Matrix') 
+              : (segments[0] === 'attendance' ? I18N.t('nav.attendance', 'Attendance Records') : I18N.t('nav.discussions', 'Course Forum'));
+            container.innerHTML = `
+              <div class="breadcrumb-trail">
+                <a href="#/dashboard">${I18N.t('nav.dashboard', 'Dashboard')}</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>${pageTitle}</span>
+              </div>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center; box-shadow: var(--shadow-sm); margin-top: 1rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">📚</div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+                  ${I18N.t('dashboard.no_courses_title', 'Weli Koorso Laguma darin / No Courses Added Yet')}
+                </h2>
+                <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+                  ${I18N.t('dashboard.no_courses_desc', 'Fadlan abuur koorso cusub si aad u maamusho buundooyinka, xaadiriska, iyo madasha doodaha.')}
+                </p>
+                ${(API.currentUser && (API.currentUser.role === 'professor' || API.currentUser.role === 'admin' || API.currentUser.is_admin === 1)) ? `
+                  <button class="btn btn-primary" onclick="App.showModal('createCourseModal')" style="font-weight: 600; padding: 0.65rem 1.25rem;">
+                    + ${I18N.t('dashboard.create_course_now', 'Abuur Koorso Cusub')}
+                  </button>
+                ` : `
+                  <a href="#/dashboard" class="btn btn-primary">${I18N.t('nav.dashboard', 'Return to Dashboard')}</a>
+                `}
+              </div>
+            `;
+          } else {
+            // Find target course: query.courseId or first available course
+            const targetCourseId = query.courseId || query.id || coursesList[0].id;
+            const targetCourse = coursesList.find(c => c.id == targetCourseId) || coursesList[0];
+
+            // Render Course Switcher toolbar if more than 1 course exists
+            const courseSelectorHtml = coursesList.length > 1 ? `
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 1.25rem;">📚</span>
+                  <label for="route-course-picker" style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Dooro Koorsada (Select Course):</label>
+                </div>
+                <select id="route-course-picker" onchange="window.location.hash = '#/${segments[0]}?courseId=' + this.value" style="padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.9rem; font-weight: 600; background: var(--bg-surface-alt); color: var(--text-primary); cursor: pointer; min-width: 260px;">
+                  ${coursesList.map(c => `
+                    <option value="${c.id}" ${c.id === targetCourse.id ? 'selected' : ''}>
+                      ${c.code} - ${c.title} (${c.target_year || 'All Years'})
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+            ` : '';
+
+            const renderedView = await CourseView.render({ id: targetCourse.id, tab: tabType });
+            container.innerHTML = courseSelectorHtml + renderedView;
+          }
+        }
+      } else if (segments[0] === 'messages') {
+        container.innerHTML = await MessagesView.render(query);
+      } else if (segments[0] === 'calendar') {
+        container.innerHTML = await CalendarView.render();
+      } else if (segments[0] === 'admin') {
+        container.innerHTML = await AdminView.render();
+      } else if (segments[0] === 'students') {
+        container.innerHTML = await StudentsView.render();
+      } else if (segments[0] === 'badges' || segments[0] === 'certificates') {
+        container.innerHTML = await BadgesView.render();
+      } else {
+        container.innerHTML = await DashboardView.render();
+      }
+    } catch (err) {
+      console.error('Routing render error:', err);
+      container.innerHTML = `
+        <div style="text-align: center; padding: 4rem 2rem;">
+          <h2 style="color: var(--danger);">Unable to load page</h2>
+          <p style="color: var(--text-muted); margin: 0.5rem 0 1.5rem;">${err.message}</p>
+          <a href="#/dashboard" class="btn btn-primary">Return to Dashboard</a>
+        </div>
+      `;
+    }
+  },
+
+  navigate(url) {
+    window.location.hash = url;
+  },
+
+  refreshCurrentView() {
+    this.handleRoute();
+  },
+
+  toggleDrawer() {
+    const drawer = document.getElementById('left-drawer');
+    const content = document.getElementById('main-content');
+    const backdrop = document.getElementById('drawer-backdrop');
+    if (!drawer) return;
+
+    if (window.innerWidth <= 900) {
+      const isOpen = drawer.classList.toggle('mobile-open');
+      if (backdrop) backdrop.classList.toggle('active', isOpen);
+    } else {
+      drawer.classList.toggle('collapsed');
+      if (content) content.classList.toggle('expanded');
+    }
+  },
+
+  closeDrawerOnMobile() {
+    if (window.innerWidth <= 900) {
+      const drawer = document.getElementById('left-drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      if (drawer) drawer.classList.remove('mobile-open');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+  },
+
+  toggleTheme() {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('faculty_theme', next);
+    this.showToast(`Switched to ${next} mode`);
+  },
+
+  toggleModuleCollapse(moduleId) {
+    const body = document.getElementById(`module-content-${moduleId}`);
+    const chevron = document.getElementById(`chevron-${moduleId}`);
+    if (body) {
+      const isHidden = body.style.display === 'none';
+      body.style.display = isHidden ? 'flex' : 'none';
+      if (chevron) {
+        chevron.className = isHidden ? 'module-chevron expanded' : 'module-chevron';
+      }
+    }
+  },
+
+  async toggleLessonCompletion(lessonId, status) {
+    try {
+      await API.updateLessonProgress(lessonId, { markCompleted: status === 1 });
+      this.showToast(status === 1 ? 'Activity marked as completed! 🎯' : 'Activity marked as incomplete.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteModule(moduleId) {
+    if (!confirm('Are you sure you want to delete this module and all its contents?')) return;
+    try {
+      await API.deleteModule(moduleId);
+      this.showToast('Module deleted.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteLesson(lessonId, lessonTitle) {
+    const title = lessonTitle ? `"${lessonTitle}"` : 'this lesson';
+    if (!confirm(`Ma hubtaa inaad tirtirto casharkan: ${title}?\nAre you sure you want to delete this lesson?`)) return;
+    try {
+      await API.deleteLesson(lessonId);
+      this.showToast('Casharka si guul leh ayaa loo tirtiray / Lesson deleted successfully.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteAssignment(assignmentId, assignmentTitle) {
+    const title = assignmentTitle ? `"${assignmentTitle}"` : 'this assignment';
+    if (!confirm(`Ma hubtaa inaad tirtirto shaqadan: ${title}?\nAre you sure you want to delete this assignment?`)) return;
+    try {
+      await API.deleteAssignment(assignmentId);
+      this.showToast('Shaqada waa la tirtiray / Assignment deleted successfully.');
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+    }
+  },
+
+  async deleteQuiz(quizId, quizTitle) {
+    const title = quizTitle ? `"${quizTitle}"` : 'this quiz';
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
+    const msg = isEn
+      ? `Are you sure you want to delete this quiz: ${title}?\nAll student attempts and question bank items will be permanently removed.`
+      : `Ma hubtaa inaad tirtirto imtixaankan/kediskan: ${title}?\nDhammaan natiijooyinka iyo su'aalaha la xiriira waa la tirtiri doonaa.`;
+    if (!confirm(msg)) return false;
+    try {
+      await API.deleteQuiz(quizId);
+      const toastMsg = isEn ? 'Quiz deleted successfully.' : 'Imtixaanka/Kediska si guul leh ayaa loo tirtiray.';
+      this.showToast(toastMsg);
+      this.refreshCurrentView();
+      return true;
+    } catch (e) {
+      this.showToast(e.message, 'error');
+      return false;
+    }
+  },
+
+  onActivitySelectChanged(moduleId) {
+    const checked = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]:checked`);
+    const all = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]`);
+    const bar = document.getElementById(`selection-bar-${moduleId}`);
+    const countEl = document.getElementById(`selected-count-${moduleId}`);
+    const selectAllCheckbox = document.getElementById(`select-all-box-${moduleId}`);
+
+    if (countEl) countEl.textContent = checked.length;
+    if (bar) bar.style.display = checked.length > 0 ? 'flex' : 'none';
+    if (selectAllCheckbox) selectAllCheckbox.checked = checked.length === all.length && all.length > 0;
+  },
+
+  toggleSelectAllActivities(moduleId, isChecked) {
+    const boxes = document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]`);
+    boxes.forEach(box => { box.checked = isChecked; });
+    this.onActivitySelectChanged(moduleId);
+  },
+
+  clearSelection(moduleId) {
+    this.toggleSelectAllActivities(moduleId, false);
+  },
+
+  async deleteSelectedActivities(moduleId) {
+    const checked = Array.from(document.querySelectorAll(`input.activity-select-box[data-module="${moduleId}"]:checked`));
+    if (checked.length === 0) return;
+
+    if (!confirm(`Ma hubtaa inaad tirtirto ${checked.length} cashar/waxqabad oo la doortay?\nAre you sure you want to delete ${checked.length} selected activities?`)) {
+      return;
+    }
+
+    try {
+      for (const box of checked) {
+        const type = box.getAttribute('data-type');
+        const id = parseInt(box.getAttribute('data-id'));
+        if (type === 'lesson') {
+          await API.deleteLesson(id);
+        } else if (type === 'assignment') {
+          await API.deleteAssignment(id);
+        } else if (type === 'quiz') {
+          await API.deleteQuiz(id);
+        }
+      }
+      this.showToast(`${checked.length} waxqabad si guul leh ayaa loo tirtiray / Activities deleted.`);
+      this.refreshCurrentView();
+    } catch (e) {
+      this.showToast(e.message, 'error');
+      this.refreshCurrentView();
+    }
+  },
+
+  // Modal Manager
+  showCustomModal(html) {
+    const modalRoot = document.getElementById('modal-root');
+    if (!modalRoot) return;
+    modalRoot.innerHTML = `<div class="modal-overlay" onclick="if(event.target === this) App.closeModal()">${html}</div>`;
+  },
+
+  closeModal() {
+    const modalRoot = document.getElementById('modal-root');
+    if (modalRoot) modalRoot.innerHTML = '';
+  },
+
+  async showModal(name, context = {}) {
+    const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    if (name === 'createCourseModal') {
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width: 600px;">
+          <div class="modal-header">
+            <h3>Create New Course</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form id="create-course-form" onsubmit="App.handleCreateCourse(event)">
+            <div class="modal-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Code *</label>
+                  <input type="text" name="code" required placeholder="e.g. CS420" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Pass % (default 60)</label>
+                  <input type="number" name="pass_percentage" min="1" max="100" value="60" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Title *</label>
+                <input type="text" name="title" required placeholder="e.g. Advanced Database Systems" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">🎯 Sanadka / Heerka Koorso (Target Level) *</label>
+                <select name="target_year" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-surface);color:var(--text-main);">
+                  <option value="All Years">Dhammaan Sanadaha (Furan / Open to All)</option>
+                  <option value="Year 1">Year 1 (Ardayda Sanadka 1-aad oo Kaliya)</option>
+                  <option value="Year 2">Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
+                  <option value="Year 3">Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
+                  <option value="Year 4">Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                  <option value="Year 5">Year 5 (Ardayda Sanadka 5-aad oo Kaliya)</option>
+                </select>
+                <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
+                  Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
+                </small>
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
+                <textarea name="description" rows="2" placeholder="Briefly describe the course objectives..." style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📷 Course Thumbnail</label>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                  ${App.COURSE_PRESETS.map((p) => `
+                    <div class="thumb-preset" data-url="${p.url}" onclick="App.selectCoverPreset(this, '${p.url}')" style="cursor:pointer;border:2px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;transition:border-color 0.2s;">
+                      <img src="${p.url}" alt="${p.label}" style="width:100%;height:54px;object-fit:cover;display:block;">
+                      <div style="padding:0.2rem 0.25rem;font-size:0.67rem;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.label}</div>
+                    </div>
+                  `).join('')}
+                </div>
+                <input type="hidden" name="cover_image" id="cover-preset-url" value="">
+                <div style="display:flex;gap:0.5rem;align-items:center;">
+                  <div style="flex:1;">
+                    <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">Upload custom image</label>
+                    <input type="file" name="cover_file" accept="image/*" onchange="App.previewCoverFile(this)" style="font-size:0.8rem;width:100%;">
+                  </div>
+                  <div style="flex:1;">
+                    <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">or paste image URL</label>
+                    <input type="url" name="cover_url_input" placeholder="https://..." oninput="App.setCoverUrl(this.value)" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                  </div>
+                </div>
+                <div id="cover-preview-container" style="margin-top:0.5rem;display:none;">
+                  <img id="cover-preview-img" src="" alt="Preview" style="width:100%;max-height:120px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-color);">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">🚀 Create Course</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addModuleModal') {
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Add New Section / Topic</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleAddModule(event, ${context.courseId})">
+            <div class="modal-body">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Section Title</label>
+                <input type="text" name="title" required placeholder="e.g. Module 5: Cloud Security & Multi-Tenancy" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Description</label>
+                <textarea name="description" rows="2" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Create Section</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addActivityModal') {
+      // Build module selector if no specific moduleId was passed (course-level button)
+      let moduleSelectorHtml = '';
+      let formModuleId = context.moduleId || null;
+
+      if (!formModuleId && context.courseId) {
+        // Fetch modules for this course so professor can pick one
+        try {
+          const courseData = await API.getCourse(context.courseId);
+          const modules = courseData.modules || [];
+          if (modules.length > 0) {
+            moduleSelectorHtml = `
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">📂 Section (Module) *</label>
+                <select id="activity-module-select" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                  <option value="">— Choose a section —</option>
+                  ${modules.map(m => `<option value="${m.id}">${m.title}</option>`).join('')}
+                </select>
+              </div>`;
+          } else {
+            moduleSelectorHtml = `
+              <div style="margin-bottom:1rem; padding:1rem; background:#eff6ff; border:1.5px dashed #3b82f6; border-radius:var(--radius-md);">
+                <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.35rem; color:#1d4ed8; font-weight:700; font-size:0.85rem;">
+                  <span>📂</span> Qayb Cusub (Create Section First) *
+                </div>
+                <p style="font-size:0.8rem; color:#2563eb; margin-bottom:0.55rem; line-height:1.4;">
+                  Koorsadani wali ma laha Section. Qor magaca qaybta uu casharkani ku geli doono (nidaamku si toos ah ayuu kuu abuuri doonaa):
+                </p>
+                <input type="text" id="new-section-title-input" required placeholder="t.s. Cutubka 1aad: Horudhac (Chapter 1: Intro)" style="width:100%; padding:0.65rem; border:1px solid #93c5fd; border-radius:var(--radius-md); background:#ffffff; font-weight:600;">
+              </div>`;
+          }
+        } catch (e) {
+          console.error('Could not load modules:', e);
+        }
+      }
+
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Add Activity / Learning Resource</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleAddActivity(event, ${formModuleId || 'null'}, ${context.courseId || 'null'})">
+            <div class="modal-body">
+              ${moduleSelectorHtml}
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Activity Type</label>
+                <select name="content_type" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);" onchange="App.handleActivityTypeChange(this.value)">
+                  <option value="video">🎥 Video Lecture</option>
+                  <option value="document">📄 PDF / Document</option>
+                  <option value="text">📝 Reading Notes</option>
+                </select>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Title *</label>
+                <input type="text" name="title" required placeholder="e.g. Lecture 4: Anatomy & Physiology" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+              <div id="activity-dynamic-field"></div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Description / Notes (Optional)</label>
+                <textarea name="description" rows="2" placeholder="Brief summary of this activity..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add Activity</button>
+            </div>
+          </form>
+        </div>
+      `);
+      setTimeout(() => this.handleActivityTypeChange('video'), 30);
+    } else if (name === 'editLessonModal') {
+      const lessonId = context.lessonId;
+      try {
+        const data = await API.getLesson(lessonId);
+        const l = data.lesson || data;
+        const currentType = l.content_type || 'document';
+
+        this.showCustomModal(`
+          <div class="modal-dialog">
+            <div class="modal-header">
+              <h3>✏️ Wax ka beddel Casharka (Edit Activity)</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form onsubmit="App.handleEditLesson(event, ${lessonId}, ${context.courseId || l.course_id})">
+              <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Activity Type</label>
+                  <select name="content_type" id="edit-lesson-content-type" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);" onchange="App.handleEditActivityTypeChange(this.value)">
+                    <option value="video" ${currentType === 'video' ? 'selected' : ''}>🎥 Video Lecture</option>
+                    <option value="document" ${currentType === 'document' ? 'selected' : ''}>📄 PDF / Document</option>
+                    <option value="text" ${currentType === 'text' ? 'selected' : ''}>📝 Reading Notes</option>
+                  </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Cinwaanka Casharka (Title) *</label>
+                  <input type="text" name="title" required value="${(l.title || '').replace(/"/g, '&quot;')}" placeholder="e.g. THEORY AND PRACTICE" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-weight: 600;">
+                </div>
+
+                <div id="edit-activity-dynamic-field"></div>
+
+                <div style="margin-bottom: 1rem;">
+                  <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Sharaxaad / Notes (Optional)</label>
+                  <textarea name="description" rows="2" placeholder="Sharaxaad kooban..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;">${l.description || ''}</textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Keydi Isbeddelada (Save Changes)</button>
+              </div>
+            </form>
+          </div>
+        `);
+
+        this._currentEditingLesson = l;
+        setTimeout(() => this.handleEditActivityTypeChange(currentType, l), 30);
+      } catch (err) {
+        this.showToast('Khalad ayaa dhacay: ' + (err.message || 'Lama heli karo casharka.'), 'error');
+      }
+    } else if (name === 'addAttendanceSessionModal') {
+      const today = new Date().toISOString().slice(0, 10);
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>New Attendance Session</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateAttendanceSession(event, ${context.courseId})">
+            <div class="modal-body">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Date</label>
+                <input type="date" name="session_date" required value="${today}" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Session Title</label>
+                <input type="text" name="title" required placeholder="e.g. Week 5: Storage Architecture & Quorum Lab" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Create Session</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addAnnouncementModal') {
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Post Course Announcement</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateAnnouncement(event, ${context.courseId})">
+            <div class="modal-body">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Title</label>
+                <input type="text" name="title" required placeholder="e.g. Midterm Preparation Guide & Lab Hours" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Content</label>
+                <textarea name="content" rows="4" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" name="is_pinned" id="ann_pin">
+                <label for="ann_pin" style="font-size: 0.85rem; font-weight: 600;">Pin announcement to course header</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Broadcast Announcement</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addQuizModal') {
+      const courseId = context.courseId || 1;
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:520px;">
+          <div class="modal-header">
+            <h3>📋 ${t('quiz.create_title', 'Create Quiz / Exam')}</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateQuiz(event, ${courseId})">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.title_label', 'Quiz Title *')}</label>
+                <input type="text" name="title" required placeholder="${t('quiz.title_placeholder', 'e.g. Midterm Exam – Chapter 3-6')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.type_label', 'Type')}</label>
+                <select name="quiz_type" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  <option value="quiz">${t('quiz.type_quiz', '📝 Quiz (practice)')}</option>
+                  <option value="exam">${t('quiz.type_exam', '📋 Exam (graded)')}</option>
+                  <option value="assignment">${t('quiz.type_assignment', '📌 Assignment Quiz')}</option>
+                </select>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.desc_label', 'Description / Instructions')}</label>
+                <textarea name="description" rows="2" placeholder="${t('quiz.desc_placeholder', 'Instructions shown to students before they start...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.time_limit', 'Time Limit (min)')}</label>
+                  <input type="number" name="time_limit" min="1" placeholder="${t('quiz.time_limit_placeholder', 'e.g. 90')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.pass_percentage', 'Pass % *')}</label>
+                  <input type="number" name="pass_percentage" value="60" min="1" max="100" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.max_attempts', 'Max Attempts')}</label>
+                  <input type="number" name="max_attempts" value="3" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+              </div>
+
+              <!-- Active Days & Schedule Section -->
+              <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.45rem;">
+                  <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);display:flex;align-items:center;gap:0.35rem;">
+                    ${t('quiz.schedule_section_title', '📅 Active Days Scheduling')}
+                  </span>
+                  <span class="badge badge-info" style="font-size:0.72rem;">${t('quiz.schedule_badge', 'Schedule')}</span>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.45rem;">
+                  <div>
+                    <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
+                      ${t('quiz.days_until_active', 'Days until Active')}
+                    </label>
+                    <input type="number" name="days_until_active" id="quiz-days-until-active" value="0" min="0" max="365"
+                           placeholder="${t('quiz.days_until_hint', '0 = Open now')}" 
+                           oninput="App.updateQuizSchedulePreview()"
+                           style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                    <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.days_until_example', 'Example: 10 = Opens 10 days after creation')}</span>
+                  </div>
+
+                  <div>
+                    <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.2rem;">
+                      ${t('quiz.active_duration', 'Active Duration (Days)')}
+                    </label>
+                    <input type="number" name="active_days" id="quiz-active-duration" value="0" min="0" max="365"
+                           placeholder="${t('quiz.active_duration_hint', '0 = Unlimited')}"
+                           oninput="App.updateQuizSchedulePreview()"
+                           style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                    <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.active_duration_example', '0 = Unlimited / Always open')}</span>
+                  </div>
+                </div>
+
+                <!-- Live Schedule Preview -->
+                <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);margin-bottom:0.4rem;">
+                  <span>${t('quiz.preview_immediate', '🟢 Status: This quiz will become active immediately.')}</span>
+                </div>
+
+                <details style="font-size:0.75rem;">
+                  <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">${t('quiz.specific_dates_title', '⚙️ Specific Fixed Dates')}</summary>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.35rem;padding-top:0.35rem;border-top:1px solid var(--border-color);">
+                    <div>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.open_date', 'Open Date & Time')}</label>
+                      <input type="datetime-local" name="open_date" id="quiz-open-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    </div>
+                    <div>
+                      <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.close_date', 'Close Date & Time')}</label>
+                      <input type="datetime-local" name="close_date" id="quiz-close-date" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('quiz.btn_create', 'Create & Add Questions →')}</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'editQuizModal') {
+      const quizId = context.quizId;
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
+      const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
+      try {
+        const data = await API.getQuiz(quizId);
+        const quiz = data.quiz || data;
+        let diffDays = 0;
+        if (quiz.open_date) {
+          const ms = new Date(quiz.open_date) - new Date();
+          diffDays = Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+        }
+        let durationDays = 0;
+        if (quiz.open_date && quiz.close_date) {
+          const durMs = new Date(quiz.close_date) - new Date(quiz.open_date);
+          durationDays = Math.max(0, Math.round(durMs / (1000 * 60 * 60 * 24)));
+        }
+
+        const openVal = quiz.open_date ? new Date(quiz.open_date).toISOString().slice(0, 16) : '';
+        const closeVal = quiz.close_date ? new Date(quiz.close_date).toISOString().slice(0, 16) : '';
+
+        this.showCustomModal(`
+          <div class="modal-dialog" style="max-width:540px;">
+            <div class="modal-header">
+              <h3>✏️ ${t('quiz.edit_title', 'Edit Quiz & Active Schedule')}</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form onsubmit="App.handleEditQuiz(event, ${quiz.id})">
+              <div class="modal-body">
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.title_label', 'Quiz Title *')}</label>
+                  <input type="text" name="title" required value="${(quiz.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.desc_label', 'Description / Instructions')}</label>
+                  <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${quiz.description || ''}</textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.time_limit', 'Time Limit (min)')}</label>
+                    <input type="number" name="time_limit" min="1" value="${quiz.time_limit_minutes || ''}" placeholder="${t('quiz.time_limit_placeholder', 'e.g. 90')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.pass_percentage', 'Pass % *')}</label>
+                    <input type="number" name="pass_percentage" value="${quiz.passing_percentage || 60}" min="1" max="100" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.max_attempts', 'Max Attempts')}</label>
+                    <input type="number" name="max_attempts" value="${quiz.max_attempts || 3}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                </div>
+
+                <!-- Active Schedule -->
+                <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                    <span style="font-weight:700;font-size:0.82rem;color:var(--text-main);">${t('quiz.schedule_section_title', '📅 Active Days Scheduling')}</span>
+                    <span class="badge badge-info" style="font-size:0.72rem;">${t('quiz.schedule_badge', 'Schedule')}</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.5rem;">
+                    <div>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${t('quiz.days_until_active', 'Days until Active')}</label>
+                      <input type="number" name="days_until_active" id="quiz-days-until-active" value="${diffDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                      <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.days_until_hint', '0 = Open now')}</span>
+                    </div>
+                    <div>
+                      <label style="font-weight:600;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${t('quiz.active_duration', 'Active Duration (Days)')}</label>
+                      <input type="number" name="active_days" id="quiz-active-duration" value="${durationDays}" min="0" max="365" oninput="App.updateQuizSchedulePreview()" style="width:100%;padding:0.55rem 0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;">
+                      <span style="font-size:0.7rem;color:var(--text-muted);">${t('quiz.active_duration_hint', '0 = Unlimited')}</span>
+                    </div>
+                  </div>
+
+                  <div id="quiz-schedule-preview" style="font-size:0.76rem;padding:0.45rem 0.65rem;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px dashed var(--border-color);color:var(--primary);">
+                    <span>${diffDays > 0 ? (isEn ? `⏳ Will become active in ${diffDays} days (${new Date(quiz.open_date).toLocaleDateString()})` : `⏳ Wuxuu active noqonayaa ${diffDays} cisho kadib (${new Date(quiz.open_date).toLocaleDateString()})`) : (isEn ? '🟢 Active now' : '🟢 Wuxuu active yahay hadda')}</span>
+                  </div>
+
+                  <details style="margin-top:0.5rem;font-size:0.76rem;" ${quiz.open_date || quiz.close_date ? 'open' : ''}>
+                    <summary style="cursor:pointer;color:var(--text-muted);font-weight:600;">${t('quiz.specific_dates_title', '⚙️ Specific Fixed Dates')}</summary>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-color);">
+                      <div>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.open_date', 'Open Date & Time')}</label>
+                        <input type="datetime-local" name="open_date" id="quiz-open-date" value="${openVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                      </div>
+                      <div>
+                        <label style="font-size:0.72rem;display:block;margin-bottom:0.2rem;">${t('quiz.close_date', 'Close Date & Time')}</label>
+                        <input type="datetime-local" name="close_date" id="quiz-close-date" value="${closeVal}" onchange="App.onCustomDateChanged()" style="width:100%;padding:0.45rem;font-size:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Cancel')}</button>
+                <button type="submit" class="btn btn-primary">${t('quiz.btn_save', '💾 Save Quiz Changes')}</button>
+              </div>
+            </form>
+          </div>
+        `);
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    } else if (name === 'addQuestionModal') {
+      const quizId = context.quizId;
+      const quizTitle = context.quizTitle || 'Quiz';
+      const t = (k, fb) => (typeof I18N !== 'undefined' ? I18N.t(k, fb) : fb);
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:520px;">
+          <div class="modal-header">
+            <h3>${t('quiz.add_question_title', '➕ Add Question')} — ${quizTitle}</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleAddQuestion(event, ${quizId})">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.question_type', 'Question Type')}</label>
+                <select name="question_type" required onchange="App.handleQuestionTypeChange(this.value)" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  <option value="multiple_choice">${t('quiz.type_multiple_choice', '🔘 Multiple Choice')}</option>
+                  <option value="true_false">${t('quiz.type_true_false', '✅ True / False')}</option>
+                  <option value="short_answer">${t('quiz.type_short_answer', '✍️ Short Answer')}</option>
+                  <option value="essay">${t('quiz.type_essay', '📝 Essay')}</option>
+                </select>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.question_text', 'Question Text *')}</label>
+                <textarea name="question_text" rows="3" required placeholder="${t('quiz.question_text_placeholder', 'Enter the question...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+              </div>
+              <div id="question-dynamic-field">
+                <!-- dynamic based on type: MCQ options shown by default -->
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.options_label', 'Answer Options (one per line)')}</label>
+                  <textarea name="options_text" rows="4" required placeholder="Option A\nOption B\nOption C\nOption D" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+                </div>
+                <div style="margin-bottom:0.75rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('quiz.correct_answer', 'Correct Answer (exact text)')}</label>
+                  <input type="text" name="correct_answer" required placeholder="e.g. Option A" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.points', 'Points')}</label>
+                  <input type="number" name="points" value="1" min="0.5" step="0.5" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('quiz.explanation', 'Explanation (optional)')}</label>
+                  <input type="text" name="explanation" placeholder="${t('quiz.explanation_placeholder', 'Shown after attempt')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('quiz.btn_cancel', 'Done')}</button>
+              <button type="submit" class="btn btn-primary">${t('quiz.btn_save_question', 'Add Question ➕')}</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addAssignmentModal') {
+      const courseId = context.courseId || 1;
+      const now = new Date();
+      const defaultStart = this.formatDateTimeLocal(now);
+      const defaultDue = this.formatDateTimeLocal(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000));
+      const modules = context.modules || [];
+      const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+      setTimeout(() => this.updateAssignmentDurationPreview(), 60);
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:580px;">
+          <div class="modal-header">
+            <h3>📌 ${t('assignments.create_title', isSo ? 'Abuur Shaqo / Mashruuc Cusub' : 'Create Assignment / Project')}</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateAssignment(event, ${courseId})" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.title_label', isSo ? 'Ciwaanka Shaqada *' : 'Assignment Title *')}</label>
+                <input type="text" name="title" required placeholder="${t('assignments.title_placeholder', isSo ? 'Tusaale: Lab 3: Midwifery Case Study' : 'e.g. Lab 3: Distributed Hash Table Implementation')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.instructions_label', isSo ? 'Tilmaamaha / Sharraxaadda *' : 'Instructions / Description *')}</label>
+                <textarea name="instructions" rows="3" required placeholder="${t('assignments.instructions_placeholder', isSo ? 'Tilmaamo faahfaahsan oo ardayda loogu talagalay...' : 'Detailed instructions for students...')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+              </div>
+
+              <!-- Assignment Schedule: Start Time & Due Date / Duration -->
+              <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.85rem;margin-bottom:0.85rem;">
+                <div style="font-weight:700;font-size:0.84rem;color:var(--text-main);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;">
+                  <span>🗓️</span> <span>${isSo ? 'Jadwalka & Muddada Shaqada (Schedule & Duration)' : 'Schedule & Duration'}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${isSo ? 'Bilaabashada (Start Date & Time) *' : 'Start Date & Time *'}</label>
+                    <input type="datetime-local" id="assign-start-date" name="start_date" required value="${defaultStart}" onchange="App.updateAssignmentDurationPreview()" style="width:100%;padding:0.55rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${isSo ? 'Xilliga Dhicitaanka (Due Date & Time) *' : 'Due Date & Time *'}</label>
+                    <input type="datetime-local" id="assign-due-date" name="due_date" required value="${defaultDue}" onchange="App.updateAssignmentDurationPreview()" style="width:100%;padding:0.55rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                  </div>
+                </div>
+
+                <!-- Quick Duration Presets -->
+                <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                  <span style="font-size:0.73rem;font-weight:700;color:var(--text-muted);">${isSo ? '⏱️ Dooro Muddada:' : '⏱️ Duration:'}</span>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(1)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '1 Maalin' : '1 Day'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(3)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '3 Maalmood' : '3 Days'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(5)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '5 Maalmood' : '5 Days'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(7)" style="font-size:0.72rem;padding:0.2rem 0.45rem;font-weight:700;">${isSo ? '1 Toddobaad' : '1 Week'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(14)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '2 Toddobaad' : '2 Weeks'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(30)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '1 Bil' : '1 Month'}</button>
+                </div>
+
+                <!-- Duration Preview Box -->
+                <div id="assign-duration-preview" style="font-size:0.76rem;color:var(--primary);background:var(--bg-surface);padding:0.4rem 0.6rem;border-radius:var(--radius-sm);border:1px dashed var(--border-color);">
+                  ⏱️ <em>${isSo ? 'Xisaabinaya muddada...' : 'Calculating duration...'}</em>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.max_score_label', isSo ? 'Dhibcaha Ugu Sarreeya' : 'Max Score')}</label>
+                  <input type="number" name="max_score" value="100" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.type_label', isSo ? 'Nooca' : 'Type')}</label>
+                  <select name="submission_type" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    <option value="both">${t('assignments.type_both', isSo ? '📁+📝 Labadaba (File & Text)' : '📁+📝 Both (File & Text)')}</option>
+                    <option value="file">${t('assignments.type_file', isSo ? '📁 Soo Gelinta Faylka / Sawirro' : '📁 File / Image Upload')}</option>
+                    <option value="text">${t('assignments.type_text', isSo ? '📝 Qoraal Toos ah' : '📝 Text Entry')}</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 ${t('assignments.attach_guides_label', isSo ? 'Ku lifaaq Hagaha Shaqada (Sawirro badan, PDF, Video — ikhtiyaari)' : 'Attach Assignment Guides (Multiple images, PDF, Video — optional)')}</label>
+                <div id="assign-dropzone"
+                  ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#eff6ff';"
+                  ondragleave="this.style.borderColor='var(--border-color)';this.style.background='';"
+                  ondrop="App.handleAssignDropzone(event)"
+                  style="border:2px dashed var(--border-color);border-radius:var(--radius-md);padding:1rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;"
+                  onclick="document.getElementById('assign-attach-input').click()">
+                  <input type="file" id="assign-attach-input" name="attachment" multiple
+                    accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.mp4,.mov,.mkv,.webm,.avi"
+                    style="display:none;"
+                    onchange="App.handleAssignFileSelect(this)">
+                  <div id="assign-dropzone-idle" style="pointer-events:none;">
+                    <div style="font-size:2rem;margin-bottom:0.3rem;">📸</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">${t('assignments.dropzone_prompt', isSo ? 'Riix halkan ama u soo jiid sawirro badan / faylal' : 'Click here or drag files / multiple images')}</div>
+                    <div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.25rem;">${t('assignments.dropzone_types', isSo ? '🖼️ Sawirro badan | 📄 PDF | 🎬 Video | 📝 Word/PPT' : '🖼️ Multiple images | 📄 PDF | 🎬 Video | 📝 Word/PPT')}</div>
+                  </div>
+                  <div id="assign-dropzone-preview" style="display:none;pointer-events:none;"></div>
+                </div>
+                <div id="assign-upload-bar-wrap" style="display:none;margin-top:0.4rem;">
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;" id="assign-upload-bar-label">${isSo ? 'Soo gelayaa...' : 'Uploading...'}</div>
+                  <div style="background:#e2e8f0;border-radius:99px;height:7px;overflow:hidden;">
+                    <div id="assign-upload-bar" style="height:100%;width:0%;background:var(--primary);border-radius:99px;transition:width .3s;"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:var(--bg-surface-alt);border:1px dashed var(--primary);border-radius:var(--radius-md);padding:0.85rem;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:0.3rem;">📥</div>
+                <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">${t('assignments.student_dropzone_title', isSo ? 'Meesha Ardaydu Shaqada ku Soo Gudbinayaan' : 'Student Submission Dropzone')}</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;">${t('assignments.student_dropzone_desc', isSo ? 'Ardaydu halkan ayay shaqadooda ku soo gelin doonaan marka la daabaco' : 'Students will upload their work here when this assignment is published')}</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('assignments.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('assignments.submit_create', isSo ? '📌 Abuur Shaqada' : '📌 Create Assignment')}</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'createBadgeModal') {
+      const EMOJI_OPTIONS = ['🏆','🥇','🌟','⭐','🎯','🚀','💡','🔥','🎓','📚','💎','🏅','✅','🌈','🦁','🧠'];
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:460px;">
+          <div class="modal-header">
+            <h3>🏆 Create New Badge</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateBadge(event)">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">Badge Icon</label>
+                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;">
+                  ${EMOJI_OPTIONS.map(em => `<span class="badge-emoji-opt" onclick="App.selectBadgeEmoji('${em}', this)" style="font-size:1.6rem;cursor:pointer;padding:0.3rem;border:2px solid transparent;border-radius:8px;transition:border-color 0.15s;">${em}</span>`).join('')}
+                </div>
+                <input type="hidden" name="icon" id="badge-icon-input" value="🏆">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Badge Name *</label>
+                <input type="text" name="name" required placeholder="e.g. Perfect Score Champion" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
+                <textarea name="description" rows="2" placeholder="What does earning this badge mean?" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+              </div>
+              <div>
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Award Criteria</label>
+                <input type="text" name="criteria" placeholder="e.g. Score 100% on any exam" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">🏆 Create Badge</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'addTopicModal') {
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Start New Discussion Topic</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleCreateTopic(event, ${context.courseId})">
+            <div class="modal-body">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Topic Title</label>
+                <input type="text" name="title" required placeholder="e.g. Tradeoffs in Quorum Consensus vs Leader Replication" style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">Discussion Prompt</label>
+                <textarea name="content" rows="5" required style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit;"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Start Discussion</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } else if (name === 'editCourseModal') {
+      try {
+        const courseData = await API.getCourse(context.courseId);
+        const course = courseData.course || courseData;
+        this.showCustomModal(`
+          <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-header">
+              <h3>✏️ Wax ka beddel Koorsada: ${course.code || ''}</h3>
+              <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+            </div>
+            <form id="edit-course-form" onsubmit="App.handleEditCourse(event, ${course.id})">
+              <div class="modal-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Code *</label>
+                    <input type="text" name="code" required value="${course.code || ''}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Pass % (default 60)</label>
+                    <input type="number" name="pass_percentage" min="1" max="100" value="${course.pass_percentage || 60}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                  </div>
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Course Title *</label>
+                  <input type="text" name="title" required value="${(course.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">🎯 Sanadka / Heerka Koorso (Target Level) *</label>
+                  <select name="target_year" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-surface);color:var(--text-main);">
+                    <option value="All Years" ${(!course.target_year || course.target_year === 'All Years') ? 'selected' : ''}>Dhammaan Sanadaha (Furan / Open to All)</option>
+                    <option value="Year 1" ${course.target_year === 'Year 1' ? 'selected' : ''}>Year 1 (Ardayda Sanadka 1-aad oo Kaliya)</option>
+                    <option value="Year 2" ${course.target_year === 'Year 2' ? 'selected' : ''}>Year 2 (Ardayda Sanadka 2-aad oo Kaliya)</option>
+                    <option value="Year 3" ${course.target_year === 'Year 3' ? 'selected' : ''}>Year 3 (Ardayda Sanadka 3-aad oo Kaliya)</option>
+                    <option value="Year 4" ${course.target_year === 'Year 4' ? 'selected' : ''}>Year 4 (Ardayda Sanadka 4-aad oo Kaliya)</option>
+                    <option value="Year 5" ${course.target_year === 'Year 5' ? 'selected' : ''}>Year 5 (Ardayda Sanadka 5-aad oo Kaliya)</option>
+                  </select>
+                  <small style="font-size:0.74rem;color:var(--text-muted);display:block;margin-top:0.25rem;">
+                    Xusuusin: Ardayda Year 1 ma geli karaan koorsadan haddii loo doorto Year 2.
+                  </small>
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Description</label>
+                  <textarea name="description" rows="2" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${course.description || ''}</textarea>
+                </div>
+                <div style="margin-bottom:1rem;">
+                  <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📷 Course Thumbnail</label>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                    ${App.COURSE_PRESETS.map((p) => `
+                      <div class="thumb-preset" data-url="${p.url}" onclick="App.selectCoverPreset(this, '${p.url}')" style="cursor:pointer;border:2px solid ${course.cover_image === p.url ? 'var(--primary)' : 'var(--border-color)'};border-radius:var(--radius-md);overflow:hidden;transition:border-color 0.2s;">
+                        <img src="${p.url}" alt="${p.label}" style="width:100%;height:54px;object-fit:cover;display:block;">
+                        <div style="padding:0.2rem 0.25rem;font-size:0.67rem;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.label}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <input type="hidden" name="cover_image" id="cover-preset-url" value="${course.cover_image || ''}">
+                  <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <div style="flex:1;">
+                      <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">Upload new image</label>
+                      <input type="file" name="cover_file" accept="image/*" onchange="App.previewCoverFile(this)" style="font-size:0.8rem;width:100%;">
+                    </div>
+                    <div style="flex:1;">
+                      <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:0.3rem;">or paste image URL</label>
+                      <input type="url" name="cover_url_input" value="${course.cover_image && !course.cover_image.startsWith('/uploads') ? course.cover_image : ''}" placeholder="https://..." oninput="App.setCoverUrl(this.value)" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                    </div>
+                  </div>
+                  <div id="cover-preview-container" style="margin-top:0.5rem;${course.cover_image ? 'display:block;' : 'display:none;'}">
+                    <img id="cover-preview-img" src="${course.cover_image || ''}" alt="Preview" style="width:100%;max-height:120px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-color);">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+              </div>
+            </form>
+          </div>
+        `);
+      } catch (err) {
+        this.showToast('Koorso xogteeda lama soo heli karo: ' + err.message, 'error');
+      }
+    }
+  },
+
+  handleActivityTypeChange(type) {
+    const field = document.getElementById('activity-dynamic-field');
+    if (!field) return;
+    if (type === 'video') {
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <div style="font-weight:700;font-size:0.84rem;margin-bottom:0.6rem;color:var(--primary);display:flex;align-items:center;gap:0.4rem;">
+            <span>🎥</span> Xulashada Video-ga (Link ama Device-kaaga):
+          </div>
+
+          <div style="margin-bottom: 0.85rem;">
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              🔗 1. Video Link (YouTube, Vimeo, ama MP4 Link toos ah)
+            </label>
+            <input type="url" name="video_url" id="activity-video-url" placeholder="https://www.youtube.com/watch?v=... ama https://youtu.be/..." style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxay si toos ah u taageertaa YouTube (HD, Fullscreen, Shorts) iyo Vimeo.
+            </span>
+          </div>
+
+          <div style="text-align: center; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin: 0.5rem 0;">— AMA —</div>
+
+          <div>
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              💻 2. Ka soo geli Kumbuyuutarkaaga / Device-ka (MP4, MOV, WebM, MKV)
+            </label>
+            <input type="file" name="file" id="activity-video-file" accept="video/*,.mp4,.mov,.mkv,.webm,.avi,.m4v,.3gp,.wmv,.ogv" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxaad device-kaaga uga soo shuban kartaa video toos ah (MP4, MOV, WebM, MKV ilaa 500MB).
+            </span>
+          </div>
+        </div>
+      `;
+    } else if (type === 'document') {
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.4rem;">
+            📄 Soo geli Faylka Document-ka (.pdf, .docx, .pptx) *
+          </label>
+          <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" required style="font-size: 0.82rem; width: 100%; padding: 0.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+        </div>
+      `;
+    } else {
+      field.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">
+            📝 Qoraalka Casharka (Reading Body)
+          </label>
+          <textarea name="content_body" rows="5" placeholder="Halkan ku qor qoraalka iyo nuxurka casharka..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;"></textarea>
+        </div>
+      `;
+    }
+  },
+
+  handleEditActivityTypeChange(type, lessonData) {
+    const field = document.getElementById('edit-activity-dynamic-field');
+    if (!field) return;
+    const l = lessonData || this._currentEditingLesson || {};
+
+    if (type === 'video') {
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          <div style="font-weight:700;font-size:0.84rem;margin-bottom:0.6rem;color:var(--primary);display:flex;align-items:center;gap:0.4rem;">
+            <span>🎥</span> Xulashada Video-ga:
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              🔗 1. Video Link (YouTube, Vimeo, ama MP4 Link toos ah)
+            </label>
+            <input type="url" name="video_url" value="${(l.video_url || '').replace(/"/g, '&quot;')}" placeholder="https://www.youtube.com/watch?v=... ama https://vimeo.com/..." style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.82rem;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              ✓ Waxay taageertaa YouTube iyo Vimeo links.
+            </span>
+          </div>
+          <div style="text-align: center; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin: 0.5rem 0;">— AMA FAYL CUSUB SOO SHUB —</div>
+          <div>
+            <label style="font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 0.3rem;">
+              💻 2. Ka beddel Video Device-kaaga:
+            </label>
+            <input type="file" name="file" accept="video/*,.mp4,.mov,.mkv,.webm,.avi,.m4v,.3gp,.wmv,.ogv" style="font-size: 0.8rem; width: 100%; padding: 0.4rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+          </div>
+        </div>
+      `;
+    } else if (type === 'document') {
+      const currentFileName = l.file_name || (l.file_url ? l.file_url.split('/').pop() : null);
+      field.innerHTML = `
+        <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.9rem;margin-bottom:1rem;">
+          ${currentFileName ? `
+            <div style="margin-bottom:0.75rem; padding:0.5rem 0.75rem; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-sm); font-size:0.82rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>📄</span>
+              <div>
+                <strong>Faylka Hadda Ku Jira:</strong> ${currentFileName}
+              </div>
+            </div>
+          ` : ''}
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.4rem;">
+            ${currentFileName ? '📂 Soo geli Fayl Cusub (PDF, Docx) si aad kan hore ugu beddesho:' : '📄 Soo geli Faylka Document-ka (.pdf, .docx, .pptx) *'}
+          </label>
+          <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" style="font-size: 0.82rem; width: 100%; padding: 0.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+            Haddii aadan rabin inaad beddesho faylka hadda jira, bannaanka uga tag (leave blank to keep current file).
+          </span>
+        </div>
+      `;
+    } else {
+      field.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <label style="font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 0.3rem;">
+            📝 Qoraalka Casharka (Reading Body)
+          </label>
+          <textarea name="content_body" rows="6" placeholder="Halkan ku qor qoraalka iyo nuxurka casharka..." style="width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.88rem;">${l.content_body || ''}</textarea>
+        </div>
+      `;
+    }
+  },
+
+  selectCoverPreset(el, url) {
+    document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
+    el.style.borderColor = 'var(--primary)';
+    const hiddenInput = document.getElementById('cover-preset-url');
+    if (hiddenInput) hiddenInput.value = url;
+    const preview = document.getElementById('cover-preview-container');
+    const img = document.getElementById('cover-preview-img');
+    if (preview && img) { img.src = url; preview.style.display = 'block'; }
+    // clear file input
+    const fileInput = document.querySelector('[name="cover_file"]');
+    if (fileInput) fileInput.value = '';
+  },
+
+  // ─── Assignment Guide Dropzone helpers (Supports Multiple Files & Photos) ───
+  handleAssignDropzone(event) {
+    event.preventDefault();
+    const dz = document.getElementById('assign-dropzone');
+    if (dz) { dz.style.borderColor = 'var(--border-color)'; dz.style.background = ''; }
+    const files = event.dataTransfer && event.dataTransfer.files;
+    if (files && files.length > 0) {
+      const inp = document.getElementById('assign-attach-input');
+      if (inp) {
+        try {
+          const dt = new DataTransfer();
+          for (let i = 0; i < files.length; i++) dt.items.add(files[i]);
+          inp.files = dt.files;
+        } catch(e) {}
+        App.handleAssignFileSelect(inp);
+      }
+    }
+  },
+
+  handleAssignFileSelect(input) {
+    const files = Array.from(input.files || []);
+    if (files.length === 0) return;
+    const idle = document.getElementById('assign-dropzone-idle');
+    const preview = document.getElementById('assign-dropzone-preview');
+    if (!idle || !preview) return;
+
+    idle.style.display = 'none';
+    preview.style.display = 'block';
+
+    const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0);
+    const totalMB = (totalBytes / 1024 / 1024).toFixed(1);
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const fileWord = isSo ? (files.length === 1 ? 'fayl' : 'faylal / sawirro') : (files.length === 1 ? 'file' : 'files / images');
+
+    preview.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border-color);">
+        <span style="font-size:0.82rem;font-weight:700;color:var(--primary);">
+          📁 ${files.length} ${fileWord} ${isSo ? 'la doortay' : 'selected'} (${totalMB} MB)
+        </span>
+        <button type="button" class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:0.72rem;color:#ef4444;" onclick="event.stopPropagation();App.clearAssignAttachment()">
+          ✕ ${isSo ? 'Tirtir Dhammaan' : 'Clear All'}
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:0.5rem;max-height:220px;overflow-y:auto;padding:2px;">
+        ${files.map((file, idx) => {
+          const isImg = file.type.startsWith('image/');
+          const isVideo = file.type.startsWith('video/');
+          const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+          const sizeStr = (file.size / 1024 / 1024).toFixed(1) + ' MB';
+          const icon = isImg ? '🖼️' : isVideo ? '🎬' : isPdf ? '📄' : '📎';
+          const objUrl = (isImg || isVideo) ? URL.createObjectURL(file) : '';
+
+          return `
+            <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;background:var(--bg-surface);display:flex;flex-direction:column;text-align:left;">
+              ${isImg ? `
+                <div style="height:70px;background:#0f172a;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                  <img src="${objUrl}" style="max-height:100%;max-width:100%;object-fit:cover;">
+                </div>
+              ` : isVideo ? `
+                <div style="height:70px;background:#000;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;">🎬</div>
+              ` : `
+                <div style="height:70px;background:var(--bg-surface-alt);display:flex;align-items:center;justify-content:center;font-size:1.75rem;">${icon}</div>
+              `}
+              <div style="padding:0.35rem;font-size:0.7rem;">
+                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${file.name}">${file.name}</div>
+                <div style="color:var(--text-muted);font-size:0.65rem;">${sizeStr}</div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    const bar  = document.getElementById('assign-upload-bar');
+    const lbl  = document.getElementById('assign-upload-bar-label');
+    if (wrap && bar) {
+      wrap.style.display = 'block';
+      lbl.textContent = `✅ ${files.length} ${fileWord} ${isSo ? 'diyaar u ah soo gelinta' : 'ready to upload'} (${totalMB} MB)`;
+      bar.style.width = '100%';
+      bar.style.background = '#22c55e';
+    }
+  },
+
+  clearAssignAttachment() {
+    const inp = document.getElementById('assign-attach-input');
+    if (inp) inp.value = '';
+    const idle = document.getElementById('assign-dropzone-idle');
+    const preview = document.getElementById('assign-dropzone-preview');
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    if (idle) idle.style.display = 'block';
+    if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+    if (wrap) wrap.style.display = 'none';
+  },
+
+  formatDateTimeLocal(dateInput) {
+    if (!dateInput) return '';
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  },
+
+  setAssignmentDuration(days) {
+    const startInp = document.getElementById('assign-start-date');
+    const dueInp = document.getElementById('assign-due-date');
+    if (!dueInp) return;
+    const baseDate = (startInp && startInp.value) ? new Date(startInp.value) : new Date();
+    const newDue = new Date(baseDate.getTime() + days * 24 * 60 * 60 * 1000);
+    dueInp.value = this.formatDateTimeLocal(newDue);
+    this.updateAssignmentDurationPreview();
+  },
+
+  updateAssignmentDurationPreview() {
+    const startInp = document.getElementById('assign-start-date');
+    const dueInp = document.getElementById('assign-due-date');
+    const preview = document.getElementById('assign-duration-preview');
+    if (!preview || !dueInp) return;
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const startDate = (startInp && startInp.value) ? new Date(startInp.value) : new Date();
+    const dueDate = dueInp.value ? new Date(dueInp.value) : null;
+    if (!dueDate || isNaN(dueDate.getTime())) {
+      preview.textContent = isSo ? '⚠️ Fadlan geli taariikh sax ah' : '⚠️ Please select a valid due date';
+      return;
+    }
+    const diffMs = dueDate.getTime() - startDate.getTime();
+    if (diffMs <= 0) {
+      preview.innerHTML = `<span style="color:#ef4444;font-weight:700;">⚠️ ${isSo ? 'Waqtiga dhicitaanku waa inuu ka dambeeyaa waqtiga bilaabashada!' : 'Due date must be after the start date!'}</span>`;
+      return;
+    }
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+    const diffDays = (diffMs / (1000 * 60 * 60 * 24)).toFixed(1).replace('.0', '');
+    const durationText = diffHours < 48 ? `${diffHours} ${isSo ? 'Saacadood' : 'Hours'}` : `${diffDays} ${isSo ? 'Maalmood' : 'Days'}`;
+    const startFormatted = startDate.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const dueFormatted = dueDate.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    preview.innerHTML = `⏱️ <strong>${isSo ? 'Muddada:' : 'Duration:'} ${durationText}</strong> <span style="color:var(--text-muted);font-size:0.72rem;">(${startFormatted} → ${dueFormatted})</span>`;
+  },
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  async previewCoverFile(input) {
+    if (input.files && input.files[0]) {
+      try {
+        const preview = document.getElementById('cover-preview-container');
+        const img = document.getElementById('cover-preview-img');
+        const dataUrl = await this.processImageFile(input.files[0]);
+        if (preview && img) { img.src = dataUrl; preview.style.display = 'block'; }
+        const hiddenInput = document.getElementById('cover-preset-url');
+        if (hiddenInput) hiddenInput.value = dataUrl;
+        document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
+      } catch (e) {
+        console.error('Error previewing file:', e);
+      }
+    }
+  },
+
+  setCoverUrl(url) {
+    const hiddenInput = document.getElementById('cover-preset-url');
+    if (hiddenInput) hiddenInput.value = url;
+    if (url) {
+      const preview = document.getElementById('cover-preview-container');
+      const img = document.getElementById('cover-preview-img');
+      if (preview && img) { img.src = url; preview.style.display = 'block'; }
+      document.querySelectorAll('.thumb-preset').forEach(p => p.style.borderColor = 'var(--border-color)');
+    }
+  },
+
+  async handleCreateCourse(e) {
+    e.preventDefault();
+    const form = e.target;
+    const fileInput = form.querySelector('[name="cover_file"]');
+    const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+    try {
+      let coverImage = (document.getElementById('cover-preset-url') || {}).value || '';
+      if (!coverImage && hasFile) {
+        try {
+          coverImage = await this.processImageFile(fileInput.files[0]);
+        } catch (err) {}
+      }
+      if (!coverImage && form.cover_url_input) {
+        coverImage = form.cover_url_input.value || '';
+      }
+
+      const res = await API.createCourse({
+        code: form.code.value,
+        title: form.title.value,
+        description: form.description.value,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        target_year: form.target_year ? form.target_year.value : 'All Years',
+        cover_image: coverImage
+      });
+
+      this.closeModal();
+      this.showToast('✅ Koorsada si guul leh ayaa loo abuuray (Course created)!');
+      this.navigate(`/course/${res.course.id}`);
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleEditCourse(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const fileInput = form.querySelector('[name="cover_file"]');
+    const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+    try {
+      let coverImage = (document.getElementById('cover-preset-url') || {}).value || '';
+      if (hasFile) {
+        try {
+          coverImage = await this.processImageFile(fileInput.files[0]);
+        } catch (err) {}
+      }
+      if (!coverImage && form.cover_url_input) {
+        coverImage = form.cover_url_input.value || '';
+      }
+
+      await API.updateCourse(courseId, {
+        code: form.code.value,
+        title: form.title.value,
+        description: form.description.value,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        target_year: form.target_year ? form.target_year.value : 'All Years',
+        cover_image: coverImage
+      });
+
+      this.closeModal();
+      this.showToast('✅ Koorsada si guul leh ayaa loo cusboonaysiiyay!', 'success');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async deleteCourse(courseId, title) {
+    const courseTitle = title || 'koorsadan';
+    if (!confirm(`Ma hubtaa inaad tirtirto "${courseTitle}"?\nDhammaan casharrada, quizzes-ka, iyo assignments-ka ku jira way tirtirmi doonaan.`)) {
+      return;
+    }
+    try {
+      await API.deleteCourse(courseId);
+      this.showToast('🗑 Koorsadii si guul leh ayaa loo tirtiray!', 'success');
+      if (window.location.hash.startsWith(`#/course/${courseId}`)) {
+        this.navigate('/dashboard');
+      } else {
+        this.refreshCurrentView();
+      }
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  updateQuizSchedulePreview() {
+    const daysUntilInput = document.getElementById('quiz-days-until-active');
+    const durationInput = document.getElementById('quiz-active-duration');
+    const previewEl = document.getElementById('quiz-schedule-preview');
+    const openDateInput = document.getElementById('quiz-open-date');
+    const closeDateInput = document.getElementById('quiz-close-date');
+
+    const daysUntil = parseInt(daysUntilInput ? daysUntilInput.value : 0) || 0;
+    const duration = parseInt(durationInput ? durationInput.value : 0) || 0;
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
+
+    let text = '';
+    let openDate = null;
+    let closeDate = null;
+
+    if (daysUntil <= 0) {
+      text = isEn
+        ? '🟢 <strong>Status:</strong> This quiz will become active <strong>immediately</strong>.'
+        : '🟢 <strong>Xaaladda:</strong> Imtixaankani wuxuu active noqonayaa <strong>hadda</strong>.';
+      if (openDateInput) openDateInput.value = '';
+    } else {
+      openDate = new Date();
+      openDate.setDate(openDate.getDate() + daysUntil);
+      openDate.setHours(8, 0, 0, 0);
+      const dateStr = openDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      text = isEn
+        ? `⏳ <strong>Status:</strong> Will become active in <strong>${daysUntil} days</strong> (Date: <strong>${dateStr}</strong>).`
+        : `⏳ <strong>Xaaladda:</strong> Wuxuu active noqonayaa <strong>${daysUntil} cisho kadib</strong> (Taariikhda: <strong>${dateStr}</strong>).`;
+      if (openDateInput) {
+        openDateInput.value = openDate.toISOString().slice(0, 16);
+      }
+    }
+
+    if (duration > 0) {
+      closeDate = openDate ? new Date(openDate) : new Date();
+      closeDate.setDate(closeDate.getDate() + duration);
+      closeDate.setHours(23, 59, 0, 0);
+      const closeStr = closeDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      text += isEn
+        ? ` It will remain open for <strong>${duration} days</strong> (closes: <strong>${closeStr}</strong>).`
+        : ` Wuxuuna furan doonaa <strong>${duration} cisho</strong> (wuxuu xirmayaa: <strong>${closeStr}</strong>).`;
+      if (closeDateInput) {
+        closeDateInput.value = closeDate.toISOString().slice(0, 16);
+      }
+    } else {
+      if (closeDateInput) closeDateInput.value = '';
+    }
+
+    if (previewEl) {
+      previewEl.innerHTML = text;
+    }
+  },
+
+  onCustomDateChanged() {
+    const openInput = document.getElementById('quiz-open-date');
+    const closeInput = document.getElementById('quiz-close-date');
+    const previewEl = document.getElementById('quiz-schedule-preview');
+    const daysUntilInput = document.getElementById('quiz-days-until-active');
+    const durationInput = document.getElementById('quiz-active-duration');
+    const isEn = (typeof I18N !== 'undefined' && I18N.getLang() === 'en');
+
+    if (openInput && openInput.value) {
+      const openDate = new Date(openInput.value);
+      const diffMs = openDate - new Date();
+      const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      if (daysUntilInput) daysUntilInput.value = days;
+
+      let msg = isEn
+        ? `📅 Opens: <strong>${openDate.toLocaleString()}</strong>`
+        : `📅 Wuxuu active noqonayaa: <strong>${openDate.toLocaleString()}</strong>`;
+      if (closeInput && closeInput.value) {
+        const closeDate = new Date(closeInput.value);
+        const durMs = closeDate - openDate;
+        const durDays = Math.max(0, Math.round(durMs / (1000 * 60 * 60 * 24)));
+        if (durationInput) durationInput.value = durDays;
+        msg += isEn
+          ? ` | Closes: <strong>${closeDate.toLocaleString()}</strong> (${durDays} days duration).`
+          : ` | Wuxuu xirmayaa: <strong>${closeDate.toLocaleString()}</strong> (${durDays} cisho).`;
+      }
+      if (previewEl) previewEl.innerHTML = msg;
+    }
+  },
+
+  async handleCreateQuiz(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      const res = await API.createQuiz(courseId, {
+        title: form.title.value,
+        description: form.description.value,
+        time_limit: parseInt(form.time_limit.value) || null,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        quiz_type: form.quiz_type.value,
+        max_attempts: parseInt(form.max_attempts.value) || 3,
+        days_until_active: parseInt(form.days_until_active?.value) || 0,
+        active_days: parseInt(form.active_days?.value) || 0,
+        open_date: form.open_date?.value || null,
+        close_date: form.close_date?.value || null
+      });
+      this.closeModal();
+      this.showToast('✅ Quiz/Exam created with scheduled active days! Now add questions.');
+      this.showModal('addQuestionModal', { quizId: res.quiz.id, quizTitle: res.quiz.title });
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleEditQuiz(e, quizId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.updateQuiz(quizId, {
+        title: form.title.value,
+        description: form.description.value,
+        time_limit: parseInt(form.time_limit.value) || null,
+        pass_percentage: parseFloat(form.pass_percentage.value) || 60,
+        max_attempts: parseInt(form.max_attempts.value) || 3,
+        days_until_active: parseInt(form.days_until_active?.value) || 0,
+        active_days: parseInt(form.active_days?.value) || 0,
+        open_date: form.open_date?.value || null,
+        close_date: form.close_date?.value || null
+      });
+      this.closeModal();
+      this.showToast('✅ Imtixaanka & jadwalkiisa si guul leh ayaa loo cusbooneysiiyay / Quiz schedule updated!', 'success');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleAddQuestion(e, quizId) {
+    e.preventDefault();
+    const form = e.target;
+    const qType = form.question_type.value;
+    const optionsText = form.options_text ? form.options_text.value : "";
+    let options = null;
+    if (qType === "multiple_choice" && optionsText) {
+      options = optionsText.split("\n").map(o => o.trim()).filter(Boolean);
+    }
+    const correctAnswer = form.correct_answer ? form.correct_answer.value : null;
+    try {
+      await API.addQuizQuestion(quizId, {
+        question_text: form.question_text.value,
+        question_type: qType,
+        options: options,
+        correct_answer: correctAnswer,
+        correct_answer_text: correctAnswer,
+        points: parseFloat(form.points.value) || 10,
+        explanation: form.explanation ? form.explanation.value : null
+      });
+      this.showToast("Question added successfully!");
+      form.reset();
+      App.handleQuestionTypeChange(form.question_type.value);
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, "error");
+    }
+  },
+
+  handleQuestionTypeChange(type) {
+    const dynamicField = document.getElementById('question-dynamic-field');
+    if (!dynamicField) return;
+    if (type === 'multiple_choice') {
+      dynamicField.innerHTML = `
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Answer Options (one per line)</label>
+          <textarea name="options_text" rows="4" required placeholder="Option A\nOption B\nOption C\nOption D" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;"></textarea>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Correct Answer (exact text)</label>
+          <input type="text" name="correct_answer" required placeholder="e.g. Option A" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+        </div>
+      `;
+    } else if (type === 'true_false') {
+      dynamicField.innerHTML = `
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Correct Answer</label>
+          <select name="correct_answer" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+            <option value="true">True</option>
+            <option value="false">False</option>
+          </select>
+        </div>
+      `;
+    } else if (type === 'short_answer') {
+      dynamicField.innerHTML = `
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">Model Answer (for auto-grading)</label>
+          <input type="text" name="correct_answer" placeholder="Exact or keywords expected" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+        </div>
+      `;
+    } else {
+      dynamicField.innerHTML = `<p style="font-size:0.82rem;color:var(--text-muted);padding:0.5rem 0;">Essay questions are manually graded by the professor.</p>`;
+    }
+  },
+
+  async handleCreateAssignment(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+
+    // Show live upload progress bar if there is an attachment
+    const bar  = document.getElementById('assign-upload-bar');
+    const lbl  = document.getElementById('assign-upload-bar-label');
+    const wrap = document.getElementById('assign-upload-bar-wrap');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const hasFile = fd.get('attachment') && fd.get('attachment').size > 0;
+
+    if (hasFile && wrap && bar) {
+      wrap.style.display = 'block';
+      bar.style.background = 'var(--primary)';
+      lbl.textContent = 'Faylka soo galinaaya...';
+      let pct = 0;
+      const fakeProgress = setInterval(() => {
+        pct = Math.min(pct + Math.random() * 12, 85);
+        bar.style.width = pct + '%';
+      }, 300);
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Uploading...'; }
+
+      try {
+        await API.createAssignment(courseId, fd);
+        clearInterval(fakeProgress);
+        bar.style.width = '100%';
+        bar.style.background = '#22c55e';
+        lbl.textContent = '✅ Assignment la abuuray!';
+        setTimeout(() => { this.closeModal(); this.showToast('✅ Assignment created!'); this.refreshCurrentView(); }, 600);
+      } catch (err) {
+        clearInterval(fakeProgress);
+        bar.style.background = '#ef4444';
+        lbl.textContent = '❌ ' + (err.message || 'Upload failed');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '📌 Create Assignment'; }
+        this.showToast(err.message, 'error');
+      }
+    } else {
+      try {
+        await API.createAssignment(courseId, fd);
+        this.closeModal();
+        this.showToast('✅ Assignment created!');
+        this.refreshCurrentView();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    }
+  },
+
+  async openEditAssignmentModal(assignmentId) {
+    try {
+      const data = await API.getAssignment(assignmentId);
+      const a = data.assignment;
+      if (!a) {
+        this.showToast('Assignment not found', 'error');
+        return;
+      }
+      const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+      const t = (k, fb) => (typeof I18N !== 'undefined') ? I18N.t(k, fb) : fb;
+      const startDateVal = this.formatDateTimeLocal(a.start_date || a.created_at || new Date());
+      const dueDateVal = this.formatDateTimeLocal(a.due_date);
+
+      setTimeout(() => this.updateAssignmentDurationPreview(), 60);
+
+      this.showCustomModal(`
+        <div class="modal-dialog" style="max-width:580px;">
+          <div class="modal-header">
+            <h3>✏️ ${t('assignments.edit_title', isSo ? 'Wax ka beddel Shaqada' : 'Edit Assignment')}</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <form onsubmit="App.handleUpdateAssignment(event, ${a.id})" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.title_label', isSo ? 'Ciwaanka Shaqada *' : 'Assignment Title *')}</label>
+                <input type="text" name="title" required value="${(a.title || '').replace(/"/g, '&quot;')}" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.3rem;">${t('assignments.instructions_label', isSo ? 'Tilmaamaha / Sharraxaadda *' : 'Instructions / Description *')}</label>
+                <textarea name="instructions" rows="4" required style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-family:inherit;">${a.instructions || ''}</textarea>
+              </div>
+
+              <!-- Assignment Schedule: Start Time & Due Date / Duration -->
+              <div style="background:var(--bg-surface-alt);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:0.85rem;margin-bottom:0.85rem;">
+                <div style="font-weight:700;font-size:0.84rem;color:var(--text-main);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;">
+                  <span>🗓️</span> <span>${isSo ? 'Jadwalka & Muddada Shaqada (Schedule & Duration)' : 'Schedule & Duration'}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+                  <div>
+                    <label style="font-weight:700;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${isSo ? 'Bilaabashada (Start Date & Time) *' : 'Start Date & Time *'}</label>
+                    <input type="datetime-local" id="assign-start-date" name="start_date" required value="${startDateVal}" onchange="App.updateAssignmentDurationPreview()" style="width:100%;padding:0.55rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                  </div>
+                  <div>
+                    <label style="font-weight:700;font-size:0.76rem;display:block;margin-bottom:0.25rem;">${isSo ? 'Xilliga Dhicitaanka (Due Date & Time) *' : 'Due Date & Time *'}</label>
+                    <input type="datetime-local" id="assign-due-date" name="due_date" required value="${dueDateVal}" onchange="App.updateAssignmentDurationPreview()" style="width:100%;padding:0.55rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                  </div>
+                </div>
+
+                <!-- Quick Duration Presets -->
+                <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                  <span style="font-size:0.73rem;font-weight:700;color:var(--text-muted);">${isSo ? '⏱️ Dooro Muddada:' : '⏱️ Duration:'}</span>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(1)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '1 Maalin' : '1 Day'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(3)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '3 Maalmood' : '3 Days'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(5)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '5 Maalmood' : '5 Days'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(7)" style="font-size:0.72rem;padding:0.2rem 0.45rem;font-weight:700;">${isSo ? '1 Toddobaad' : '1 Week'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(14)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '2 Toddobaad' : '2 Weeks'}</button>
+                  <button type="button" class="btn btn-outline btn-xs" onclick="App.setAssignmentDuration(30)" style="font-size:0.72rem;padding:0.2rem 0.45rem;">${isSo ? '1 Bil' : '1 Month'}</button>
+                </div>
+
+                <!-- Duration Preview Box -->
+                <div id="assign-duration-preview" style="font-size:0.76rem;color:var(--primary);background:var(--bg-surface);padding:0.4rem 0.6rem;border-radius:var(--radius-sm);border:1px dashed var(--border-color);">
+                  ⏱️ <em>${isSo ? 'Xisaabinaya muddada...' : 'Calculating duration...'}</em>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.max_score_label', isSo ? 'Dhibcaha Ugu Sarreeya' : 'Max Score')}</label>
+                  <input type="number" name="max_score" value="${a.max_score || 100}" min="1" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                </div>
+                <div>
+                  <label style="font-weight:700;font-size:0.78rem;display:block;margin-bottom:0.3rem;">${t('assignments.allow_late_label', isSo ? 'Gudbinta Daahday' : 'Late Submissions')}</label>
+                  <select name="allow_late" style="width:100%;padding:0.65rem;border:1px solid var(--border-color);border-radius:var(--radius-md);">
+                    <option value="1" ${a.allow_late ? 'selected' : ''}>${t('assignments.allowed', isSo ? 'Waa la ogol yahay' : 'Allowed')}</option>
+                    <option value="0" ${!a.allow_late ? 'selected' : ''}>${t('assignments.not_allowed', isSo ? 'Lama ogola' : 'Not Allowed')}</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <label style="font-weight:700;font-size:0.82rem;display:block;margin-bottom:0.5rem;">📎 ${isSo ? 'Baddal ama ku dar Faylal / Sawirro' : 'Replace or Add Files / Images'} <span style="font-weight:400;color:var(--text-muted);">${isSo ? '(ikhtiyaari)' : '(optional)'}</span></label>
+                <input type="file" name="attachment" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" style="width:100%;padding:0.5rem;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.82rem;">
+                ${a.attachment_name ? `<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.3rem;">${isSo ? 'Hadda ku lifaaqan:' : 'Currently attached:'} <strong>${a.attachment_name}</strong></p>` : ''}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" onclick="App.closeModal()">${t('assignments.cancel', isSo ? 'Ka noqo' : 'Cancel')}</button>
+              <button type="submit" class="btn btn-primary">${t('assignments.submit_update', isSo ? '💾 Kaydi Wax-ka-beddelka' : '💾 Save Changes')}</button>
+            </div>
+          </form>
+        </div>
+      `);
+    } catch (err) {
+      this.showToast(err.message || 'Error loading assignment', 'error');
+    }
+  },
+
+  async handleUpdateAssignment(e, assignmentId) {
+    e.preventDefault();
+    const isSo = (typeof I18N !== 'undefined') ? I18N.getLang() === 'so' : false;
+    const form = e.target;
+    const fd = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isSo ? 'Kaydinayaa...' : 'Saving...'; }
+
+    try {
+      await API.updateAssignment(assignmentId, fd);
+      this.closeModal();
+      this.showToast(isSo ? '✅ Shaqada si guul leh ayaa loo cusbooneysiiyay!' : '✅ Assignment updated successfully!');
+      this.refreshCurrentView();
+    } catch (err) {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = isSo ? '💾 Kaydi Wax-ka-beddelka' : '💾 Save Changes'; }
+      this.showToast(err.message || 'Error saving assignment', 'error');
+    }
+  },
+
+  async handleCreateBadge(e) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.createBadge({
+        name: form.name.value,
+        description: form.description.value,
+        icon: form.icon.value || '🏆',
+        criteria: form.criteria.value
+      });
+      this.closeModal();
+      this.showToast('✅ Badge created!');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleAddModule(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.createModule(courseId, {
+        title: form.title.value,
+        description: form.description.value
+      });
+      this.closeModal();
+      this.showToast('Section added!');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleAddActivity(e, moduleId, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Add Activity';
+
+    // If moduleId wasn't passed directly (course-level button), check if there is an inline section creation input or dropdown
+    if (!moduleId) {
+      const newSectionInput = document.getElementById('new-section-title-input');
+      if (newSectionInput && newSectionInput.value.trim()) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '⏳ Abuuraya qaybta cusub (Creating section)...';
+        }
+        try {
+          const modRes = await API.createModule(courseId, { title: newSectionInput.value.trim() });
+          moduleId = (modRes.module && modRes.module.id) || modRes.id;
+        } catch (err) {
+          this.showToast('Khalad ayaa ka dhacay abuurista qaybta: ' + (err.message || ''), 'error');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnHtml;
+          }
+          return;
+        }
+      } else {
+        const moduleSelect = document.getElementById('activity-module-select');
+        if (!moduleSelect || !moduleSelect.value) {
+          this.showToast('Fadlan dooro qaybta (module) aad casharku ku geli doono!', 'error');
+          return;
+        }
+        moduleId = parseInt(moduleSelect.value);
+      }
+    }
+
+    const formData = new FormData(form);
+
+    // Provide friendly progress indication during upload
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Fadlan sug... Waxaa socda soo gelinta (Uploading)...';
+    }
+
+    try {
+      await API.createLesson(moduleId, formData);
+      this.closeModal();
+      this.showToast('Casharka / Video-ga si guul leh ayaa loo daray! ✓');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message || 'Khalad ayaa ka dhacay soo gelinta casharka.', 'error');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+      }
+    }
+  },
+
+  async handleEditLesson(e, lessonId, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Save Changes';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Fadlan sug... Waxaa socda keydinta (Saving)...';
+    }
+
+    const formData = new FormData(form);
+
+    try {
+      await API.updateLesson(lessonId, formData);
+      this.closeModal();
+      this.showToast('Casharka si guul leh ayaa wax looga beddelay! ✓');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message || 'Khalad ayaa ka dhacay wax ka beddelka casharka.', 'error');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+      }
+    }
+  },
+
+  async handleCreateAttendanceSession(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.createAttendanceSession(courseId, {
+        session_date: form.session_date.value,
+        title: form.title.value
+      });
+      this.closeModal();
+      this.showToast('Attendance session created!');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleCreateAnnouncement(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      await API.createAnnouncement(courseId, {
+        title: form.title.value,
+        content: form.content.value,
+        is_pinned: form.is_pinned.checked
+      });
+      this.closeModal();
+      this.showToast('Announcement posted to course!');
+      this.refreshCurrentView();
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  async handleCreateTopic(e, courseId) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      const res = await API.createTopic(courseId, {
+        title: form.title.value,
+        content: form.content.value
+      });
+      this.closeModal();
+      this.showToast('Topic started!');
+      this.navigate(`/discussions/${res.topic.id}`);
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  setupSearch() {
+    const input = document.getElementById('site-search-input');
+    const dropdown = document.getElementById('search-results-dropdown');
+    if (!input || !dropdown) return;
+
+    let searchTimeout = null;
+    input.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      const query = input.value.trim();
+      if (query.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+
+      searchTimeout = setTimeout(async () => {
+        try {
+          const res = await API.search(query);
+          if (res.results.length === 0) {
+            dropdown.innerHTML = `<div style="padding: 0.75rem 1rem; color: var(--text-muted); font-size: 0.8rem;">No results found for "${query}"</div>`;
+          } else {
+            dropdown.innerHTML = res.results.map(r => `
+              <div style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 0.84rem;"
+                   onclick="App.navigate('${r.link}'); document.getElementById('search-results-dropdown').style.display='none';">
+                <div style="font-weight: 700; color: var(--text-main);">${r.title}</div>
+                <div style="font-size: 0.74rem; color: var(--text-muted);">${r.description ? r.description.slice(0, 60) + '...' : ''}</div>
+              </div>
+            `).join('');
+          }
+          dropdown.style.display = 'block';
+        } catch (e) {}
+      }, 250);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  },
+
+  async showNotifications() {
+    try {
+      const data = await API.getNotifications();
+      const notifs = data.notifications || [];
+
+      // Reset badge
+      const badge = document.getElementById('notif-badge-count');
+      if (badge) badge.style.display = 'none';
+
+      this.showCustomModal(`
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Notifications</h3>
+            <button class="drawer-toggle-btn" onclick="App.closeModal()">✕</button>
+          </div>
+          <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              ${notifs.map(n => `
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; background: var(--bg-surface-alt);">
+                  <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem;">${n.title}</div>
+                  <div style="font-size: 0.82rem; color: var(--text-main); margin-bottom: 0.4rem;">${n.message}</div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: var(--text-muted);">
+                    <span>${new Date(n.created_at).toLocaleString()}</span>
+                    ${n.link ? `<a href="${n.link}" onclick="App.closeModal()" style="font-weight: 700;">Open →</a>` : ''}
+                  </div>
+                </div>
+              `).join('')}
+
+              ${notifs.length === 0 ? `
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                  No new notifications.
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `);
+    } catch (err) {
+      this.showToast(err.message, 'error');
+    }
+  },
+
+  selectBadgeEmoji(emoji, el) {
+    document.querySelectorAll('.badge-emoji-opt').forEach(e => e.style.borderColor = 'transparent');
+    el.style.borderColor = 'var(--primary)';
+    const input = document.getElementById('badge-icon-input');
+    if (input) input.value = emoji;
+  },
+
+  showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    if (type === 'error') {
+      toast.style.background = '#ef4444';
+    } else if (type === 'warning') {
+      toast.style.background = '#f59e0b';
+    } else {
+      toast.style.background = '#0f4c81';
+    }
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  }
+};
+
+window.App = App;
+window.addEventListener('DOMContentLoaded', () => App.init());
