@@ -5,6 +5,7 @@ const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const { db } = require('../../database/db');
 const { requireAuth, requireAdmin, isAdminUser, isProfessorOrAdmin } = require('../middleware/auth');
+const { logAudit } = require('../middleware/audit');
 const multer = require('multer');
 const tempDir = path.join(__dirname, '..', '..', 'uploads', 'temp');
 if (!fs.existsSync(tempDir)) {
@@ -44,7 +45,7 @@ router.get(['/backup', '/backup-db'], requireAdmin, (req, res) => {
 
     const dateStr = new Date().toISOString().slice(0, 10);
     const downloadName = `guray_sicid_lms_backup_${dateStr}.db`;
-    logAudit(req.user.id, 'DATABASE_BACKUP_DOWNLOAD', `Downloaded SQLite backup: ${downloadName}`, req);
+    logAudit(req.user ? req.user.id : null, 'DATABASE_BACKUP_DOWNLOAD', `Downloaded SQLite backup: ${downloadName}`, req);
 
     res.setHeader('Content-Type', 'application/vnd.sqlite3');
     res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
@@ -90,7 +91,7 @@ router.get(['/backup-json', '/export-data'], requireAdmin, (req, res) => {
 
     const dateStr = new Date().toISOString().slice(0, 10);
     const downloadName = `guray_sicid_lms_snapshot_${dateStr}.json`;
-    logAudit(req.user.id, 'PERSISTENCE_EXPORT_DOWNLOAD', `Downloaded JSON snapshot: ${downloadName}`, req);
+    logAudit(req.user ? req.user.id : null, 'PERSISTENCE_EXPORT_DOWNLOAD', `Downloaded JSON snapshot: ${downloadName}`, req);
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
@@ -110,7 +111,7 @@ router.post('/restore-json', requireAdmin, (req, res) => {
       return res.status(400).json({ error: 'Faylka JSON snapshot-ka ah ma saxna (Invalid JSON snapshot).' });
     }
     const result = restorePersistence(db, snapshot, true);
-    logAudit(req.user.id, 'DATABASE_RESTORE_JSON', 'Restored platform data from uploaded JSON snapshot', req);
+    logAudit(req.user ? req.user.id : null, 'DATABASE_RESTORE_JSON', 'Restored platform data from uploaded JSON snapshot', req);
     res.json({
       success: true,
       message: `Xogta platform-ka si buuxda ayaa looga soo celiyay snapshot-ka! (${result.usersCount || 0} isticmaale, ${result.coursesCount || 0} koorso, ${result.totalRestoredRecords || 0} diiwaano guud).`,
@@ -157,7 +158,7 @@ router.post('/restore-db', requireAdmin, tempUpload.single('backup_db'), (req, r
     try { fs.unlinkSync(tempFilePath); } catch (e) {}
 
     const result = restorePersistence(db, snapshot, true);
-    logAudit(req.user.id, 'DATABASE_RESTORE_DB_FILE', `Restored platform data from uploaded SQLite file: ${req.file.originalname}`, req);
+    logAudit(req.user ? req.user.id : null, 'DATABASE_RESTORE_DB_FILE', `Restored platform data from uploaded SQLite file: ${req.file.originalname}`, req);
 
     res.json({
       success: true,
@@ -191,7 +192,7 @@ router.post('/restore-persistent', requireAdmin, async (req, res) => {
     }
 
     const result = restorePersistence(db, remoteSnapshot, true);
-    logAudit(req.user.id, 'DATABASE_RESTORE_PERSISTENT', 'Restored platform data from official persistent_data.json / GitHub', req);
+    logAudit(req.user ? req.user.id : null, 'DATABASE_RESTORE_PERSISTENT', 'Restored platform data from official persistent_data.json / GitHub', req);
     res.json({
       success: true,
       message: `Dhammaan xogtii rasmiga ahayd ee platform-ka si buuxda ayaa looga soo celiyay kaydka joogtada ah! (${result.usersCount || 0} isticmaale, ${result.coursesCount || 0} koorso).`,
