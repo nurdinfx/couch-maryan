@@ -6,13 +6,13 @@ node_modules/
 *.sqlite
 *.db
 !database/faculty_lms.db
-uploads/*
-!uploads/.gitkeep
-!uploads/*/.gitkeep
-!uploads/covers/*
-!uploads/covers/**/*
-!uploads/documents/*.pdf
-!uploads/submissions/*.pdf
-scratch/
+# Uploads folder handling
+!uploads/
+!uploads/**/
 uploads/temp/
+uploads/videos/*.mp4
+uploads/videos/*.mov
+uploads/videos/*.mkv
+uploads/videos/*.avi
+uploads/videos/*.webm
 *.backup.json

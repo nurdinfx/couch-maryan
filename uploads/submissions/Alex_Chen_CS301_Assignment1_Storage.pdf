@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 706 >>
+stream
+BT
+/F1 18 Tf
+50 720 Td
+(Student Submission: Assignment 1 - Distributed Storage System) Tj
+/F1 12 Tf
+0 -30 Td
+(Student: Alex Chen (STU-2026-081) | Course: CS301) Tj
+/F1 10 Tf
+0 -25 Td
+(Executive Summary: Implemented a ring topology with 128 virtual nodes per physical worker.) Tj
+0 -16 Td
+(Consistency Model: Tunable quorum with W=2, R=2, N=3 ensuring read-your-writes consistency.) Tj
+0 -16 Td
+(Benchmark Results: Average write latency 4.2ms, Read throughput 12,500 requests/second under test harness.) Tj
+0 -16 Td
+(Self-Reflection: Handling dynamic node churn required adding an epoch-based vector clock protocol.) Tj
+0 -16 Td
+(Attached code files: server.js, ring.js, quorum.js, tests.js.) Tj
+0 -16 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000010 00000 n 
+0000000060 00000 n 
+0000000117 00000 n 
+0000000228 00000 n 
+0000000986 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1056
+%%EOF
