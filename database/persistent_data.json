@@ -8620,6 +8620,14 @@
       "details": "User maryan@guraysicid.edu logged in",
       "ip_address": "102.128.132.10, 104.22.72.37, 10.30.101.5",
       "created_at": "2026-11-22 14:11:36"
+    },
+    {
+      "id": 106,
+      "user_id": 27,
+      "action": "USER_LOGIN",
+      "details": "User shukri@student.edu logged in",
+      "ip_address": "102.223.191.250, 104.22.72.25, 10.28.181.142",
+      "created_at": "2026-11-22 17:13:18"
     }
   ],
   "system_settings": [
