@@ -8604,6 +8604,14 @@
       "details": "Created lesson BODY MASS INDEX in course 11",
       "ip_address": "102.220.41.237, 104.22.72.13, 10.28.181.142",
       "created_at": "2026-11-22 08:00:40"
+    },
+    {
+      "id": 104,
+      "user_id": 60,
+      "action": "USER_LOGIN",
+      "details": "User ikram@student.edu logged in",
+      "ip_address": "102.220.41.206, 172.71.146.210, 10.30.101.5",
+      "created_at": "2026-11-22 08:24:36"
     }
   ],
   "system_settings": [
