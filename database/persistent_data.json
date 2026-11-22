@@ -8480,6 +8480,14 @@
       "details": "User asia.mohamud@student.edu logged in",
       "ip_address": "102.220.41.229, 104.22.160.16, 10.28.181.142",
       "created_at": "2026-11-22 03:50:13"
+    },
+    {
+      "id": 98,
+      "user_id": 18,
+      "action": "USER_LOGIN",
+      "details": "User maryan@guraysicid.edu logged in",
+      "ip_address": "102.220.41.232, 104.22.160.65, 10.30.101.5",
+      "created_at": "2026-11-22 05:29:34"
     }
   ],
   "system_settings": [
