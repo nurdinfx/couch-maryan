@@ -8514,6 +8514,14 @@
       "details": "User isro@student.edu logged in",
       "ip_address": "102.220.41.207, 104.22.72.35, 10.28.181.142",
       "created_at": "2026-11-22 06:30:08"
+    },
+    {
+      "id": 100,
+      "user_id": 63,
+      "action": "USER_LOGIN",
+      "details": "User aasia@student.edu logged in",
+      "ip_address": "102.220.41.206, 172.71.147.129, 10.28.181.142",
+      "created_at": "2026-11-22 06:54:10"
     }
   ],
   "system_settings": [
