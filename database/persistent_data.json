@@ -8472,6 +8472,14 @@
       "details": "User maryan@guraysicid.edu logged in",
       "ip_address": "102.128.132.10, 104.22.160.4, 10.28.152.133",
       "created_at": "2026-11-22 02:27:23"
+    },
+    {
+      "id": 97,
+      "user_id": 74,
+      "action": "USER_LOGIN",
+      "details": "User asia.mohamud@student.edu logged in",
+      "ip_address": "102.220.41.229, 104.22.160.16, 10.28.181.142",
+      "created_at": "2026-11-22 03:50:13"
     }
   ],
   "system_settings": [
