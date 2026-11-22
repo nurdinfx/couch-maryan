@@ -2933,11 +2933,11 @@
       "user_id": 65,
       "lesson_id": 53,
       "course_id": 11,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-22 08:13:31",
-      "last_accessed_at": "2026-11-22 08:13:31"
+      "last_accessed_at": "2026-11-22 08:13:39"
     }
   ],
   "assignments": [
