@@ -8636,6 +8636,14 @@
       "details": "User hawa@student.edu logged in",
       "ip_address": "102.223.190.5, 172.71.147.237, 10.28.181.142",
       "created_at": "2026-11-22 19:18:42"
+    },
+    {
+      "id": 108,
+      "user_id": 56,
+      "action": "USER_LOGIN",
+      "details": "User hinda@student.edu logged in",
+      "ip_address": "102.220.41.213, 172.68.128.173, 10.28.152.133",
+      "created_at": "2026-11-23 12:59:05"
     }
   ],
   "system_settings": [
