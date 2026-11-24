@@ -8947,6 +8947,14 @@
       "details": "Created assignment UNDERSTANDING IgM § IgG in course 8",
       "ip_address": "102.223.190.56, 108.162.245.228, 10.27.94.190",
       "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 120,
+      "user_id": 67,
+      "action": "USER_LOGIN",
+      "details": "User najah@guraysicid.edu logged in",
+      "ip_address": "102.128.131.186, 172.71.147.130, 10.27.94.190",
+      "created_at": "2026-11-24 18:13:39"
     }
   ],
   "system_settings": [
