@@ -3074,6 +3074,22 @@
       "weight_percentage": 20,
       "created_at": "2026-11-10 08:33:11",
       "start_date": "2026-11-10T08:33"
+    },
+    {
+      "id": 9,
+      "course_id": 8,
+      "module_id": null,
+      "title": "UNDERSTANDING IgM § IgG",
+      "instructions": "All the instructions is on the pdf",
+      "attachment_url": "/uploads/documents/1795508983874_Assignement_Understanding_i.pdf",
+      "attachment_name": "Assignement Understanding i.pdf",
+      "due_date": "2026-11-30T23:59",
+      "allow_late": 1,
+      "submission_type": "both",
+      "max_score": 10,
+      "weight_percentage": 20,
+      "created_at": "2026-11-24 08:29:43",
+      "start_date": "2026-11-24T11:13"
     }
   ],
   "assignment_submissions": [
@@ -8263,6 +8279,96 @@
       "link": "#/certificates",
       "is_read": 1,
       "created_at": "2026-11-15 06:06:49"
+    },
+    {
+      "id": 152,
+      "user_id": 8,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 153,
+      "user_id": 9,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 154,
+      "user_id": 11,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 155,
+      "user_id": 12,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 156,
+      "user_id": 13,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 157,
+      "user_id": 14,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 158,
+      "user_id": 15,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 159,
+      "user_id": 42,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
+    },
+    {
+      "id": 160,
+      "user_id": 67,
+      "title": "New Assignment Published",
+      "message": "Assignment \"UNDERSTANDING IgM § IgG\" has been published. Due: 2026-11-30T23:59",
+      "type": "info",
+      "link": "#/course/8/assignment/9",
+      "is_read": 0,
+      "created_at": "2026-11-24 08:29:43"
     }
   ],
   "audit_logs": [
@@ -8833,6 +8939,14 @@
       "details": "User ridwan.student@guraysicid.edu logged in",
       "ip_address": "102.220.41.212, 104.22.160.18, 10.30.120.209",
       "created_at": "2026-11-24 08:16:39"
+    },
+    {
+      "id": 119,
+      "user_id": 18,
+      "action": "ASSIGNMENT_CREATED",
+      "details": "Created assignment UNDERSTANDING IgM § IgG in course 8",
+      "ip_address": "102.223.190.56, 108.162.245.228, 10.27.94.190",
+      "created_at": "2026-11-24 08:29:43"
     }
   ],
   "system_settings": [
