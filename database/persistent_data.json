@@ -8806,6 +8806,14 @@
       "details": "Created lesson UNDERSTANDING IgG and IgM in course 8",
       "ip_address": "102.223.190.56, 162.158.28.160, 10.27.94.190",
       "created_at": "2026-11-24 07:52:00"
+    },
+    {
+      "id": 117,
+      "user_id": 15,
+      "action": "USER_LOGIN",
+      "details": "User zuhur.student@guraysicid.edu logged in",
+      "ip_address": "102.223.190.56, 108.162.246.246, 10.26.226.19",
+      "created_at": "2026-11-24 07:52:58"
     }
   ],
   "system_settings": [
