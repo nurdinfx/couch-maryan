@@ -8963,6 +8963,14 @@
       "details": "User salma@student.edu logged in",
       "ip_address": "102.128.131.197, 172.68.128.172, 10.29.241.137",
       "created_at": "2026-11-25 12:39:16"
+    },
+    {
+      "id": 122,
+      "user_id": 36,
+      "action": "USER_LOGIN",
+      "details": "User salma@student.edu logged in",
+      "ip_address": "102.128.131.197, 172.68.128.172, 10.29.241.137",
+      "created_at": "2026-11-25 12:40:22"
     }
   ],
   "system_settings": [
