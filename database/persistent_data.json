@@ -4054,13 +4054,13 @@
       "user_id": 36,
       "attempt_number": 2,
       "started_at": "2026-11-25 12:42:04",
-      "submitted_at": null,
-      "score": null,
-      "max_score": null,
-      "percentage": null,
-      "is_passed": 0,
-      "status": "in_progress",
-      "feedback": null
+      "submitted_at": "2026-11-25 12:44:52",
+      "score": 10,
+      "max_score": 10,
+      "percentage": 100,
+      "is_passed": 1,
+      "status": "completed",
+      "feedback": "Attempt completed."
     }
   ],
   "quiz_attempt_answers": [
@@ -6663,6 +6663,106 @@
       "is_auto_graded": 1,
       "graded_manually": 0,
       "feedback": "All correct selections made."
+    },
+    {
+      "id": 404,
+      "attempt_id": 51,
+      "question_id": 16,
+      "user_answer_json": "[\"c)  Mrs. C. with cervix dilated 5 cms and painful contractions every 3 minutes\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 405,
+      "attempt_id": 51,
+      "question_id": 17,
+      "user_answer_json": "[\"b) Do a Quick check, take history, conduct an abdominal examination, and conduct a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 406,
+      "attempt_id": 51,
+      "question_id": 18,
+      "user_answer_json": "[\"c) Do a vaginal examination\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 407,
+      "attempt_id": 51,
+      "question_id": 19,
+      "user_answer_json": "[\"b) Check the woman’s records and ask about the history of her current pregnancy\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 408,
+      "attempt_id": 51,
+      "question_id": 20,
+      "user_answer_json": "[\"a)Calculation based on known last normal menstrual period\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 409,
+      "attempt_id": 51,
+      "question_id": 21,
+      "user_answer_json": "[\"c) 27 June\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 410,
+      "attempt_id": 51,
+      "question_id": 22,
+      "user_answer_json": "[\"b)  Drying the baby\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 411,
+      "attempt_id": 51,
+      "question_id": 23,
+      "user_answer_json": "[\"b)  As soon as possible when the baby is ready within the first hour after birth\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 412,
+      "attempt_id": 51,
+      "question_id": 24,
+      "user_answer_json": "[\"b) Begin antibiotics\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
+    },
+    {
+      "id": 413,
+      "attempt_id": 51,
+      "question_id": 25,
+      "user_answer_json": "[\"b) Encourage the woman to push in the position of her choice when she has the urge to push.\"]",
+      "awarded_points": 1,
+      "is_auto_graded": 1,
+      "graded_manually": 0,
+      "feedback": "All correct selections made."
     }
   ],
   "attendance_sessions": [],
@@ -7038,6 +7138,13 @@
       "user_id": 14,
       "course_id": 8,
       "awarded_at": "2026-11-24 06:56:45"
+    },
+    {
+      "id": 148,
+      "badge_id": 2,
+      "user_id": 36,
+      "course_id": 10,
+      "awarded_at": "2026-11-25 12:44:52"
     }
   ],
   "certificates": [
@@ -8985,6 +9092,14 @@
       "details": "User salma@student.edu logged in",
       "ip_address": "102.128.131.197, 172.68.128.172, 10.29.241.137",
       "created_at": "2026-11-25 12:40:22"
+    },
+    {
+      "id": 123,
+      "user_id": 36,
+      "action": "QUIZ_SUBMITTED",
+      "details": "Submitted attempt #2 for quiz Quizz practice: 10/10 (100%)",
+      "ip_address": "102.128.131.197, 172.68.128.172, 10.29.164.4",
+      "created_at": "2026-11-25 12:44:52"
     }
   ],
   "system_settings": [
