@@ -9206,6 +9206,14 @@
       "details": "User zaytun@student.edu logged in",
       "ip_address": "102.220.41.225, 172.71.147.181, 10.24.36.215",
       "created_at": "2026-11-26 07:03:26"
+    },
+    {
+      "id": 133,
+      "user_id": 40,
+      "action": "USER_LOGIN",
+      "details": "User zaytun@student.edu logged in",
+      "ip_address": "102.220.41.225, 172.71.147.103, 10.29.241.137",
+      "created_at": "2026-11-26 07:04:29"
     }
   ],
   "system_settings": [
