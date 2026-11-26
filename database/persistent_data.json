@@ -2905,11 +2905,11 @@
       "user_id": 28,
       "lesson_id": 42,
       "course_id": 10,
-      "is_completed": 1,
+      "is_completed": 0,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
       "completed_at": "2026-11-12 20:16:25",
-      "last_accessed_at": "2026-11-12 20:16:25"
+      "last_accessed_at": "2026-11-26 07:10:37"
     },
     {
       "id": 125,
@@ -3097,6 +3097,17 @@
       "video_watch_percentage": 100,
       "completed_at": "2026-11-25 12:50:03",
       "last_accessed_at": "2026-11-25 12:50:54"
+    },
+    {
+      "id": 142,
+      "user_id": 28,
+      "lesson_id": 41,
+      "course_id": 10,
+      "is_completed": 1,
+      "video_watched_seconds": 0,
+      "video_watch_percentage": 0,
+      "completed_at": "2026-11-26 07:10:37",
+      "last_accessed_at": "2026-11-26 07:10:37"
     }
   ],
   "assignments": [
