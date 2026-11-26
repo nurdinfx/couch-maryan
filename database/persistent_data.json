@@ -2826,11 +2826,11 @@
       "user_id": 74,
       "lesson_id": 44,
       "course_id": 10,
-      "is_completed": 0,
+      "is_completed": 1,
       "video_watched_seconds": 0,
       "video_watch_percentage": 0,
-      "completed_at": "2026-11-12 06:01:50",
-      "last_accessed_at": "2026-11-26 05:47:07"
+      "completed_at": "2026-11-26 05:47:14",
+      "last_accessed_at": "2026-11-26 05:47:14"
     },
     {
       "id": 122,
