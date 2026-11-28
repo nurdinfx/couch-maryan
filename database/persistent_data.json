@@ -9405,6 +9405,14 @@
       "details": "User xalima@student.edu logged in",
       "ip_address": "102.220.41.232, 172.71.146.211, 10.29.164.4",
       "created_at": "2026-11-28 07:36:56"
+    },
+    {
+      "id": 145,
+      "user_id": 21,
+      "action": "USER_LOGIN",
+      "details": "User asma@student.edu logged in",
+      "ip_address": "102.220.41.219, 172.71.146.254, 10.29.164.4",
+      "created_at": "2026-11-28 08:49:35"
     }
   ],
   "system_settings": [
