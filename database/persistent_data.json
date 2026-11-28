@@ -9413,6 +9413,14 @@
       "details": "User asma@student.edu logged in",
       "ip_address": "102.220.41.219, 172.71.146.254, 10.29.164.4",
       "created_at": "2026-11-28 08:49:35"
+    },
+    {
+      "id": 146,
+      "user_id": 48,
+      "action": "USER_LOGIN",
+      "details": "User fadumo@student.edu logged in",
+      "ip_address": "102.220.41.229, 172.71.146.42, 10.29.164.4",
+      "created_at": "2026-11-28 08:50:07"
     }
   ],
   "system_settings": [
