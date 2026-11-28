@@ -9439,6 +9439,14 @@
       "details": "User fadumo@student.edu logged in",
       "ip_address": "102.220.41.229, 172.71.146.42, 10.29.164.4",
       "created_at": "2026-11-28 08:50:07"
+    },
+    {
+      "id": 147,
+      "user_id": 20,
+      "action": "USER_LOGIN",
+      "details": "User hodan@student.edu logged in",
+      "ip_address": "102.220.41.245, 172.71.147.86, 10.24.36.215",
+      "created_at": "2026-11-28 08:56:14"
     }
   ],
   "system_settings": [
